@@ -3,6 +3,7 @@ import networkx as nx
 import pandas as pd
 import geopandas as gpd
 
+# Geospatial variable names: description_gdf_area_resolution.pkl
 
 class Data:
     def __init__(self):
@@ -26,23 +27,23 @@ class Data:
 
         # Load the population data geodataframes
         # On PC4 level (postal code areas)
-        self.pc4_gdf = pd.read_pickle("../data/population_data_pc4_65coded.pkl")
+        self.pop_gdf_nl_pc4 = pd.read_pickle("../data/population_data_pc4_65coded.pkl")
 
         # On 65-area level from V-MRDH
-        self.mrdh65_gdf = pd.read_pickle("../v_mrdh/areas_mrdh.pkl")
+        self.gdf_mrdh_65 = pd.read_pickle("../data/areas_mrdh_weighted_centroids.pkl")
 
         # Load the road network
         self.road_network = nx.read_graphml("../network/graphs/merged_network.graphml")
 
         # For both pc4 and mrdh add a column if the centroid is in the target_area
         for target_area, polygon in zip(["in_city", "in_area"], [self.city_polygon_series, self.area_polygon_series]):
-            self.pc4_gdf[target_area] = self.pc4_gdf.centroid.within(polygon.geometry[0])
-            self.mrdh65_gdf[target_area] = self.mrdh65_gdf.centroid.within(polygon.geometry[0])
+            self.pop_gdf_nl_pc4[target_area] = self.pop_gdf_nl_pc4.centroid.within(polygon.geometry[0])
+            self.gdf_mrdh_65[target_area] = self.gdf_mrdh_65.centroid.within(polygon.geometry[0])
 
         # Create a dictionary of pc4 and mrdh65 centroids: index mapped to Geodataframe centroid
-        self.pc4_centroids = {pc4: centroid for pc4, centroid in self.pc4_gdf.centroid.items()}
-        self.mrdh_centroids = {mrdh: centroid for mrdh, centroid in self.mrdh65_gdf.centroid.items()}
-        print(f"{len(self.mrdh_centroids)} mrhd_centroids: {self.mrdh_centroids}")
+        self.centroids_dict_nl_pc4 = {pc4: centroid for pc4, centroid in self.pop_gdf_nl_pc4.centroid.items()}
+        self.centroids_dict_mrdh_65 = {n65: centroid for n65, centroid in self.gdf_mrdh_65.centroid.items()}
+        self.weighted_centroids_dict_mrdh_65 = {pc4: centroid for pc4, centroid in self.gdf_mrdh_65["weighted_centroid"].items()}
 
 # Initialize the data
 data = Data()
