@@ -45,5 +45,6 @@ class Data:
         self.centroids_dict_mrdh_65 = {n65: centroid for n65, centroid in self.gdf_mrdh_65.centroid.items()}
         self.weighted_centroids_dict_mrdh_65 = {pc4: centroid for pc4, centroid in self.gdf_mrdh_65["weighted_centroid"].items()}
 
+
 # Initialize the data
 data = Data()
