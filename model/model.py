@@ -27,5 +27,7 @@ class UrbanModel(Model):
 
     def step(self):
         pass
+        # For each agent, initialize times they want to create a trip
+        # Add those to the discrete event scheduler to
 
 model1 = UrbanModel()
