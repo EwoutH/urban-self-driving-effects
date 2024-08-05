@@ -12,7 +12,7 @@ class Data:
         self.travel_distance_pc4 = {}
 
         for mode in ["transit", "bicycling"]:
-            with open(f"../travel_api/travel_time_distance_google_{mode}.pkl", "rb") as f:
+            with open(f"../data/travel_time_distance_google_{mode}.pkl", "rb") as f:
                 self.travel_time_pc4[mode], self.travel_distance_pc4[mode] = pickle.load(f)
 
         # Load Shapely polygons
