@@ -13,7 +13,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=5, step_time=1/12, start_time=6, end_time=22, simulator=None):
+    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -35,15 +35,24 @@ class UrbanModel(Model):
         for i in range(n_agents):
             self.agents.add(Traveler(i, self, locations[i], gdf["65x65 Nummer"][locations[i]]))
 
-        # Request agents to 
+        # For a weekday, take the average of days 0-3 (Monday-Thursday)
+        self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")
+        # Drop the hours that are not in the range of the model and save as a dictionary
+        self.trips_by_hour_chance = self.trips_by_hour_chance.loc[start_time:(end_time-1)].to_dict()
+        print(f"Trips by hour chances: {self.trips_by_hour_chance}")
+
+        # self.trip_counts_distribution = data.trip_counts_distribution.to_dict()
+        # print(f"Trip counts distribution: {self.trip_counts_distribution}")
+
+        # Request agents to do stuff
         self.agents.do("generate_trip_times")
-        print(f"Events scheduled for agents: {self.simulator.event_list}")
+        print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
 
     def step(self):
         # Print the current time
-        print(f"Model step (time: {self.simulator.time})")
+        print(f"Model step (time: {self.simulator.time:.3f})")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
 
         # For each agent, initialize times they want to create a trip
@@ -54,7 +63,7 @@ class UrbanModel(Model):
 
 
 simulator1 = DEVSimulator()
-model1 = UrbanModel(n_agents=5, simulator=simulator1)
+model1 = UrbanModel(simulator=simulator1)
 simulator1.model = model1
 print(f"Running the model from {model1.start_time} to {model1.end_time}")
 

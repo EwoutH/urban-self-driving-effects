@@ -47,6 +47,8 @@ class Data:
 
          # Load chance on trip per hour data:
         self.trips_by_hour_chances = pd.read_pickle("../data/trips_by_hour_chances.pickle")
+        self.trip_counts_distribution = pd.read_pickle("../data/trip_counts_distribution.pickle")
+
 
 # Initialize the data
 data = Data()
