@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            data
+            model
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -21,7 +25,7 @@ jobs:
       - name: Install uv
         run: pip install uv
       - name: Install dependencies
-        run: uv pip install --pre mesa numpy pandas geopandas networkx shapely
+        run: uv pip install --system --pre mesa numpy pandas geopandas networkx shapely
       - name: Run model script
         working-directory: model
         run: python model.py
