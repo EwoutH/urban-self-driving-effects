@@ -49,6 +49,11 @@ class Data:
         self.trips_by_hour_chances = pd.read_pickle("../data/trips_by_hour_chances.pickle")
         self.trip_counts_distribution = pd.read_pickle("../data/trip_counts_distribution.pickle")
 
+        # Origin-Destination volumes
+        with open("../data/od_chance_dicts.pickle", "rb") as f:
+            # totaal, auto, fiets, ov
+            self.od_chance_dicts = pickle.load(f)
+
 
 # Initialize the data
 data = Data()
