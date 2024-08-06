@@ -14,6 +14,8 @@ class Traveler(Agent):
         self.has_car: bool
         self.has_license: bool
         self.has_bike = True
+        self.available_modes = ["car", "bike", "transit"]
+        self.mode: str
         # Assign location
         self.location: Point
         self.pc4: int
@@ -25,6 +27,14 @@ class Traveler(Agent):
 
         self.trip_times = []
         self.destinations = []
+
+        # Match the model.choice_model string to a function. Use Python 3.10 pattern matching.
+        match model.choice_model:
+            case "random":
+                self.choose_mode = self.choice_model_random
+            case _:
+                raise ValueError(f"Model choice model {model.choice_model} not recognized.")
+
 
     def generate_trip_times(self):
         # Note: There is assumed there is no correlations between the times of the trips.
@@ -48,9 +58,12 @@ class Traveler(Agent):
         print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
 
     def perform_journey(self, destination):
-        print(f"Agent {self.unique_id} at {self.mrdh65} is performing a journey! Time = {self.model.simulator.time:.3f}, destinations = {destination}")
-
         # Choose a mode of transport
+        self.mode = self.choose_mode()
+
+        print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
         # Perform the journey
 
+    def choice_model_random(self):
+        return random.choice(self.available_modes)

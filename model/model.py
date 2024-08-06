@@ -13,7 +13,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, simulator=None):
+    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, choice_model="random", simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -23,6 +23,10 @@ class UrbanModel(Model):
         self.step_time = step_time
         self.start_time = start_time
         self.end_time = end_time
+
+        # Set up the choice model
+        self.choice_model = choice_model
+
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
         self.pop_dict_pc4_city = {pc4: pop for pc4, pop in zip(gdf.index, gdf["aantal_inwoners"])}
