@@ -16,15 +16,15 @@ class Traveler(Agent):
         self.has_bike = True
         self.available_modes = ["car", "bike", "transit"]
         self.mode: str
-        self.value_of_time: float  # in euros per hour
+        # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
+        self.value_of_time: float = 10.76  # in euros per hour
         # Assign location
         self.location: Point
-        self.pc4: int
-        self.mrdh65: int
 
         # Assign a pc4 area, weighted by population
-        self.pc4 = pc4
-        self.mrdh65 = mrdh65
+        self.pc4: int = int(pc4)
+        self.mrdh65: int = int(mrdh65)
+        self.mrdh65_name: str = data.mrdh65_to_name[mrdh65]
 
         self.trip_times = []
         self.destinations = []
@@ -80,17 +80,19 @@ class Traveler(Agent):
 
     def get_travel_time_and_costs(self, destination, mode):
         # Get the travel time and costs for a destination and mode
-        travel_time: float
-        costs: float
+        travel_time: float = 0.1
+        costs: float = 0.1
         match mode:
             case "car":
                 # Get travel time from network, costs from distance conversion (fixed per km)
                 return travel_time, costs
             case "bike":
                 # Get travel time from Google Maps API, costa are assumed to be zero
+                travel_time = data.travel_time_mrdh["bicycling"][(self.mrdh65, destination)]
                 return travel_time, 0
             case "transit":
                 # Get travel time from Google Maps API, costs from distance conversion (NS staffel)
+                travel_time = data.travel_time_mrdh["transit"][(self.mrdh65, destination)]
                 return travel_time, costs
 
     def calculate_transit_cost(distance, price_per_km, subscription=False):

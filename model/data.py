@@ -2,18 +2,19 @@ import pickle
 import networkx as nx
 import pandas as pd
 import geopandas as gpd
+import matplotlib.pyplot as plt
 
 # Geospatial variable names: description_gdf_area_resolution.pkl
 
 class Data:
     def __init__(self):
         # Load travel time and distance data from Google Maps API
-        self.travel_time_pc4 = {}
-        self.travel_distance_pc4 = {}
+        self.travel_time_mrdh = {}
+        self.travel_distance_mrdh  = {}
 
         for mode in ["transit", "bicycling"]:
             with open(f"../data/travel_time_distance_google_{mode}.pkl", "rb") as f:
-                self.travel_time_pc4[mode], self.travel_distance_pc4[mode] = pickle.load(f)
+                self.travel_time_mrdh[mode], self.travel_distance_mrdh[mode] = pickle.load(f)
 
         # Load Shapely polygons
         with open("../data/polygons.pkl", "rb") as f:
@@ -31,6 +32,9 @@ class Data:
 
         # On 65-area level from V-MRDH
         self.gdf_mrdh_65 = pd.read_pickle("../data/areas_mrdh_weighted_centroids.pkl")
+
+        # Create a dict mapping the gdf_mrdh_65 keys to the ["65x65 Naam"] column
+        self.mrdh65_to_name = {n65: name for n65, name in zip(self.gdf_mrdh_65.index, self.gdf_mrdh_65["65x65 Naam"])}
 
         # Load the road network
         self.road_network = nx.read_graphml("../network/graphs/merged_network.graphml")
@@ -53,6 +57,21 @@ class Data:
         with open("../data/od_chance_dicts.pickle", "rb") as f:
             # totaal, auto, fiets, ov
             self.od_chance_dicts = pickle.load(f)
+            # Set all keys higher than 50 to chance 0. We limit trips to roughly the south-holland area.
+            for mode in self.od_chance_dicts:
+                for origin in self.od_chance_dicts[mode]:
+                    for destination in self.od_chance_dicts[mode][origin]:
+                        # Remove these if larger API runs are performed.
+                        if destination >= 50:  # MRDH area
+                            self.od_chance_dicts[mode][origin][destination] = 0
+                        if destination >= 21:  # Inner Rotterdam area.
+                            self.od_chance_dicts[mode][origin][destination] = 0
+                        if origin == destination:  # No trips to the same location
+                            self.od_chance_dicts[mode][origin][destination] = 0
+                    # Normalize the chances back to 1. This skewes the data to more inner city trips, but with a correct total number of trips.
+                    total = sum(self.od_chance_dicts[mode][origin].values())
+                    if total > 0:
+                        self.od_chance_dicts[mode][origin] = {key: value / total for key, value in self.od_chance_dicts[mode][origin].items()}
 
 
 # Initialize the data

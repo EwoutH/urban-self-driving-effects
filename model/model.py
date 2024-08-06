@@ -13,7 +13,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, choice_model="random", simulator=None):
+    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -29,6 +29,10 @@ class UrbanModel(Model):
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
+        # select only the rows where the 65x65 Nummer is in the mrhd65 index
+        gdf = gdf[gdf["65x65 Nummer"].isin(range(0, 20))]  # Rotterdam area. Replace with data.gdf_mrdh_65.index to expand to all MRDH area
+
+        # Create a dictionary of pc4 locations and their populations
         self.pop_dict_pc4_city = {pc4: pop for pc4, pop in zip(gdf.index, gdf["aantal_inwoners"])}
         # Normalize the population weights
         weights = np.array(list(self.pop_dict_pc4_city.values())) / sum(self.pop_dict_pc4_city.values())
