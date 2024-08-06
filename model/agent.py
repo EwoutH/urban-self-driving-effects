@@ -16,6 +16,7 @@ class Traveler(Agent):
         self.has_bike = True
         self.available_modes = ["car", "bike", "transit"]
         self.mode: str
+        self.value_of_time: float  # in euros per hour
         # Assign location
         self.location: Point
         self.pc4: int
@@ -67,3 +68,43 @@ class Traveler(Agent):
 
     def choice_model_random(self):
         return random.choice(self.available_modes)
+
+    def choice_rational_vot(self):
+        # 100% rational value-of-time model
+        # percieved_costs = costs + travel_time * value_of_time
+        # Choose the mode with the lowest percieved costs
+        pass
+
+    def get_travel_time_costs(self, destination, mode):
+        # Get the travel time and costs for a destination and mode
+        costs: float
+        travel_time: float
+        match mode:
+            case "car":
+                # Get travel time from network, costs from distance conversion (fixed per km)
+                return costs, travel_time
+            case "bike":
+                # Get travel time from Google Maps API, costa are assumed to be zero
+                return 0, travel_time
+            case "transit":
+                # Get travel time from Google Maps API, costs from distance conversion (NS staffel)
+                return costs, travel_time
+
+    def calculate_transit_cost(distance, price_per_km, subscription=False):
+        # Calculate the cost of a transit journey based on distance and price per km.
+        # Define distance ranges and their corresponding price factors.
+        # See https://www.treinonderweg.nl/wat-kost-de-trein.html
+        ranges = [(40, 1), (80, .979), (100, .8702), (120, .7),
+                  (150, .48), (200, .4), (250, .15), (float('inf'), 0)]
+
+        cost = 0
+        prev_limit = 0
+
+        for limit, factor in ranges:
+            if distance <= prev_limit:
+                break
+            km_in_range = min(distance, limit) - prev_limit
+            cost += km_in_range * price_per_km * factor
+            prev_limit = limit
+
+        return cost
