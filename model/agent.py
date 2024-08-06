@@ -30,12 +30,11 @@ class Traveler(Agent):
         self.destinations = []
 
         # Match the model.choice_model string to a function. Use Python 3.10 pattern matching.
-        match model.choice_model:
-            case "random":
-                self.choose_mode = self.choice_model_random
-            case _:
-                raise ValueError(f"Model choice model {model.choice_model} not recognized.")
-
+        # lookup self.choose_mode from dictionary
+        self.choose_mode = {
+            "random": self.choice_model_random,
+            "rational_vot": self.choice_rational_vot
+        }[model.choice_model]
 
     def generate_trip_times(self):
         # Note: There is assumed there is no correlations between the times of the trips.
@@ -60,35 +59,39 @@ class Traveler(Agent):
 
     def perform_journey(self, destination):
         # Choose a mode of transport
-        self.mode = self.choose_mode()
+        self.mode = self.choose_mode(destination)
 
         print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
         # Perform the journey
 
-    def choice_model_random(self):
+    def choice_model_random(self, destination):
         return random.choice(self.available_modes)
 
-    def choice_rational_vot(self):
+    def choice_rational_vot(self, destination):
         # 100% rational value-of-time model
         # percieved_costs = costs + travel_time * value_of_time
         # Choose the mode with the lowest percieved costs
-        pass
+        percieved_costs = {}
+        for mode in self.available_modes:
+            travel_time, costs = self.get_travel_time_and_costs(destination, mode)
+            percieved_costs[mode] = costs + travel_time * self.value_of_time
+        return min(percieved_costs, key=percieved_costs.get)
 
-    def get_travel_time_costs(self, destination, mode):
+    def get_travel_time_and_costs(self, destination, mode):
         # Get the travel time and costs for a destination and mode
-        costs: float
         travel_time: float
+        costs: float
         match mode:
             case "car":
                 # Get travel time from network, costs from distance conversion (fixed per km)
-                return costs, travel_time
+                return travel_time, costs
             case "bike":
                 # Get travel time from Google Maps API, costa are assumed to be zero
-                return 0, travel_time
+                return travel_time, 0
             case "transit":
                 # Get travel time from Google Maps API, costs from distance conversion (NS staffel)
-                return costs, travel_time
+                return travel_time, costs
 
     def calculate_transit_cost(distance, price_per_km, subscription=False):
         # Calculate the cost of a transit journey based on distance and price per km.
