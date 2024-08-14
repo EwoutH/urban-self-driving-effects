@@ -1,6 +1,7 @@
 # local imports
 from agent import Traveler
 from data import Data
+from traffic import get_uxsim_world
 
 # package imports
 from mesa import Model
@@ -54,6 +55,9 @@ class UrbanModel(Model):
         # self.trip_counts_distribution = data.trip_counts_distribution.to_dict()
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
 
+        # UXsim world (from traffic.py)
+        self.uxsim_world = get_uxsim_world()
+
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
 
@@ -73,6 +77,8 @@ class UrbanModel(Model):
 
         # Schedule next even
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
+        # Run the traffic simulation for the duration of the step_time
+        self.uxsim_world.exec_simulation(duration_t=self.step_time)
 
 # Create a simulator and model
 simulator1 = DEVSimulator()
