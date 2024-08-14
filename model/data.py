@@ -15,6 +15,9 @@ class Data:
         for mode in ["transit", "bicycling"]:
             with open(f"../data/travel_time_distance_google_{mode}.pkl", "rb") as f:
                 self.travel_time_mrdh[mode], self.travel_distance_mrdh[mode] = pickle.load(f)
+                # Convert travel time from seconds to hours and distance from meters to kilometers
+                self.travel_time_mrdh[mode] = {key: value / 3600 for key, value in self.travel_time_mrdh[mode].items()}
+                self.travel_distance_mrdh[mode] = {key: value / 1000 for key, value in self.travel_distance_mrdh[mode].items()}
 
         # Load Shapely polygons
         with open("../data/polygons.pkl", "rb") as f:

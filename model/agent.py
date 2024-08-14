@@ -60,6 +60,7 @@ class Traveler(Agent):
     def perform_journey(self, destination):
         # Choose a mode of transport
         self.mode = self.choose_mode(destination)
+        self.model.trips_by_mode[self.mode] += 1
 
         print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
@@ -80,22 +81,24 @@ class Traveler(Agent):
 
     def get_travel_time_and_costs(self, destination, mode):
         # Get the travel time and costs for a destination and mode
-        travel_time: float = 0.1
-        costs: float = 0.1
         match mode:
             case "car":
                 # Get travel time from network, costs from distance conversion (fixed per km)
-                return travel_time, costs
+                travel_time = 0.25
+                costs = 5
             case "bike":
                 # Get travel time from Google Maps API, costa are assumed to be zero
                 travel_time = data.travel_time_mrdh["bicycling"][(self.mrdh65, destination)]
-                return travel_time, 0
+                costs = 0
             case "transit":
                 # Get travel time from Google Maps API, costs from distance conversion (NS staffel)
                 travel_time = data.travel_time_mrdh["transit"][(self.mrdh65, destination)]
-                return travel_time, costs
+                distance = data.travel_distance_mrdh["transit"][(self.mrdh65, destination)]
+                costs = self.calculate_transit_cost(distance, self.model.transit_price_per_km)
+        # print(f"Agent {self.unique_id} at {self.mrdh65} to {destination} by {mode} has travel time {travel_time:.3f}, costs {costs:.2f} and percieved costs {costs + travel_time * self.value_of_time:.2f}")
+        return travel_time, costs
 
-    def calculate_transit_cost(distance, price_per_km, subscription=False):
+    def calculate_transit_cost(self, distance, price_per_km, subscription=False):
         # Calculate the cost of a transit journey based on distance and price per km.
         # Define distance ranges and their corresponding price factors.
         # See https://www.treinonderweg.nl/wat-kost-de-trein.html

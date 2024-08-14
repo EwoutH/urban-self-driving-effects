@@ -26,6 +26,8 @@ class UrbanModel(Model):
 
         # Set up the choice model
         self.choice_model = choice_model
+        self.available_modes = ["car", "bike", "transit"]
+        self.transit_price_per_km = 0.169  # https://www.treinonderweg.nl/wat-kost-de-trein.html
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
@@ -52,6 +54,9 @@ class UrbanModel(Model):
         # self.trip_counts_distribution = data.trip_counts_distribution.to_dict()
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
 
+        # KPIs
+        self.trips_by_mode = {mode: 0 for mode in self.available_modes}
+
         # Request agents to do stuff
         self.agents.do("generate_trip_times")
         print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
@@ -69,11 +74,17 @@ class UrbanModel(Model):
         # Schedule next even
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
 
-
+# Create a simulator and model
 simulator1 = DEVSimulator()
 model1 = UrbanModel(simulator=simulator1)
 simulator1.model = model1
-print(f"Running the model from {model1.start_time} to {model1.end_time}")
 
+print(f"### Running the model from {model1.start_time} to {model1.end_time}")
 simulator1.run_until(model1.end_time)
-print(f"Model finished at {model1.simulator.time}")
+print(f"### Model finished at {model1.simulator.time}")
+
+# Print some results
+total_trips = sum(model1.trips_by_mode.values())
+mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
+print(f"Trips by mode: {model1.trips_by_mode}\n"
+      f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
