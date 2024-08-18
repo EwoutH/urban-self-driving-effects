@@ -4,6 +4,9 @@
 
 import osmnx as ox
 import uxsim
+from data import Data
+
+data1 = Data()
 
 # print(f"UXsim version: {uxsim.__version__}")
 
@@ -68,8 +71,13 @@ def get_uxsim_world():
 
     # Create Nodes in UXsim from OSMnx graph nodes
     for node_id, data in road_network.nodes(data=True):
-        world.addNode(name=str(node_id), x=data['x'], y=data['y'])
+        try:
+            mrdh65 = data1.pc4_to_mrdh65[int(data['postcode'])]
+        except KeyError:
+            mrdh65 = 0
+        world.addNode(name=str(node_id), x=data['x'], y=data['y'], area=mrdh65)
 
+    world.update_nodes_area_dict()
 
     # Create Links in UXsim from OSMnx graph edges
     for u, v, data in road_network.edges(data=True):

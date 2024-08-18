@@ -39,6 +39,9 @@ class Data:
         # Create a dict mapping the gdf_mrdh_65 keys to the ["65x65 Naam"] column
         self.mrdh65_to_name = {n65: name for n65, name in zip(self.gdf_mrdh_65.index, self.gdf_mrdh_65["65x65 Naam"])}
 
+        # Create a dict mapping mrdh65 to pc4. pc4: pop_gdf_nl_pc4["postcode"], mrdh65: pop_gdf_nl_pc4["65x65 Nummer"]
+        self.pc4_to_mrdh65 = dict(zip(self.pop_gdf_nl_pc4["postcode"], self.pop_gdf_nl_pc4["65x65 Nummer"]))
+
         # For both pc4 and mrdh add a column if the centroid is in the target_area
         for target_area, polygon in zip(["in_city", "in_area"], [self.city_polygon_series, self.area_polygon_series]):
             self.pop_gdf_nl_pc4[target_area] = self.pop_gdf_nl_pc4.centroid.within(polygon.geometry[0])

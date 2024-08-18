@@ -8,6 +8,9 @@ import random
 data = Data()
 
 class Traveler(Agent):
+    # Add counter
+    _successful_trips = 0
+    _not_successful_trips = 0
     def __init__(self, unique_id, model, pc4, mrdh65):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
@@ -61,6 +64,9 @@ class Traveler(Agent):
         # Choose a mode of transport
         self.mode = self.choose_mode(destination)
         self.model.trips_by_mode[self.mode] += 1
+
+        if self.mode == "car":
+            self.schedule_car_trip(destination)
 
         print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
@@ -116,3 +122,18 @@ class Traveler(Agent):
             prev_limit = limit
 
         return cost
+
+    def schedule_car_trip(self, destination):
+        """"Schedule an event for the car trip with UXsim"""
+
+        # Use UXsim world get_random_node_in_area
+        try:
+            starting_node = self.model.uxsim_world.get_random_node_in_area(self.mrdh65)
+            target_node = self.model.uxsim_world.get_random_node_in_area(destination)
+
+            # Add the car trip to the UXsim world
+            self.model.uxsim_world.addVehicle(orig=starting_node, dest=target_node, departure_time=self.model.simulator.time)
+            self.model.successful_car_trips += 1
+        except:
+            self.model.failed_car_trips += 1
+            print(f"!!! Agent {self.unique_id} at {self.mrdh65} to {destination} by car could not be scheduled.")

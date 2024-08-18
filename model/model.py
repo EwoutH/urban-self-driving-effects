@@ -61,6 +61,8 @@ class UrbanModel(Model):
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
 
+        self.successful_car_trips, self.failed_car_trips = 0, 0
+
         # Request agents to do stuff
         self.agents.do("generate_trip_times")
         print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
@@ -94,3 +96,6 @@ total_trips = sum(model1.trips_by_mode.values())
 mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
 print(f"Trips by mode: {model1.trips_by_mode}\n"
       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
+
+print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
+
