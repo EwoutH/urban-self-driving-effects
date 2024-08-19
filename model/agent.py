@@ -127,13 +127,15 @@ class Traveler(Agent):
         """"Schedule an event for the car trip with UXsim"""
 
         # Use UXsim world get_random_node_in_area
+        node_dict = self.model.uxsim_world.node_area_dict
         try:
-            starting_node = self.model.uxsim_world.get_random_node_in_area(self.mrdh65)
-            target_node = self.model.uxsim_world.get_random_node_in_area(destination)
+            starting_node = self.model.uxsim_world.rng.choice(node_dict[self.mrdh65])
+            target_node = self.model.uxsim_world.rng.choice(node_dict[destination])
 
             # Add the car trip to the UXsim world
             self.model.uxsim_world.addVehicle(orig=starting_node, dest=target_node, departure_time=self.model.simulator.time)
             self.model.successful_car_trips += 1
         except:
+            print()
             self.model.failed_car_trips += 1
             print(f"!!! Agent {self.unique_id} at {self.mrdh65} to {destination} by car could not be scheduled.")

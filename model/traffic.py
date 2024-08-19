@@ -2,9 +2,12 @@
 # - [OSMnx](https://www.github.com/gboeing/osmnx)
 # - [UXsim](https://www.github.com/toruseo/uxsim)
 
+from data import Data
+
+from collections import defaultdict
+
 import osmnx as ox
 import uxsim
-from data import Data
 
 data1 = Data()
 
@@ -75,9 +78,11 @@ def get_uxsim_world():
             mrdh65 = data1.pc4_to_mrdh65[int(data['postcode'])]
         except KeyError:
             mrdh65 = 0
-        world.addNode(name=str(node_id), x=data['x'], y=data['y'], area=mrdh65)
+        world.addNode(name=str(node_id), x=data['x'], y=data['y'], attribute=mrdh65)
 
-    world.update_nodes_area_dict()
+    world.node_area_dict = defaultdict(list)
+    for node in world.NODES:
+        world.node_area_dict[node.attribute].append(node)
 
     # Create Links in UXsim from OSMnx graph edges
     for u, v, data in road_network.edges(data=True):
