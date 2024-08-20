@@ -77,6 +77,9 @@ class UrbanModel(Model):
         # Request agents to do stuff
         self.agents.do("generate_trip_times")
         print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
+
+        self.uw.finalize_scenario()
+        self.update_car_travel_times()
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
 
@@ -88,16 +91,19 @@ class UrbanModel(Model):
         # Print the current time
         print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.3f})")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
+        # Schedule the travel_time execution 1 timestep ahead. This way all agents have had a chance to add their trips.
+        self.simulator.schedule_event_relative(function=self.exec_simulation_travel_times, time_delta=self.step_time)
 
-        # For each agent, initialize times they want to create a trip
-        # Add those to the discrete event scheduler to
-
-        # Schedule next even
+        # Schedule next event
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
-        # Run the traffic simulation for the duration of the step_time
+
+    def exec_simulation_travel_times(self):
+        # Execute the simulation for a given duration
         self.uw.exec_simulation(duration_t=self.step_time * 3600)
+
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
+
         # Update travel times
         self.update_car_travel_times()
 
@@ -107,7 +113,7 @@ class UrbanModel(Model):
 
     def update_car_travel_times(self):
         for l in self.uw.LINKS:
-            self.G[l.start_node.name][l.end_node.name]['weight'] = l.instant_travel_time(self.uw.TIME)
+            self.G[l.start_node.name][l.end_node.name]['weight'] = l.actual_travel_time(self.uw.TIME)
 
         self.car_travel_time_dict = dict(nx.all_pairs_dijkstra_path_length(self.G, weight='weight'))
 
