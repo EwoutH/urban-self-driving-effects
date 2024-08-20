@@ -102,7 +102,7 @@ class Traveler(Agent):
                 except:
                     travel_time = np.inf
                     self.model.failed_car_trips += 1
-                costs = 0  # TODO: Base car costs on distance
+                    costs = np.inf
             case "bike":
                 # Get travel time from Google Maps API, costa are assumed to be zero
                 travel_time = data.travel_time_mrdh["bicycling"][(self.mrdh65, destination)]
