@@ -7,7 +7,9 @@ from traffic import get_uxsim_world
 from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
-from datetime import datetime
+import networkx as nx
+from collections import defaultdict
+
 
 data = Data()
 
@@ -56,7 +58,8 @@ class UrbanModel(Model):
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
 
         # UXsim world (from traffic.py)
-        self.uxsim_world = get_uxsim_world()
+        self.uw = get_uxsim_world()
+        self.car_travel_time_dict = defaultdict
 
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
@@ -69,9 +72,13 @@ class UrbanModel(Model):
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
 
+    @property
+    def uw_time(self):
+        return (self.simulator.time - self.start_time) * 3600
+
     def step(self):
         # Print the current time
-        print(f"Model step (time: {self.simulator.time:.3f})")
+        print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.3f})")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
 
         # For each agent, initialize times they want to create a trip
@@ -80,7 +87,17 @@ class UrbanModel(Model):
         # Schedule next even
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
         # Run the traffic simulation for the duration of the step_time
-        self.uxsim_world.exec_simulation(duration_t=self.step_time)
+        self.uw.exec_simulation(duration_t=self.step_time * 3600)
+        # Update travel times
+        self.update_car_travel_times()
+
+    def update_car_travel_times(self):
+        G = nx.DiGraph()  # Create a new directed graph
+
+        for l in self.uw.LINKS:
+            G.add_edge(l.start_node.name, l.end_node.name, weight=l.instant_travel_time(self.uw.TIME))
+
+        self.car_travel_time_dict = dict(nx.all_pairs_dijkstra_path_length(G, weight='weight'))
 
 # Create a simulator and model
 simulator1 = DEVSimulator()

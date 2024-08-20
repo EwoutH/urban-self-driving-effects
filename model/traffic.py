@@ -29,7 +29,7 @@ def get_uxsim_world():
     # Set simulation parameters
     simulation_name = "trafficsim"
     simulation_duration = (23-6)*3600  # in seconds (e.g., 3600 = 1 hour)
-    platoon_size = 25  # vehicles per platoon
+    platoon_size = 30  # vehicles per platoon
     reaction_time = 1  # in seconds
     duo_update_time = 150  # in seconds, for dynamic user equilibrium (DUO) route choice update
     duo_update_weight = 0.5  # weight for DUO update
@@ -83,6 +83,7 @@ def get_uxsim_world():
     world.node_area_dict = defaultdict(list)
     for node in world.NODES:
         world.node_area_dict[node.attribute].append(node)
+    world.area_list = list(world.node_area_dict.keys())
 
     # Create Links in UXsim from OSMnx graph edges
     for u, v, data in road_network.edges(data=True):

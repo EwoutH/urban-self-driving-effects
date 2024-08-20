@@ -20,7 +20,7 @@ class Traveler(Agent):
         self.available_modes = ["car", "bike", "transit"]
         self.mode: str
         # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
-        self.value_of_time: float = 10.76  # in euros per hour
+        self.value_of_time: float = 10.76 / 3600  # in euros per second
         # Assign location
         self.location: Point
 
@@ -58,7 +58,7 @@ class Traveler(Agent):
         for trip_time, destination in zip(self.trip_times, self.destinations):
             self.model.simulator.schedule_event_absolute(function=self.perform_journey, time=trip_time, function_kwargs={"destination": destination})
 
-        print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
+        # print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
 
     def perform_journey(self, destination):
         # Choose a mode of transport
@@ -66,7 +66,7 @@ class Traveler(Agent):
         self.model.trips_by_mode[self.mode] += 1
 
         if self.mode == "car":
-            self.schedule_car_trip(destination)
+            self.schedule_car_trip(*self.od_car)
 
         print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
@@ -83,6 +83,7 @@ class Traveler(Agent):
         for mode in self.available_modes:
             travel_time, costs = self.get_travel_time_and_costs(destination, mode)
             percieved_costs[mode] = costs + travel_time * self.value_of_time
+        # print(f"Agent {self.unique_id} at {self.mrdh65} to {destination} has percieved costs {percieved_costs}")
         return min(percieved_costs, key=percieved_costs.get)
 
     def get_travel_time_and_costs(self, destination, mode):
@@ -90,8 +91,17 @@ class Traveler(Agent):
         match mode:
             case "car":
                 # Get travel time from network, costs from distance conversion (fixed per km)
-                travel_time = 0.25
-                costs = 5
+                self.od_car = None
+                try:
+                    o = self.model.uw.rng.choice(self.model.uw.node_area_dict[self.mrdh65])
+                    d = self.model.uw.rng.choice(self.model.uw.node_area_dict[destination])
+                    travel_time = self.model.car_travel_time_dict[o.name][d.name]
+                    self.od_car = (o, d)
+                    self.model.successful_car_trips += 1
+                except:
+                    travel_time = np.inf
+                    self.model.failed_car_trips += 1
+                costs = 0  # TODO: Base car costs on distance
             case "bike":
                 # Get travel time from Google Maps API, costa are assumed to be zero
                 travel_time = data.travel_time_mrdh["bicycling"][(self.mrdh65, destination)]
@@ -123,19 +133,6 @@ class Traveler(Agent):
 
         return cost
 
-    def schedule_car_trip(self, destination):
+    def schedule_car_trip(self, origin_node, destination_node):
         """"Schedule an event for the car trip with UXsim"""
-
-        # Use UXsim world get_random_node_in_area
-        node_dict = self.model.uxsim_world.node_area_dict
-        try:
-            starting_node = self.model.uxsim_world.rng.choice(node_dict[self.mrdh65])
-            target_node = self.model.uxsim_world.rng.choice(node_dict[destination])
-
-            # Add the car trip to the UXsim world
-            self.model.uxsim_world.addVehicle(orig=starting_node, dest=target_node, departure_time=self.model.simulator.time)
-            self.model.successful_car_trips += 1
-        except:
-            print()
-            self.model.failed_car_trips += 1
-            print(f"!!! Agent {self.unique_id} at {self.mrdh65} to {destination} by car could not be scheduled.")
+        self.model.uw.addVehicle(orig=origin_node, dest=destination_node, departure_time=self.model.uw_time)
