@@ -9,6 +9,7 @@ from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import networkx as nx
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 
 data = Data()
@@ -16,7 +17,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=100, step_time=1/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
+    def __init__(self, n_agents=120000, step_time=3/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -61,7 +62,7 @@ class UrbanModel(Model):
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
 
         # UXsim world (from traffic.py)
-        self.uw = get_uxsim_world()
+        self.uw = get_uxsim_world(save_mode=False, show_mode=True)
         self.G = nx.DiGraph()  # Initialize the graph once
         self._initialize_graph()  # Set up the graph structure
 
@@ -95,6 +96,8 @@ class UrbanModel(Model):
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
         # Run the traffic simulation for the duration of the step_time
         self.uw.exec_simulation(duration_t=self.step_time * 3600)
+        # show simulation
+        # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
         # Update travel times
         self.update_car_travel_times()
 

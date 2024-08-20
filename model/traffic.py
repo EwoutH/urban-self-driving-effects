@@ -13,7 +13,7 @@ data1 = Data()
 
 # print(f"UXsim version: {uxsim.__version__}")
 
-def get_uxsim_world():
+def get_uxsim_world(save_mode=False, show_mode=False):
     city_name = "Rotterdam"
     surrounding_area_name = "South Holland"
 
@@ -29,7 +29,7 @@ def get_uxsim_world():
     # Set simulation parameters
     simulation_name = "trafficsim"
     simulation_duration = (23-6)*3600  # in seconds (e.g., 3600 = 1 hour)
-    platoon_size = 30  # vehicles per platoon
+    platoon_size = 5  # vehicles per platoon
     reaction_time = 1  # in seconds
     duo_update_time = 150  # in seconds, for dynamic user equilibrium (DUO) route choice update
     duo_update_weight = 0.5  # weight for DUO update
@@ -49,8 +49,8 @@ def get_uxsim_world():
                         eular_dx=eular_dx,
                         random_seed=random_seed,
                         print_mode=1,  # Enable printing simulation progress
-                        save_mode=1,  # Enable saving simulation results
-                        show_mode=0,  # Disable showing results via matplotlib (for faster performance)
+                        save_mode=save_mode,  # Enable saving simulation results
+                        show_mode=show_mode,  # Enable showing results via matplotlib (for faster performance)
                         route_choice_principle="homogeneous_DUO",
                         show_progress=1,  # Show simulation progress
                         show_progress_deltat=300,  # Interval for showing progress, in seconds
