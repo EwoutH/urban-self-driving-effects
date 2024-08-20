@@ -49,7 +49,7 @@ class UrbanModel(Model):
         locations = np.random.choice(list(self.pop_dict_pc4_city.keys()), n_agents, p=weights)
 
         for i in range(n_agents):
-            self.agents.add(Traveler(i, self, locations[i], gdf["65x65 Nummer"][locations[i]]))
+            Traveler(i, self, locations[i], gdf["65x65 Nummer"][locations[i]])
 
         # For a weekday, take the average of days 0-3 (Monday-Thursday)
         self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")
