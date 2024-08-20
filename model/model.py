@@ -31,6 +31,9 @@ class UrbanModel(Model):
         self.choice_model = choice_model
         self.available_modes = ["car", "bike", "transit"]
         self.transit_price_per_km = 0.169  # https://www.treinonderweg.nl/wat-kost-de-trein.html
+        self.car_price_per_km_variable = 0.268
+        # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
+        self.car_price_per_km_total = 0.604
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
@@ -59,7 +62,11 @@ class UrbanModel(Model):
 
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world()
-        self.car_travel_time_dict = defaultdict
+        self.G = nx.DiGraph()  # Initialize the graph once
+        self._initialize_graph()  # Set up the graph structure
+
+        self.car_travel_time_dict = {}
+        self.car_travel_distance_dict = self.get_car_travel_distance()
 
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
@@ -91,13 +98,25 @@ class UrbanModel(Model):
         # Update travel times
         self.update_car_travel_times()
 
+    def _initialize_graph(self):
+        for l in self.uw.LINKS:
+            self.G.add_edge(l.start_node.name, l.end_node.name)
+
     def update_car_travel_times(self):
-        G = nx.DiGraph()  # Create a new directed graph
+        for l in self.uw.LINKS:
+            self.G[l.start_node.name][l.end_node.name]['weight'] = l.instant_travel_time(self.uw.TIME)
+
+        self.car_travel_time_dict = dict(nx.all_pairs_dijkstra_path_length(self.G, weight='weight'))
+
+    def get_car_travel_distance(self):
+        G2 = nx.DiGraph()  # Create a new directed graph
 
         for l in self.uw.LINKS:
-            G.add_edge(l.start_node.name, l.end_node.name, weight=l.instant_travel_time(self.uw.TIME))
+            G2.add_edge(l.start_node.name, l.end_node.name, weight=l.length)
 
-        self.car_travel_time_dict = dict(nx.all_pairs_dijkstra_path_length(G, weight='weight'))
+        car_dist_dict = dict(nx.all_pairs_dijkstra_path_length(G2, weight='weight'))
+        # Devide by 1000 to convert from meters to kilometers
+        return {o: {d: dist / 1000 for d, dist in dist_dict.items()} for o, dist_dict in car_dist_dict.items()}
 
 # Create a simulator and model
 simulator1 = DEVSimulator()
