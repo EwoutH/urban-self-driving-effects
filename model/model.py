@@ -105,7 +105,18 @@ class UrbanModel(Model):
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
 
         # Update travel times
+        # print(f"Car travel time ROUTECHOICE: {self.uw.ROUTECHOICE.dist}")
         self.update_car_travel_times()
+        # print(f"Car travel times DIJKSTRA: {self.car_travel_time_dict}")
+
+        # Print both travel times for 10 random o-d pairs
+        print(f"All nodes: {self.uw.NODES}")
+        print(f"5 random nodes: {self.uw.rng.choice(list(self.uw.NODES), 5)}")
+        for i in range(10):
+            o = self.uw.rng.choice(list(self.uw.NODES))
+            d = self.uw.rng.choice(list(self.uw.NODES))
+            print(f"Car travel time from Node {o.id} ({o.name}) to Node {d.id} ({d.name}):", end=" ")
+            print(f"{self.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]} vs {self.car_travel_time_dict[o.name][d.name]}")
 
     def _initialize_graph(self):
         for l in self.uw.LINKS:
