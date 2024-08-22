@@ -95,7 +95,7 @@ class Traveler(Agent):
                 try:
                     o = self.model.uw.rng.choice(self.model.uw.node_area_dict[self.mrdh65])
                     d = self.model.uw.rng.choice(self.model.uw.node_area_dict[destination])
-                    travel_time = self.model.car_travel_time_dict[o.name][d.name]
+                    travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
                     costs = self.model.car_travel_distance_dict[o.name][d.name] * self.model.car_price_per_km_variable
                     self.od_car = (o, d)
                     self.model.successful_car_trips += 1

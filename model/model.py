@@ -63,10 +63,7 @@ class UrbanModel(Model):
 
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world(save_mode=False, show_mode=True)
-        self.G = nx.DiGraph()  # Initialize the graph once
-        self._initialize_graph()  # Set up the graph structure
 
-        self.car_travel_time_dict = {}
         self.car_travel_distance_dict = self.get_car_travel_distance()
 
         # KPIs
@@ -79,7 +76,6 @@ class UrbanModel(Model):
         print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
 
         self.uw.finalize_scenario()
-        self.update_car_travel_times()
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
 
@@ -103,30 +99,6 @@ class UrbanModel(Model):
 
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
-
-        # Update travel times
-        # print(f"Car travel time ROUTECHOICE: {self.uw.ROUTECHOICE.dist}")
-        self.update_car_travel_times()
-        # print(f"Car travel times DIJKSTRA: {self.car_travel_time_dict}")
-
-        # Print both travel times for 10 random o-d pairs
-        print(f"All nodes: {self.uw.NODES}")
-        print(f"5 random nodes: {self.uw.rng.choice(list(self.uw.NODES), 5)}")
-        for i in range(10):
-            o = self.uw.rng.choice(list(self.uw.NODES))
-            d = self.uw.rng.choice(list(self.uw.NODES))
-            print(f"Car travel time from Node {o.id} ({o.name}) to Node {d.id} ({d.name}):", end=" ")
-            print(f"{self.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]} vs {self.car_travel_time_dict[o.name][d.name]}")
-
-    def _initialize_graph(self):
-        for l in self.uw.LINKS:
-            self.G.add_edge(l.start_node.name, l.end_node.name)
-
-    def update_car_travel_times(self):
-        for l in self.uw.LINKS:
-            self.G[l.start_node.name][l.end_node.name]['weight'] = l.actual_travel_time(self.uw.TIME)
-
-        self.car_travel_time_dict = dict(nx.all_pairs_dijkstra_path_length(self.G, weight='weight'))
 
     def get_car_travel_distance(self):
         G2 = nx.DiGraph()  # Create a new directed graph
