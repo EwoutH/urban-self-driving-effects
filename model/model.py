@@ -17,7 +17,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=120000, step_time=3/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -85,7 +85,7 @@ class UrbanModel(Model):
 
     def step(self):
         # Print the current time
-        print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.3f})")
+        print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.1f}).", end=" ")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
         # Schedule the travel_time execution 1 timestep ahead. This way all agents have had a chance to add their trips.
         self.simulator.schedule_event_relative(function=self.exec_simulation_travel_times, time_delta=self.step_time)
