@@ -17,7 +17,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=6, end_time=23, choice_model="rational_vot", simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -31,10 +31,14 @@ class UrbanModel(Model):
         # Set up the choice model
         self.choice_model = choice_model
         self.available_modes = ["car", "bike", "transit"]
+        if enable_av:
+            self.available_modes.append("av")
         self.transit_price_per_km = 0.169  # https://www.treinonderweg.nl/wat-kost-de-trein.html
         self.car_price_per_km_variable = 0.268
         # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
         self.car_price_per_km_total = 0.604
+        self.av_costs_per_km = 1.89  # TODO: Update from Waymo regression
+        self.av_costs_per_sec = 0.423 / 60
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
@@ -126,4 +130,3 @@ print(f"Trips by mode: {model1.trips_by_mode}\n"
       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
-

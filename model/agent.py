@@ -89,14 +89,18 @@ class Traveler(Agent):
     def get_travel_time_and_costs(self, destination, mode):
         # Get the travel time and costs for a destination and mode
         match mode:
-            case "car":
+            case "car" | "av":
                 # Get travel time from network, costs from distance conversion (fixed per km)
-                self.od_car = None
                 try:
+                    # TODO: Abstract this away to be only done once per trip
                     o = self.model.uw.rng.choice(self.model.uw.node_area_dict[self.mrdh65])
                     d = self.model.uw.rng.choice(self.model.uw.node_area_dict[destination])
                     travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
-                    costs = self.model.car_travel_distance_dict[o.name][d.name] * self.model.car_price_per_km_variable
+                    travel_dist = self.model.car_travel_distance_dict[o.name][d.name]
+                    if mode == "car":
+                        costs = travel_dist * self.model.car_price_per_km_variable
+                    if mode == "av":
+                        costs = travel_dist * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
                     self.od_car = (o, d)
                     self.model.successful_car_trips += 1
                 except:
