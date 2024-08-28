@@ -45,9 +45,9 @@ class UrbanModel(Model):
             "bike": 10.39,
             "transit": 7.12,
         }
-        self.default_value_of_times = {mode: vot / 3600 for mode, vot in self.default_value_of_times.items()}  # Euros per second
         self.default_value_of_times["av"] = self.default_value_of_times["car"] * self.av_vot_factor
-        print(f"Default value of times: {self.default_value_of_times}")
+        print(f"Default value of times: {self.default_value_of_times} (€/hour)")
+        self.default_value_of_times = {mode: vot / 3600 for mode, vot in self.default_value_of_times.items()}  # Euros per second
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]

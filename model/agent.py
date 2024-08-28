@@ -95,8 +95,6 @@ class Traveler(Agent):
                     o = self.model.uw.rng.choice(self.model.uw.node_area_dict[self.mrdh65])
                     d = self.model.uw.rng.choice(self.model.uw.node_area_dict[destination])
                     travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
-                    if travel_time == 0:
-                        print(f"Travel time from {o} to {d} is 0!")
                     travel_dist = self.model.car_travel_distance_dict[o.name][d.name]
                     if mode == "car":
                         costs = travel_dist * self.model.car_price_per_km_variable
