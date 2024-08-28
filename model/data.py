@@ -31,6 +31,7 @@ class Data:
         # Load the population data geodataframes
         # On PC4 level (postal code areas)
         self.pop_gdf_nl_pc4 = pd.read_pickle("../data/population_data_pc4_65coded.pkl")
+        self.pop_gdf_nl_pc4.set_index("postcode", inplace=True)
 
         # On 65-area level from V-MRDH
         self.gdf_mrdh_65 = pd.read_pickle("../data/areas_mrdh_weighted_centroids.pkl")
@@ -39,7 +40,7 @@ class Data:
         self.mrdh65_to_name = {n65: name for n65, name in zip(self.gdf_mrdh_65.index, self.gdf_mrdh_65["65x65 Naam"])}
 
         # Create a dict mapping mrdh65 to pc4. pc4: pop_gdf_nl_pc4["postcode"], mrdh65: pop_gdf_nl_pc4["65x65 Nummer"]
-        self.pc4_to_mrdh65 = dict(zip(self.pop_gdf_nl_pc4["postcode"], self.pop_gdf_nl_pc4["65x65 Nummer"]))
+        self.pc4_to_mrdh65 = dict(zip(self.pop_gdf_nl_pc4.index, self.pop_gdf_nl_pc4["65x65 Nummer"]))
 
         # For both pc4 and mrdh add a column if the centroid is in the target_area
         for target_area, polygon in zip(["in_city", "in_area"], [self.city_polygon_series, self.area_polygon_series]):
