@@ -37,6 +37,7 @@ class UrbanModel(Model):
         self.car_price_per_km_variable = 0.268
         # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
         self.car_price_per_km_total = 0.604
+        self.av_initial_costs = 3.79
         self.av_costs_per_km = 1.41  # TODO: Update from Waymo regression https://waymo-pricing.streamlit.app/
         self.av_costs_per_sec = 0.40 / 60
 

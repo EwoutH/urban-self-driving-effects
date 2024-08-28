@@ -100,7 +100,7 @@ class Traveler(Agent):
                     if mode == "car":
                         costs = travel_dist * self.model.car_price_per_km_variable
                     if mode == "av":
-                        costs = travel_dist * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
+                        costs = self.model.av_initial_costs + travel_dist * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
                     self.od_car = (o, d)
                     self.model.successful_car_trips += 1
                 except:
