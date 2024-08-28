@@ -52,6 +52,8 @@ class Data:
         self.centroids_dict_mrdh_65 = {n65: centroid for n65, centroid in self.gdf_mrdh_65.centroid.items()}
         self.weighted_centroids_dict_mrdh_65 = {pc4: centroid for pc4, centroid in self.gdf_mrdh_65["weighted_centroid"].items()}
 
+        self.licenses_cars_pc4 = pd.read_pickle("../data/rijbewijzen_personenautos.pkl")
+
          # Load chance on trip per hour data:
         self.trips_by_hour_chances = pd.read_pickle("../data/trips_by_hour_chances.pickle")
         self.trip_counts_distribution = pd.read_pickle("../data/trip_counts_distribution.pickle")

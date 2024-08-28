@@ -8,8 +8,6 @@ from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import networkx as nx
-from collections import defaultdict
-import matplotlib.pyplot as plt
 
 
 data = Data()
@@ -56,6 +54,24 @@ class UrbanModel(Model):
 
         for i in range(n_agents):
             Traveler(i, self, locations[i], gdf["65x65 Nummer"][locations[i]])
+
+        for pc4 in self.pop_dict_pc4_city.keys():
+            # Dataframe is indexed by pc4, so we can directly access the number of licenses and cars
+            license_chance, car_chance = data.licenses_cars_pc4.loc[int(pc4)]
+            trav = self.agents.shuffle().select(lambda a: a.pc4 == pc4)
+
+            n_trav = len(trav)
+            n_license = round(n_trav * license_chance)
+            n_car = round(n_trav * car_chance)
+
+            # Give n_license agents a license
+            trav_license = trav.shuffle().select(n=n_license).do(lambda agent: setattr(agent, 'has_license', True))
+            # Of those with a license, give n_car agents a car
+            trav_license.shuffle().select(n=n_car).do(lambda agent: setattr(agent, 'has_car', True))
+
+        # For agents that don't have a car, remove the car from the available modes
+        self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))
+        # TODO: Implement some car sharing / lending from friends/family thing here.
 
         # For a weekday, take the average of days 0-3 (Monday-Thursday)
         self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")

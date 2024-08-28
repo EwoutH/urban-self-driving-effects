@@ -14,10 +14,10 @@ class Traveler(Agent):
     def __init__(self, unique_id, model, pc4, mrdh65):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
-        self.has_car: bool
-        self.has_license: bool
+        self.has_car: bool = False
+        self.has_license: bool = False
         self.has_bike = True
-        self.available_modes = ["car", "bike", "transit"]
+        self.available_modes = self.model.available_modes
         self.mode: str
         # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
         self.value_of_time: float = 10.76 / 3600  # in euros per second
