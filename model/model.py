@@ -37,8 +37,8 @@ class UrbanModel(Model):
         self.car_price_per_km_variable = 0.268
         # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
         self.car_price_per_km_total = 0.604
-        self.av_costs_per_km = 1.89  # TODO: Update from Waymo regression
-        self.av_costs_per_sec = 0.423 / 60
+        self.av_costs_per_km = 1.41  # TODO: Update from Waymo regression https://waymo-pricing.streamlit.app/
+        self.av_costs_per_sec = 0.40 / 60
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
