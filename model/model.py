@@ -75,9 +75,9 @@ class UrbanModel(Model):
             n_car = round(n_trav * car_chance)
 
             # Give n_license agents a license
-            trav_license = trav.shuffle().select(n=n_license).do(lambda agent: setattr(agent, 'has_license', True))
+            trav_license = trav.shuffle(inplace=True).select(n=n_license).do(lambda agent: setattr(agent, 'has_license', True))
             # Of those with a license, give n_car agents a car
-            trav_license.shuffle().select(n=n_car).do(lambda agent: setattr(agent, 'has_car', True))
+            trav_license.shuffle(inplace=True).select(n=n_car).do(lambda agent: setattr(agent, 'has_car', True))
 
         # For agents that don't have a car, remove the car from the available modes
         self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))
