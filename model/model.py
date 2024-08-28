@@ -15,7 +15,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, av_vot_factor=1, simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -35,9 +35,9 @@ class UrbanModel(Model):
         self.car_price_per_km_variable = 0.268
         # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
         self.car_price_per_km_total = 0.604
-        self.av_initial_costs = 3.79
-        self.av_costs_per_km = 1.41  # TODO: Update from Waymo regression https://waymo-pricing.streamlit.app/
-        self.av_costs_per_sec = 0.40 / 60
+        self.av_initial_costs = 3.79 * av_cost_factor
+        self.av_costs_per_km = 1.41 * av_cost_factor  # TODO: Update from Waymo regression https://waymo-pricing.streamlit.app/
+        self.av_costs_per_sec = 0.40 / 60 * av_cost_factor
         self.av_vot_factor = av_vot_factor
         # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
         self.default_value_of_times = {
