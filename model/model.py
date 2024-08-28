@@ -15,7 +15,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, av_vot_factor=1, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -38,6 +38,16 @@ class UrbanModel(Model):
         self.av_initial_costs = 3.79
         self.av_costs_per_km = 1.41  # TODO: Update from Waymo regression https://waymo-pricing.streamlit.app/
         self.av_costs_per_sec = 0.40 / 60
+        self.av_vot_factor = av_vot_factor
+        # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
+        self.default_value_of_times = {
+            "car": 10.42,
+            "bike": 10.39,
+            "transit": 7.12,
+        }
+        self.default_value_of_times = {mode: vot / 3600 for mode, vot in self.default_value_of_times.items()}  # Euros per second
+        self.default_value_of_times["av"] = self.default_value_of_times["car"] * self.av_vot_factor
+        print(f"Default value of times: {self.default_value_of_times}")
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]

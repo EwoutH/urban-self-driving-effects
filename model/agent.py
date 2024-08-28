@@ -19,8 +19,7 @@ class Traveler(Agent):
         self.has_bike = True
         self.available_modes = self.model.available_modes
         self.mode: str
-        # https://www.kimnet.nl/binaries/kimnet/documenten/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort/Significance_Value+of+Travel+Time+in+the+Netherlands+2022_final+technical+report.pdf
-        self.value_of_time: float = 10.76 / 3600  # in euros per second
+        self.value_of_time = self.model.default_value_of_times
         # Assign location
         self.location: Point
 
@@ -82,7 +81,7 @@ class Traveler(Agent):
         percieved_costs = {}
         for mode in self.available_modes:
             travel_time, costs = self.get_travel_time_and_costs(destination, mode)
-            percieved_costs[mode] = costs + travel_time * self.value_of_time
+            percieved_costs[mode] = costs + travel_time * self.value_of_time[mode]
         # print(f"Agent {self.unique_id} at {self.mrdh65} to {destination} has percieved costs {percieved_costs}")
         return min(percieved_costs, key=percieved_costs.get)
 
@@ -96,6 +95,8 @@ class Traveler(Agent):
                     o = self.model.uw.rng.choice(self.model.uw.node_area_dict[self.mrdh65])
                     d = self.model.uw.rng.choice(self.model.uw.node_area_dict[destination])
                     travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
+                    if travel_time == 0:
+                        print(f"Travel time from {o} to {d} is 0!")
                     travel_dist = self.model.car_travel_distance_dict[o.name][d.name]
                     if mode == "car":
                         costs = travel_dist * self.model.car_price_per_km_variable
