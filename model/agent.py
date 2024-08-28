@@ -64,7 +64,7 @@ class Traveler(Agent):
         self.mode = self.choose_mode(destination)
         self.model.trips_by_mode[self.mode] += 1
 
-        if self.mode == "car":
+        if self.mode == "car" or self.mode == "av":
             self.schedule_car_trip(*self.od_car)
 
         # print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
