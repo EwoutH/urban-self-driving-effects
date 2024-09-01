@@ -68,16 +68,13 @@ class UrbanModel(Model):
         for pc4 in self.pop_dict_pc4_city.keys():
             # Dataframe is indexed by pc4, so we can directly access the number of licenses and cars
             license_chance, car_chance = data.licenses_cars_pc4.loc[int(pc4)]
-            trav = self.agents.shuffle().select(lambda a: a.pc4 == pc4)
+            trav = self.agents.select(lambda a: a.pc4 == pc4)
 
-            n_trav = len(trav)
-            n_license = round(n_trav * license_chance)
-            n_car = round(n_trav * car_chance)
-
-            # Give n_license agents a license
-            trav_license = trav.shuffle(inplace=True).select(n=n_license).do(lambda agent: setattr(agent, 'has_license', True))
+            # Give license_chance of the agents a license
+            trav_license = trav.shuffle(inplace=True).select(at_most=license_chance).set('has_license', True)
             # Of those with a license, give n_car agents a car
-            trav_license.shuffle(inplace=True).select(n=n_car).do(lambda agent: setattr(agent, 'has_car', True))
+            n_car = round(len(trav) * car_chance)
+            trav_license.shuffle(inplace=True).select(at_most=n_car).set('has_car', True)
 
         # For agents that don't have a car, remove the car from the available modes
         self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))
