@@ -8,6 +8,7 @@ from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import networkx as nx
+import pickle
 
 
 data = Data()
@@ -154,3 +155,9 @@ print(f"Trips by mode: {model1.trips_by_mode}\n"
       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
+
+# W.analyzer.print_simple_stats()
+print(f"Simple stats: {model1.uw.analyzer.simple_stats()}")
+# Save a pickle
+with open("model1.pickle", "wb") as f:
+    pickle.dump(model1, f)
