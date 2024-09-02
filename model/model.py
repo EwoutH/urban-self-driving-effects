@@ -16,7 +16,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=8, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -157,7 +157,19 @@ print(f"Trips by mode: {model1.trips_by_mode}\n"
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
 # W.analyzer.print_simple_stats()
-print(f"Simple stats: {model1.uw.analyzer.simple_stats()}")
-# Save a pickle
-with open("model1.pickle", "wb") as f:
-    pickle.dump(model1, f)
+model1.uw.analyzer.basic_analysis()
+print(f"\nSimple stats: {model1.uw.analyzer.print_simple_stats()}")
+
+try:
+    model1.uw.save("model1_uw.pickle")
+except RecursionError as e:
+    print(f"Could not save the UXsim world: {e}")
+
+try:
+    # Save a pickle
+    import sys
+    sys.setrecursionlimit(1000000)  # Example: Set the limit to 1500, adjust as needed
+    with open("model_instance.pickle", "wb") as f:
+        pickle.dump(model1.uw, f, protocol=pickle.HIGHEST_PROTOCOL)
+except RecursionError as e:
+    print(f"Could not save the model instance: {e}")
