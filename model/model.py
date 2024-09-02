@@ -16,7 +16,7 @@ data = Data()
 
 class UrbanModel(Model):
 
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=8, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=9, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         # Set up simulator time
         self.simulator = simulator
@@ -97,6 +97,8 @@ class UrbanModel(Model):
 
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
+        # Create nested dict
+        self.trips_by_hour_by_mode = {(hour, mode): 0 for hour in range(start_time, end_time) for mode in self.available_modes}
 
         self.successful_car_trips, self.failed_car_trips = 0, 0
 
@@ -153,6 +155,12 @@ total_trips = sum(model1.trips_by_mode.values())
 mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
 print(f"Trips by mode: {model1.trips_by_mode}\n"
       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
+
+# Print the mode shares by hour
+for hour in range(model1.start_time, model1.end_time):
+    total_trips_hour = sum(model1.trips_by_hour_by_mode[(hour, mode)] for mode in model1.available_modes)
+    mode_shares_hour = {mode: model1.trips_by_hour_by_mode[(hour, mode)] / total_trips_hour for mode in model1.available_modes}
+    print(f"Hour {hour}: Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares_hour.items()]}")
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 

@@ -63,6 +63,7 @@ class Traveler(Agent):
         # Choose a mode of transport
         self.mode = self.choose_mode(destination)
         self.model.trips_by_mode[self.mode] += 1
+        self.model.trips_by_hour_by_mode[(int(self.model.simulator.time), self.mode)] += 1
 
         if self.mode == "car" or self.mode == "av":
             self.schedule_car_trip(*self.od_car)
