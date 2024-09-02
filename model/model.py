@@ -64,7 +64,7 @@ class UrbanModel(Model):
         locations = np.random.choice(list(self.pop_dict_pc4_city.keys()), n_agents, p=weights)
 
         for i in range(n_agents):
-            Traveler(i, self, locations[i], gdf["65x65 Nummer"][locations[i]])
+            Traveler(i, self, pc4=locations[i], mrdh65=gdf["65x65 Nummer"][locations[i]])
 
         for pc4 in self.pop_dict_pc4_city.keys():
             # Dataframe is indexed by pc4, so we can directly access the number of licenses and cars
@@ -76,6 +76,9 @@ class UrbanModel(Model):
             # Of those with a license, give n_car agents a car
             n_car = round(len(trav) * car_chance)
             trav_license.shuffle(inplace=True).select(at_most=n_car).set('has_car', True)
+
+        # Get all the unique mrdh65 values
+        self.areas = list(set([a.mrdh65 for a in self.agents]))
 
         # For agents that don't have a car, remove the car from the available modes
         self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))
@@ -168,16 +171,4 @@ print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.f
 model1.uw.analyzer.basic_analysis()
 print(f"\nSimple stats: {model1.uw.analyzer.print_simple_stats()}")
 
-try:
-    model1.uw.save("model1_uw.pickle")
-except RecursionError as e:
-    print(f"Could not save the UXsim world: {e}")
 
-try:
-    # Save a pickle
-    import sys
-    sys.setrecursionlimit(1000000)  # Example: Set the limit to 1500, adjust as needed
-    with open("model_instance.pickle", "wb") as f:
-        pickle.dump(model1.uw, f, protocol=pickle.HIGHEST_PROTOCOL)
-except RecursionError as e:
-    print(f"Could not save the model instance: {e}")
