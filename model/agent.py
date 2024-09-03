@@ -49,6 +49,9 @@ class Traveler(Agent):
                 self.trip_times.append(hour + random.random())
 
         # For each trip time, assign a destination based on the origin-destination chance data
+        # TODO: Implement trip chain concistency
+        # Two options: 1. Go and back (ODIN data)
+        # 2. Do a roundtrip
         self.destinations = random.choices(population=list(data.od_chance_dicts["Totaal"][self.mrdh65].keys()),
                                            weights=list(data.od_chance_dicts["Totaal"][self.mrdh65].values()),
                                            k=len(self.trip_times))
