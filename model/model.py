@@ -12,12 +12,14 @@ import pickle
 
 
 data = Data()
+real_population = 991575  # sum(self.pop_dict_pc4_city.values())
+simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-
-    def __init__(self, n_agents=60000, step_time=1/12, start_time=7, end_time=9, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=7, end_time=9, choice_model="rational_vot", enable_av=True, av_cost_factor=0.2, av_vot_factor=0.2, simulator=None):
         super().__init__()
+        print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
         self.simulator = simulator
         self.simulator.time = float(start_time)
