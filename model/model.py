@@ -52,8 +52,10 @@ class UrbanModel(Model):
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]
+        gdf = gdf[gdf["aantal_inwoners"] > 100]  # Filter out insignificant areas (from 129 to 124)
+
         # select only the rows where the 65x65 Nummer is in the mrhd65 index
-        gdf = gdf[gdf["65x65 Nummer"].isin(range(0, 20))]  # Rotterdam area. Replace with data.gdf_mrdh_65.index to expand to all MRDH area
+        gdf = gdf[gdf["65x65 Nummer"].isin(data.gdf_mrdh_65.index)]  # Rotterdam area.
 
         # Create a dictionary of pc4 locations and their populations
         self.pop_dict_pc4_city = {pc4: pop for pc4, pop in zip(gdf.index, gdf["aantal_inwoners"])}
@@ -79,6 +81,7 @@ class UrbanModel(Model):
 
         # Get all the unique mrdh65 values
         self.areas = list(set([a.mrdh65 for a in self.agents]))
+        self.pc4s = list(set([a.pc4 for a in self.agents]))
 
         # For agents that don't have a car, remove the car from the available modes
         self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))

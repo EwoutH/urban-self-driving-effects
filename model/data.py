@@ -67,9 +67,11 @@ class Data:
                 for origin in self.od_chance_dicts[mode]:
                     for destination in self.od_chance_dicts[mode][origin]:
                         # Remove these if larger API runs are performed.
-                        if destination >= 50:  # MRDH area
-                            self.od_chance_dicts[mode][origin][destination] = 0
-                        if destination >= 21:  # Inner Rotterdam area.
+                        # if destination >= 50:  # MRDH area
+                        #     self.od_chance_dicts[mode][origin][destination] = 0
+                        # if destination >= 21:  # Inner Rotterdam area.
+                        #     self.od_chance_dicts[mode][origin][destination] = 0
+                        if destination not in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 28, 29, 31, 34, 41, 43, 44, 45}:
                             self.od_chance_dicts[mode][origin][destination] = 0
                         if origin == destination:  # No trips to the same location
                             self.od_chance_dicts[mode][origin][destination] = 0
