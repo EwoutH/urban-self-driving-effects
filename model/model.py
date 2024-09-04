@@ -8,7 +8,6 @@ from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import networkx as nx
-import pickle
 
 
 data = Data()
@@ -17,7 +16,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=7, end_time=9, choice_model="rational_vot", enable_av=True, av_cost_factor=0.2, av_vot_factor=0.2, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=7, end_time=12, choice_model="rational_vot", enable_av=True, av_cost_factor=0.2, av_vot_factor=0.2, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -88,12 +87,14 @@ class UrbanModel(Model):
         # For agents that don't have a car, remove the car from the available modes
         self.agents.select(lambda a: not a.has_car).do(lambda a: setattr(a, 'available_modes', [m for m in a.available_modes if m != "car"]))
         # TODO: Implement some car sharing / lending from friends/family thing here.
+        # Update currently available modes after having assigned cars
+        self.agents.do(lambda a: setattr(a, 'currently_available_modes', a.available_modes))
 
         # For a weekday, take the average of days 0-3 (Monday-Thursday)
         self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")
         # Drop the hours that are not in the range of the model and save as a dictionary
         self.trips_by_hour_chance = self.trips_by_hour_chance.loc[start_time:(end_time-1)].to_dict()
-        print(f"Trips by hour chances: {self.trips_by_hour_chance}")
+        print(f"Trip chance sum: {sum(self.trips_by_hour_chance.values()):.3f}, chance by hour: {self.trips_by_hour_chance}")
 
         # self.trip_counts_distribution = data.trip_counts_distribution.to_dict()
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
@@ -112,7 +113,7 @@ class UrbanModel(Model):
 
         # Request agents to do stuff
         self.agents.do("generate_trip_times")
-        print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.2f} per agent)")
+        print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.3f} per agent)")
 
         self.uw.finalize_scenario()
         # Schedule a model step
