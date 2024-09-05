@@ -1,14 +1,37 @@
 from mesa import Agent
 from data import Data
-from shapely.geometry import Point
 
 import numpy as np
 import random
+from dataclasses import dataclass
+
+# Import model for type hinting, to avoid circular imports
 
 data = Data()
 
+@dataclass
+class Journey:
+    agent: object = None
+    origin: int = None
+    destination: int = None
+    mode: str = None
+    start_time: float = None
+    travel_time: float = None
+    end_time: float = None
+    distance: float = None
+    costs: float = None
+    percieved_costs: float = None
+    used_network: bool = False  # True for car and av
+    # only for car and av
+    started: bool = False
+    finished: bool = False
+    act_end_time: float = None
+    act_travel_time: float = None
+    o_node: object = None
+    d_node: object = None
+    vehicle: object = None
+
 class Traveler(Agent):
-    # Add counter
     _successful_trips = 0
     _not_successful_trips = 0
     def __init__(self, unique_id, model, pc4, mrdh65):
@@ -19,23 +42,20 @@ class Traveler(Agent):
         self.has_bike = True
         self.available_modes = self.model.available_modes
         self.currently_available_modes = None
-        self.mode: str
         self.value_of_time = self.model.default_value_of_times
 
-        # Assign a pc4 area, weighted by population
         self.pc4: int = int(pc4)
         self.mrdh65: int = int(mrdh65)
         self.mrdh65_name: str = data.mrdh65_to_name[mrdh65]
 
         self.current_location = self.mrdh65
+        self.current_vehicle = None
 
         self.trip_times = []
         self.destinations = []
+        self.journeys = []
 
-        # Match the model.choice_model string to a function. Use Python 3.10 pattern matching.
-        # lookup self.choose_mode from dictionary
         self.choose_mode = {
-            "random": self.choice_model_random,
             "rational_vot": self.choice_rational_vot
         }[model.choice_model]
 
@@ -84,47 +104,56 @@ class Traveler(Agent):
 
         # Schedule events for the trip times (use self.model.simulator.schedule_event_absolute)
         for trip_time, destination in zip(self.trip_times, self.destinations):
-            self.model.simulator.schedule_event_absolute(function=self.perform_journey, time=trip_time, function_kwargs={"destination": destination})
+            journey = Journey(agent=self, origin=self.mrdh65, destination=destination, start_time=trip_time)
+            self.journeys.append(journey)
+            self.model.simulator.schedule_event_absolute(function=self.start_journey, time=trip_time, function_kwargs={"journey": journey})
 
         # print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
 
-    def perform_journey(self, destination):
-        # Choose a mode of transport
-        self.mode = self.choose_mode(destination)
-        self.model.trips_by_mode[self.mode] += 1
-        self.model.trips_by_hour_by_mode[(int(self.model.simulator.time), self.mode)] += 1
+    def start_journey(self, journey: Journey):
+        journey= self.choose_mode(journey)
+        self.model.trips_by_mode[journey.mode] += 1
+        self.model.trips_by_hour_by_mode[(int(self.model.simulator.time), journey.mode)] += 1
 
-        if self.mode == "car" or self.mode == "av":
-            self.schedule_car_trip(*self.od_car)
+        if journey.mode in ["car", "av"]:
+            self.schedule_car_trip(journey)
+        else:
+            self.model.simulator.schedule_event_relative(self.finish_journey, journey.travel_time / 3600, function_kwargs={"journey": journey})
 
         # print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
         # Perform the journey
 
         # Update the current location and available modes
-        self.current_location = destination
-        if destination == self.mrdh65:
+    def finish_journey(self, journey: Journey):
+        journey.finished = True
+        journey.end_time = self.model.simulator.time
+        journey.act_travel_time = journey.end_time - journey.start_time
+
+        self.current_location = journey.destination
+        if journey.destination == self.mrdh65:
             self.currently_available_modes = self.available_modes
         else:
-            match self.mode:
+            match journey.mode:
                 case "car":
                     self.currently_available_modes = ["car"]
-                case "bike" | "transit" | "av":  # Assume for now that bikes can be taken in transit and AVs
+                case "bike" | "transit" | "av":
                     self.currently_available_modes = [m for m in self.available_modes if m != "car"]
 
-    def choice_model_random(self, destination):
-        return random.choice(self.currently_available_modes)
-
-    def choice_rational_vot(self, destination):
-        # 100% rational value-of-time model
-        # percieved_costs = costs + travel_time * value_of_time
-        # Choose the mode with the lowest percieved costs
+    def choice_rational_vot(self, journey: Journey) -> Journey:
         percieved_costs = {}
         for mode in self.currently_available_modes:
-            travel_time, costs = self.get_travel_time_and_costs(destination, mode)
+            travel_time, costs = self.get_travel_time_and_costs(journey.destination, mode)
             percieved_costs[mode] = costs + travel_time * self.value_of_time[mode]
-        # print(f"Agent {self.unique_id} at {self.mrdh65} to {destination} has percieved costs {percieved_costs}")
-        return min(percieved_costs, key=percieved_costs.get)
+
+        chosen_mode = min(percieved_costs, key=percieved_costs.get)
+
+        # Update the journey with the chosen mode and its details
+        journey.mode = chosen_mode
+        journey.percieved_costs = percieved_costs[chosen_mode]
+        journey.travel_time, journey.costs = self.get_travel_time_and_costs(journey.destination, chosen_mode)
+
+        return journey
 
     def get_travel_time_and_costs(self, destination, mode):
         # Get the travel time and costs for a destination and mode
@@ -178,6 +207,20 @@ class Traveler(Agent):
 
         return cost
 
-    def schedule_car_trip(self, origin_node, destination_node):
+    def schedule_car_trip(self, journey: Journey):
         """"Schedule an event for the car trip with UXsim"""
-        self.model.uw.addVehicle(orig=origin_node, dest=destination_node, departure_time=self.model.uw_time)
+        journey.o_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.origin])
+        journey.d_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.destination])
+        journey.vehicle = self.model.uw.addVehicle(orig=journey.o_node, dest=journey.d_node,
+                                                   departure_time=self.model.uw_time)
+        journey.used_network = True
+
+        # Trigger the finish_journey function from the vehicle
+
+        old_end_trip = journey.vehicle.end_trip
+        def end_trip_with_event():
+            old_end_trip()
+            self.model.simulator.schedule_event_now(self.finish_journey, function_kwargs={"journey": journey})
+
+        journey.vehicle.end_trip = end_trip_with_event
+        self.model.successful_car_trips += 1
