@@ -132,6 +132,7 @@ class UrbanModel(Model):
 
         # Schedule next event
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
+        print(f"Average agent reschedules: {sum([a.reschedules for a in self.agents]) / len(self.agents):.5f}")
 
     def exec_simulation_travel_times(self):
         # Execute the simulation for a given duration
