@@ -108,7 +108,7 @@ class Traveler(Agent):
 
         # Schedule events for the trip times (use self.model.simulator.schedule_event_absolute)
         for trip_time, destination in zip(self.trip_times, self.destinations):
-            journey = Journey(agent=self, origin=self.mrdh65, destination=destination, start_time=trip_time)
+            journey = Journey(agent=self, destination=destination)
             self.journeys.append(journey)
             self.model.simulator.schedule_event_absolute(function=self.start_journey, time=trip_time, priority=Priority.LOW, function_kwargs={"journey": journey})
 
@@ -117,12 +117,13 @@ class Traveler(Agent):
     def start_journey(self, journey: Journey):
         if self.traveling:
             # don't finish the journey, but reschedule it for the next hour
-            journey.start_time += 0.25
             self.model.simulator.schedule_event_relative(self.start_journey, 0.25, priority=Priority.LOW, function_kwargs={"journey": journey})
             self.reschedules += 1
             return
+        journey.start_time = self.model.simulator.time
+        journey.origin = self.current_location
         if journey.destination == self.current_location:
-            print(f"!!! Agent {self.unique_id} at {self.mrdh65} is already at the destination {journey.destination}.")
+            print(f"!!! Agent {self.unique_id} at {self.current_location} is already at the destination {journey.destination}.")
             return
         self.traveling = True
         journey = self.choose_mode(journey)
@@ -143,7 +144,6 @@ class Traveler(Agent):
         journey.end_time = self.model.simulator.time
         journey.act_travel_time = journey.end_time - journey.start_time
 
-        self.current_location = journey.destination
         if journey.destination == self.mrdh65:
             self.currently_available_modes = self.available_modes
         else:
@@ -152,6 +152,7 @@ class Traveler(Agent):
                     self.currently_available_modes = ["car"]
                 case "bike" | "transit" | "av":
                     self.currently_available_modes = [m for m in self.available_modes if m != "car"]
+        self.current_location = journey.destination
         self.traveling = False
         journey.finished = True
 
