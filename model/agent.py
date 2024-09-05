@@ -1,5 +1,4 @@
 from mesa import Agent
-from mesa.experimental.devs import Priority
 
 from data import Data
 
@@ -54,6 +53,7 @@ class Traveler(Agent):
         self.current_vehicle = None
         self.traveling = False
         self.reschedules = 0
+        self.journeys_finished = 0
 
         self.trip_times = []
         self.destinations = []
@@ -107,24 +107,16 @@ class Traveler(Agent):
             self.destinations[i] = self.mrdh65
 
         # Schedule events for the trip times (use self.model.simulator.schedule_event_absolute)
-        for trip_time, destination in zip(self.trip_times, self.destinations):
-            journey = Journey(agent=self, destination=destination)
-            self.journeys.append(journey)
-            self.model.simulator.schedule_event_absolute(function=self.start_journey, time=trip_time, priority=Priority.LOW, function_kwargs={"journey": journey})
+        # Schedule the first trip:
+        if len(self.trip_times) > 0:
+            first_journey = Journey(agent=self, destination=self.destinations[0])
+            self.model.simulator.schedule_event_absolute(self.start_journey, self.trip_times[0], function_kwargs={"journey": first_journey})
 
         # print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
 
     def start_journey(self, journey: Journey):
-        if self.traveling:
-            # don't finish the journey, but reschedule it for the next hour
-            self.model.simulator.schedule_event_relative(self.start_journey, 0.25, priority=Priority.LOW, function_kwargs={"journey": journey})
-            self.reschedules += 1
-            return
         journey.start_time = self.model.simulator.time
         journey.origin = self.current_location
-        if journey.destination == self.current_location:
-            print(f"!!! Agent {self.unique_id} at {self.current_location} is already at the destination {journey.destination}.")
-            return
         self.traveling = True
         journey = self.choose_mode(journey)
         self.model.trips_by_mode[journey.mode] += 1
@@ -136,8 +128,6 @@ class Traveler(Agent):
             self.model.simulator.schedule_event_relative(self.finish_journey, journey.travel_time / 3600, function_kwargs={"journey": journey})
 
         # print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
-
-        # Perform the journey
 
         # Update the current location and available modes
     def finish_journey(self, journey: Journey):
@@ -154,7 +144,14 @@ class Traveler(Agent):
                     self.currently_available_modes = [m for m in self.available_modes if m != "car"]
         self.current_location = journey.destination
         self.traveling = False
+        self.journeys_finished += 1
         journey.finished = True
+
+        # schedule the next journey
+        if self.journeys_finished < len(self.trip_times):
+            next_journey = Journey(agent=self, destination=self.destinations[self.journeys_finished])
+            start_time = max(self.model.simulator.time, self.trip_times[self.journeys_finished])
+            self.model.simulator.schedule_event_absolute(self.start_journey, start_time, function_kwargs={"journey": next_journey})
 
     def choice_rational_vot(self, journey: Journey) -> Journey:
         percieved_costs = {}
