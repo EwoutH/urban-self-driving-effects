@@ -194,9 +194,9 @@ print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.f
 
 # Save uxsim_data to a file
 import pickle
-with open("uxsim_data.pkl", "wb") as f:
+with open("results/uxsim_data2.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
-with open("parked_dict.pkl", "wb") as f:
+with open("results/parked_dict2.pkl", "wb") as f:
     pickle.dump(model1.parked_dict, f)
 
 # W.analyzer.print_simple_stats()
