@@ -124,6 +124,8 @@ class Traveler(Agent):
 
         if journey.mode in ["car", "av"]:
             self.schedule_car_trip(journey)
+            if journey.mode == "car":
+                self.model.parked_per_area[self.current_location] -= 1
         else:
             self.model.simulator.schedule_event_relative(self.finish_journey, journey.travel_time / 3600, function_kwargs={"journey": journey})
 
@@ -140,6 +142,7 @@ class Traveler(Agent):
             match journey.mode:
                 case "car":
                     self.currently_available_modes = ["car"]
+                    self.model.parked_per_area[self.current_location] += 1
                 case "bike" | "transit" | "av":
                     self.currently_available_modes = [m for m in self.available_modes if m != "car"]
         self.current_location = journey.destination

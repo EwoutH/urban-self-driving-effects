@@ -110,6 +110,11 @@ class UrbanModel(Model):
         # Create nested dict
         self.trips_by_hour_by_mode = {(hour, mode): 0 for hour in range(start_time, end_time) for mode in self.available_modes}
         self.uxsim_data = {}
+        self.parked_per_area = {area: 0 for area in self.areas}
+        groups = self.agents.select(lambda a: a.has_car).groupby(by="mrdh65", result_type="list")
+        parked = {area: len(group) for area, group in groups}
+        self.parked_per_area.update(parked)
+        print(f"Parked per area: {self.parked_per_area}")
 
         self.successful_car_trips, self.failed_car_trips = 0, 0
 
