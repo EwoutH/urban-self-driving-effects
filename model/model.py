@@ -110,10 +110,12 @@ class UrbanModel(Model):
         # Create nested dict
         self.trips_by_hour_by_mode = {(hour, mode): 0 for hour in range(start_time, end_time) for mode in self.available_modes}
         self.uxsim_data = {}
+
         self.parked_per_area = {area: 0 for area in self.areas}
         groups = self.agents.select(lambda a: a.has_car).groupby(by="mrdh65", result_type="list")
         parked = {area: len(group) for area, group in groups}
         self.parked_per_area.update(parked)
+        self.parked_dict = {self.simulator.time: self.parked_per_area.copy()}
         print(f"Parked per area: {self.parked_per_area}")
 
         self.successful_car_trips, self.failed_car_trips = 0, 0
@@ -141,6 +143,8 @@ class UrbanModel(Model):
         # Schedule next event
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
 
+        self.parked_dict[self.simulator.time] = self.parked_per_area.copy()
+
     def exec_simulation_travel_times(self):
         # Execute the simulation for a given duration
         self.uw.exec_simulation(duration_t=self.step_time * 3600)
@@ -150,7 +154,7 @@ class UrbanModel(Model):
 
     def collect_uxsim_data(self):
         area_names, areas = zip(*self.uw.node_area_dict.items())
-        self.uxsim_data[round(self.uw_time)] = self.uw.analyzer.area_to_pandas(areas, area_names, t_seconds=round(self.data_time))
+        self.uxsim_data[self.simulator.time] = self.uw.analyzer.area_to_pandas(areas, area_names, t_seconds=round(self.data_time))
 
         print(f"Collected data at {round(self.uw_time)} seconds.")
         self.simulator.schedule_event_relative(function=self.collect_uxsim_data, time_delta=self.data_time / 3600)
@@ -192,6 +196,8 @@ print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.f
 import pickle
 with open("uxsim_data.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
+with open("parked_dict.pkl", "wb") as f:
+    pickle.dump(model1.parked_dict, f)
 
 # W.analyzer.print_simple_stats()
 model1.uw.analyzer.basic_analysis()
