@@ -105,7 +105,7 @@ def get_uxsim_world(save_mode=False, show_mode=False):
         lanes = int(lanes)
 
         world.addLink(name=f"{u}_{v}_{osmid}", start_node=start_node_name, end_node=end_node_name, length=length,
-                      free_flow_speed=speed_limit, jam_density=max_density, merge_priority=priority, number_of_lanes=lanes)
+                      free_flow_speed=speed_limit, jam_density_per_lane=max_density, merge_priority=priority, number_of_lanes=lanes)
 
     # Assuming 'world' is your UXsim world and it has been populated with nodes and links as per previous steps
     nodes = {node.name: node for node in world.NODES}  # List of node names
