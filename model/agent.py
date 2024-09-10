@@ -142,13 +142,14 @@ class Traveler(Agent):
             match journey.mode:
                 case "car":
                     self.currently_available_modes = ["car"]
-                    self.model.parked_per_area[self.current_location] += 1
                 case "bike" | "transit" | "av":
                     self.currently_available_modes = [m for m in self.available_modes if m != "car"]
         self.current_location = journey.destination
         self.traveling = False
         self.journeys_finished += 1
         journey.finished = True
+        if journey.mode == "car":
+            self.model.parked_per_area[self.current_location] += 1
 
         # schedule the next journey
         if self.journeys_finished < len(self.trip_times):
