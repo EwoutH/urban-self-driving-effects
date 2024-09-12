@@ -68,7 +68,7 @@ class UrbanModel(Model):
         locations = np.random.choice(list(self.pop_dict_pc4_city.keys()), n_agents, p=weights)
 
         for i in range(n_agents):
-            Traveler(i, self, pc4=locations[i], mrdh65=gdf["65x65 Nummer"][locations[i]])
+            Traveler(self, pc4=locations[i], mrdh65=gdf["65x65 Nummer"][locations[i]])
 
         for pc4 in self.pop_dict_pc4_city.keys():
             # Dataframe is indexed by pc4, so we can directly access the number of licenses and cars

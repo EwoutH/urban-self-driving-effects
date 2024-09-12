@@ -35,9 +35,8 @@ class Journey:
 class Traveler(Agent):
     _successful_trips = 0
     _not_successful_trips = 0
-    def __init__(self, unique_id, model, pc4, mrdh65):
-        super().__init__(unique_id, model)
-        self.unique_id = unique_id
+    def __init__(self, model, pc4, mrdh65):
+        super().__init__(model)
         self.has_car: bool = False
         self.has_license: bool = False
         self.has_bike = True
