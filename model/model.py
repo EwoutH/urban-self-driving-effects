@@ -16,7 +16,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, data_time=900, start_time=7, end_time=9, choice_model="rational_vot", enable_av=True, av_cost_factor=0.2, av_vot_factor=0.2, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, data_time=900, start_time=7, end_time=10, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -160,6 +160,8 @@ class UrbanModel(Model):
         self.simulator.schedule_event_relative(function=self.collect_uxsim_data, time_delta=self.data_time / 3600)
 
     def get_car_travel_distance(self):
+        # TODO: Fixed each model run, calculate once and save to file
+        # TODO: Fix missing node pairs
         G2 = nx.DiGraph()  # Create a new directed graph
 
         for l in self.uw.LINKS:
@@ -179,16 +181,16 @@ simulator1.run_until(model1.end_time)
 print(f"### Model finished at {model1.simulator.time}")
 
 # Print some results
-total_trips = sum(model1.trips_by_mode.values())
-mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
-print(f"Trips by mode: {model1.trips_by_mode}\n"
-      f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
+# total_trips = sum(model1.trips_by_mode.values())
+# mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
+# print(f"Trips by mode: {model1.trips_by_mode}\n"
+#       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
 
 # Print the mode shares by hour
-for hour in range(model1.start_time, model1.end_time):
-    total_trips_hour = sum(model1.trips_by_hour_by_mode[(hour, mode)] for mode in model1.available_modes)
-    mode_shares_hour = {mode: model1.trips_by_hour_by_mode[(hour, mode)] / total_trips_hour for mode in model1.available_modes}
-    print(f"Hour {hour}: Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares_hour.items()]}")
+# for hour in range(model1.start_time, model1.end_time):
+#     total_trips_hour = sum(model1.trips_by_hour_by_mode[(hour, mode)] for mode in model1.available_modes)
+#     mode_shares_hour = {mode: model1.trips_by_hour_by_mode[(hour, mode)] / total_trips_hour for mode in model1.available_modes}
+#     print(f"Hour {hour}: Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares_hour.items()]}")
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
@@ -202,5 +204,3 @@ with open("results/parked_dict2.pkl", "wb") as f:
 # W.analyzer.print_simple_stats()
 model1.uw.analyzer.basic_analysis()
 print(f"\nSimple stats: {model1.uw.analyzer.print_simple_stats()}")
-
-
