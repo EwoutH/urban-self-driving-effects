@@ -26,7 +26,9 @@ jobs:
       - name: Install uv
         run: pip install uv
       - name: Install dependencies
-        run: uv pip install --system --pre mesa numpy pandas geopandas networkx shapely uxsim osmnx
+        run: uv pip install --system --pre mesa numpy pandas geopandas networkx shapely osmnx
+      - name: Install uxsim
+        run: uv pip install --system git+https://github.com/EwoutH/uxsim@area2pandas_speeddensity_time#egg=uxsim
       - name: Run model script
         working-directory: model
         run: python model.py
