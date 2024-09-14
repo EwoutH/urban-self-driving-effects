@@ -16,7 +16,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, data_time=900, start_time=7, end_time=10, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=7, end_time=10, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -25,7 +25,6 @@ class UrbanModel(Model):
 
         # Set up time variables
         self.step_time = step_time
-        self.data_time = data_time
         self.start_time = start_time
         self.end_time = end_time
 
@@ -127,7 +126,6 @@ class UrbanModel(Model):
         self.uw.finalize_scenario()
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
-        self.simulator.schedule_event_relative(function=self.collect_uxsim_data, time_delta=(self.data_time+0.25) / 3600)  # Add 0.25 seconds to avoid collecting before uxsim being finished
 
     @property
     def uw_time(self):
@@ -152,13 +150,6 @@ class UrbanModel(Model):
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
 
-    def collect_uxsim_data(self):
-        area_names, areas = zip(*self.uw.node_area_dict.items())
-        self.uxsim_data[self.simulator.time] = self.uw.analyzer.area_to_pandas(areas, area_names, t_seconds=round(self.data_time))
-
-        print(f"Collected data at {round(self.uw_time)} seconds.")
-        self.simulator.schedule_event_relative(function=self.collect_uxsim_data, time_delta=self.data_time / 3600)
-
     def get_car_travel_distance(self):
         # TODO: Fixed each model run, calculate once and save to file
         # TODO: Fix missing node pairs
@@ -180,6 +171,16 @@ print(f"### Running the model from {model1.start_time} to {model1.end_time}")
 simulator1.run_until(model1.end_time)
 print(f"### Model finished at {model1.simulator.time}")
 
+area_names, areas = zip(*model1.uw.node_area_dict.items())
+# link_cumulative_to_pandas
+model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900)
+model1.uxsim_data.drop(columns="n_links", inplace=True)
+
+# Save uxsim_data as pickle
+import pickle
+with open("results/uxsim_data_df.pkl", "wb") as f:
+    pickle.dump(model1.uxsim_data, f)
+
 # Print some results
 # total_trips = sum(model1.trips_by_mode.values())
 # mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
@@ -195,9 +196,6 @@ print(f"### Model finished at {model1.simulator.time}")
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
 # Save uxsim_data to a file
-import pickle
-with open("results/uxsim_data2.pkl", "wb") as f:
-    pickle.dump(model1.uxsim_data, f)
 with open("results/parked_dict2.pkl", "wb") as f:
     pickle.dump(model1.parked_dict, f)
 
