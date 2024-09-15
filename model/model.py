@@ -50,7 +50,6 @@ class UrbanModel(Model):
             "transit": 7.12,
         }
         self.default_value_of_times["av"] = self.default_value_of_times["car"] * self.av_vot_factor
-        print(f"Default value of times: {self.default_value_of_times} (€/hour)")
         self.default_value_of_times = {mode: vot / 3600 for mode, vot in self.default_value_of_times.items()}  # Euros per second
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
@@ -70,6 +69,8 @@ class UrbanModel(Model):
 
         for i in range(n_agents):
             Traveler(self, pc4=locations[i], mrdh65=gdf["65x65 Nummer"][locations[i]])
+
+        print(f"Default value of times: {self.default_value_of_times} (€/hour). Average vot factor: {self.agents.agg('vot_factor', np.mean):.4f}.")
 
         for pc4 in self.pop_dict_pc4_city.keys():
             # Dataframe is indexed by pc4, so we can directly access the number of licenses and cars
@@ -124,6 +125,7 @@ class UrbanModel(Model):
         # Request agents to do stuff
         self.agents.do("generate_trip_times")
         print(f"Events scheduled for agents: {len(self.simulator.event_list)} (on average {len(self.simulator.event_list) / n_agents:.3f} per agent)")
+        print(f"Trips planned by agents: {(total_trip_times := sum(map(len, self.agents.get('trip_times'))))} (on average {total_trip_times / n_agents:.3f} per agent)")
 
         self.uw.finalize_scenario()
         # Schedule a model step
@@ -197,13 +199,13 @@ model1.uxsim_data.drop(columns="n_links", inplace=True)
 
 # Save uxsim_data as pickle
 import pickle
-with open("results/uxsim_data_df.pkl", "wb") as f:
+with open("results/uxsim_df.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
 # Save uxsim_data to a file
-with open("results/parked_dict2.pkl", "wb") as f:
+with open("results/parked_dict.pkl", "wb") as f:
     pickle.dump(model1.parked_dict, f)
 
 # W.analyzer.print_simple_stats()

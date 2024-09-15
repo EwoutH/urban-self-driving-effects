@@ -12,28 +12,24 @@ data = Data()
 
 @dataclass
 class Journey:
-    agent: Agent = None  # Done
-    origin: int = None  # Done
-    destination: int = None  # Done
+    agent: Agent = None
+    origin: int = None
+    destination: int = None
     mode: str = None
-    start_time: float = None  # Done
+    start_time: float = None
     travel_time: float = None
     end_time: float = None
     distance: float = None
-    costs: float = None
-    percieved_costs: float = None
+    cost: float = None
+    perceived_cost: float = None
     used_network: bool = False  # True for car and av
-    # Costs dicts
-    available_modes: list = None  # Done
-    travel_time_dict: dict = None  # Done
-    distance_dict: dict = None  # Done
-    costs_dict: dict = None  # Done
-    percieved_cost_dict: dict = None
-    # All variables below are only for car and av
+    available_modes: list = None
+    perceived_cost_dict: dict = None
     started: bool = False
     finished: bool = False
-    act_end_time: float = None
+    # All variables below are only for car and av
     act_travel_time: float = None
+    act_perceived_cost: float = None
     o_node: object = None
     d_node: object = None
     vehicle: object = None
@@ -47,7 +43,9 @@ class Traveler(Agent):
         self.has_bike = True
         self.available_modes = self.model.available_modes
         self.currently_available_modes = None
-        self.value_of_time = self.model.default_value_of_times
+        # This results in a mean of 1 and standard dev = 0.5 in a lognormal distribution, capped at 4 to prevent wild stochastic swings.
+        self.vot_factor = min(np.random.lognormal(mean=-0.1116, sigma=0.4724), 4)
+        self.value_of_time = {mode: vot * self.vot_factor for mode, vot in self.model.default_value_of_times.items()}
 
         self.pc4: int = int(pc4)
         self.mrdh65: int = int(mrdh65)
@@ -123,6 +121,7 @@ class Traveler(Agent):
 
     def start_journey(self, journey: Journey):
         self.journeys.append(journey)
+        journey.started = True
         journey.origin = self.current_location
         journey.start_time = self.model.simulator.time
         journey.available_modes = self.currently_available_modes
@@ -145,7 +144,6 @@ class Traveler(Agent):
         # Update the current location and available modes
     def finish_journey(self, journey: Journey):
         journey.end_time = self.model.simulator.time
-        journey.act_travel_time = journey.end_time - journey.start_time
 
         if journey.destination == self.mrdh65:
             self.currently_available_modes = self.available_modes
@@ -162,7 +160,7 @@ class Traveler(Agent):
 
         if journey.mode == "car":
             self.model.parked_per_area[self.current_location] += 1
-            journey.perceived_costs = journey.cost + journey.act_travel_time * self.value_of_time[journey.mode]
+            journey.act_perceived_cost = journey.cost + journey.act_travel_time * self.value_of_time[journey.mode]
 
         # schedule the next journey
         if self.journeys_finished < len(self.trip_times):
@@ -172,12 +170,11 @@ class Traveler(Agent):
                                                          function_kwargs={"journey": next_journey})
 
     def choice_rational_vot(self, journey: Journey):
-        travel_times = {}
-        costs = {}
+        travel_times, costs, distances = {}, {}, {}
         perceived_costs = {}
         for mode in journey.available_modes:
-            travel_time, cost = self.get_travel_time_and_costs(journey, mode)
-            travel_times[mode], costs[mode] = travel_time, cost
+            travel_time, cost, distance = self.get_travel_time_and_costs(journey, mode)
+            travel_times[mode], costs[mode], distances[mode] = travel_time, cost, distance
             perceived_costs[mode] = cost + travel_time * self.value_of_time[mode]
 
         chosen_mode = min(perceived_costs, key=perceived_costs.get)
@@ -185,11 +182,10 @@ class Traveler(Agent):
 
         journey.travel_time = travel_times[chosen_mode]
         journey.cost = costs[chosen_mode]
-        journey.perceived_costs = perceived_costs[chosen_mode]
+        journey.distance = distances[chosen_mode]
+        journey.perceived_cost = perceived_costs[chosen_mode]
 
-        journey.travel_time_dict = travel_times
-        journey.cost_dict = costs
-        journey.percieved_cost_dict = perceived_costs
+        journey.perceived_cost_dict = perceived_costs
 
     def get_travel_time_and_costs(self, journey, mode):
         # Get the travel time and costs for a destination and mode
@@ -198,15 +194,16 @@ class Traveler(Agent):
                 # Get travel time from network, costs from distance conversion (fixed per km)
                 o, d = journey.o_node, journey.d_node
                 travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
-                travel_dist = self.model.car_travel_distance_dict[o.name][d.name]
+                distance = self.model.car_travel_distance_dict[o.name][d.name]
                 if mode == "car":
-                    costs = travel_dist * self.model.car_price_per_km_variable
+                    costs = distance * self.model.car_price_per_km_variable
                 if mode == "av":
-                    costs = self.model.av_initial_costs + travel_dist * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
+                    costs = self.model.av_initial_costs + distance * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
 
             case "bike":
-                # Get travel time from Google Maps API, costa are assumed to be zero
+                # Get travel time from Google Maps API, costs are assumed to be zero
                 travel_time = data.travel_time_mrdh["bicycling"][(self.current_location, journey.destination)]
+                distance = data.travel_distance_mrdh["bicycling"][(self.current_location, journey.destination)]
                 costs = 0
 
             case "transit":
@@ -215,8 +212,8 @@ class Traveler(Agent):
                 distance = data.travel_distance_mrdh["transit"][(self.current_location, journey.destination)]
                 costs = self.calculate_transit_cost(distance, self.model.transit_price_per_km)
 
-        # print(f"Agent {self.unique_id} at {origin} to {destination} by {mode} has travel time {travel_time:.3f}, costs {costs:.2f} and percieved costs {costs + travel_time * self.value_of_time:.2f}")
-        return travel_time, costs
+        # print(f"Agent {self.unique_id} at {origin} to {destination} by {mode} has travel time {travel_time:.3f}, costs {costs:.2f} and perceived costs {costs + travel_time * self.value_of_time:.2f}")
+        return travel_time, costs, distance
 
     def choose_network_od_nodes(self, journey: Journey):
         attempts = 0
@@ -270,5 +267,6 @@ class Traveler(Agent):
         def end_trip_with_event():
             old_end_trip()
             self.model.simulator.schedule_event_now(self.finish_journey, function_kwargs={"journey": journey})
+            journey.act_travel_time = journey.vehicle.arrival_time - journey.vehicle.departure_time
 
         journey.vehicle.end_trip = end_trip_with_event
