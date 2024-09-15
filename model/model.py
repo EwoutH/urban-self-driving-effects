@@ -8,6 +8,8 @@ from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import networkx as nx
+import pandas as pd
+from dataclasses import asdict
 
 
 data = Data()
@@ -171,6 +173,23 @@ print(f"### Running the model from {model1.start_time} to {model1.end_time}")
 simulator1.run_until(model1.end_time)
 print(f"### Model finished at {model1.simulator.time}")
 
+### Journey data
+# Create a flat list with all journeys from all agents. Each agent has a journeys list.
+all_journeys = [journey for agent in model1.agents for journey in agent.journeys]
+
+# In all_journeys, replace the agent with the agent unique_id, the o_node, d_node and vehicle with their names in each Journey class.
+for journey in all_journeys:
+    journey.agent = journey.agent.unique_id
+    journey.o_node = journey.o_node.name
+    journey.d_node = journey.d_node.name
+    if journey.vehicle:
+        journey.vehicle = journey.vehicle.name
+
+journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
+journeys_df.to_pickle("results/journeys_df.pkl")
+
+
+### UXsim data
 area_names, areas = zip(*model1.uw.node_area_dict.items())
 # link_cumulative_to_pandas
 model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900)
@@ -180,18 +199,6 @@ model1.uxsim_data.drop(columns="n_links", inplace=True)
 import pickle
 with open("results/uxsim_data_df.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
-
-# Print some results
-# total_trips = sum(model1.trips_by_mode.values())
-# mode_shares = {mode: trips / total_trips for mode, trips in model1.trips_by_mode.items()}
-# print(f"Trips by mode: {model1.trips_by_mode}\n"
-#       f"Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares.items()]}")
-
-# Print the mode shares by hour
-# for hour in range(model1.start_time, model1.end_time):
-#     total_trips_hour = sum(model1.trips_by_hour_by_mode[(hour, mode)] for mode in model1.available_modes)
-#     mode_shares_hour = {mode: model1.trips_by_hour_by_mode[(hour, mode)] / total_trips_hour for mode in model1.available_modes}
-#     print(f"Hour {hour}: Mode shares: {[f'{mode}: {share:.2%}' for mode, share in mode_shares_hour.items()]}")
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
