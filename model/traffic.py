@@ -31,7 +31,7 @@ def get_uxsim_world(save_mode=False, show_mode=False):
     simulation_duration = (23-6)*3600  # in seconds (e.g., 3600 = 1 hour)
     platoon_size = 10  # vehicles per platoon
     reaction_time = 1  # in seconds
-    duo_update_time = 150  # in seconds, for dynamic user equilibrium (DUO) route choice update
+    duo_update_time = 300  # in seconds, for dynamic user equilibrium (DUO) route choice update
     duo_update_weight = 0.5  # weight for DUO update
     duo_noise = 0.01  # noise for DUO route choice to prevent identical choices
     eular_dt = 60  # in seconds, for Eulerian traffic state computation
