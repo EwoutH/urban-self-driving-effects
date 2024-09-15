@@ -1,9 +1,8 @@
 import pickle
-import networkx as nx
 import pandas as pd
 import geopandas as gpd
-import matplotlib.pyplot as plt
 
+populated_in_city = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 28, 29, 31, 34, 41, 43, 44, 45}
 # Geospatial variable names: description_gdf_area_resolution.pkl
 
 class Data:
@@ -71,7 +70,7 @@ class Data:
                         #     self.od_chance_dicts[mode][origin][destination] = 0
                         # if destination >= 21:  # Inner Rotterdam area.
                         #     self.od_chance_dicts[mode][origin][destination] = 0
-                        if destination not in {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 28, 29, 31, 34, 41, 43, 44, 45}:
+                        if destination not in populated_in_city:
                             self.od_chance_dicts[mode][origin][destination] = 0
                         if origin == destination:  # No trips to the same location
                             self.od_chance_dicts[mode][origin][destination] = 0
