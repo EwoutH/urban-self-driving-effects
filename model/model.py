@@ -186,7 +186,7 @@ journeys_df.to_pickle("results/journeys_df.pkl")
 ### UXsim data
 area_names, areas = zip(*model1.uw.node_area_dict.items())
 # link_cumulative_to_pandas
-model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900)
+model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900, set_index=True)
 model1.uxsim_data.drop(columns="n_links", inplace=True)
 
 # Save uxsim_data as pickle
