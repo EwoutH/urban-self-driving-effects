@@ -192,9 +192,9 @@ class Traveler(Agent):
         match mode:
             case "car" | "av":
                 # Get travel time from network, costs from distance conversion (fixed per km)
-                o, d = journey.o_node, journey.d_node
-                travel_time = self.model.uw.ROUTECHOICE.dist[int(o.id)][int(d.id)]
-                distance = self.model.car_travel_distance_dict[o.name][d.name]
+                o_id, d_id = journey.o_node.id, journey.d_node.id
+                travel_time = self.model.uw.ROUTECHOICE.dist[o_id][d_id]
+                distance = self.model.car_travel_distance_array[o_id][d_id]
                 if mode == "car":
                     costs = distance * self.model.car_price_per_km_variable
                 if mode == "av":
@@ -217,19 +217,18 @@ class Traveler(Agent):
 
     def choose_network_od_nodes(self, journey: Journey):
         attempts = 0
-        max_attempts = 25
+        max_attempts = 5
 
         while attempts < max_attempts:
-            try:
-                journey.o_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.origin])
-                journey.d_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.destination])
-                # Not all OD pairs are in the network, so we need to check if the nodes are connected
-                _ = self.model.car_travel_distance_dict[journey.o_node.name][journey.d_node.name]
+            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.origin])
+            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.destination])
+            # Not all OD pairs are in the network, so we need to check if the nodes are connected
+            travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
+            if travel_time > 1e6:
+                attempts += 1
+            else:
                 self.model.successful_car_trips += 1
                 return
-
-            except:
-                attempts += 1
 
         # If all attempts fail, remove car and av from available modes
         journey.available_modes = [m for m in journey.available_modes if m not in ["car", "av"]]

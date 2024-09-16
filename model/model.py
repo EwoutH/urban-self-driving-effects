@@ -7,7 +7,6 @@ from traffic import get_uxsim_world
 from mesa import Model
 from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
-import networkx as nx
 import pandas as pd
 from dataclasses import asdict
 
@@ -18,7 +17,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=7, end_time=10, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -105,8 +104,6 @@ class UrbanModel(Model):
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world(save_mode=False, show_mode=True)
 
-        self.car_travel_distance_dict = self.get_car_travel_distance()
-
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
         # Create nested dict
@@ -128,6 +125,13 @@ class UrbanModel(Model):
         print(f"Trips planned by agents: {(total_trip_times := sum(map(len, self.agents.get('trip_times'))))} (on average {total_trip_times / n_agents:.3f} per agent)")
 
         self.uw.finalize_scenario()
+
+        self.car_travel_distance_array = np.array(self.uw.ROUTECHOICE.get_all_distances()) / 1000
+        # Create a boolean mask for where the values are 'inf'
+        inf_mask = np.isinf(self.car_travel_distance_array)
+        # Transpose the matrix and replace the 'inf' values using the inverse values
+        self.car_travel_distance_array[inf_mask] = self.car_travel_distance_array.T[inf_mask]
+
         # Schedule a model step
         self.simulator.schedule_event_now(self.step)
 
@@ -153,18 +157,6 @@ class UrbanModel(Model):
 
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
-
-    def get_car_travel_distance(self):
-        # TODO: Fixed each model run, calculate once and save to file
-        # TODO: Fix missing node pairs
-        G2 = nx.DiGraph()  # Create a new directed graph
-
-        for l in self.uw.LINKS:
-            G2.add_edge(l.start_node.name, l.end_node.name, weight=l.length)
-
-        car_dist_dict = dict(nx.all_pairs_dijkstra_path_length(G2, weight='weight'))
-        # Devide by 1000 to convert from meters to kilometers
-        return {o: {d: dist / 1000 for d, dist in dist_dict.items()} for o, dist_dict in car_dist_dict.items()}
 
 # Create a simulator and model
 simulator1 = DEVSimulator()
