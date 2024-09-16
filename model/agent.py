@@ -220,8 +220,8 @@ class Traveler(Agent):
         max_attempts = 5
 
         while attempts < max_attempts:
-            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.origin])
-            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_area_dict[journey.destination])
+            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_mrdh65_dict[journey.origin])
+            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_mrdh65_dict[journey.destination])
             # Not all OD pairs are in the network, so we need to check if the nodes are connected
             travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
             if travel_time > 1e6:

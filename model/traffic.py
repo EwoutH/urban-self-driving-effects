@@ -73,17 +73,17 @@ def get_uxsim_world(save_mode=False, show_mode=False):
 
 
     # Create Nodes in UXsim from OSMnx graph nodes
+    world.node_pc4_dict = defaultdict(list)
+    world.node_mrdh65_dict = defaultdict(list)
     for node_id, data in road_network.nodes(data=True):
+        pc4 = int(data['postcode'])
         try:
-            mrdh65 = data1.pc4_to_mrdh65[int(data['postcode'])]
+            mrdh65 = data1.pc4_to_mrdh65[pc4]
         except KeyError:
             mrdh65 = 0
-        world.addNode(name=str(node_id), x=data['x'], y=data['y'], attribute=mrdh65)
-
-    world.node_area_dict = defaultdict(list)
-    for node in world.NODES:
-        world.node_area_dict[node.attribute].append(node)
-    world.area_list = list(world.node_area_dict.keys())
+        node = world.addNode(name=str(node_id), x=data['x'], y=data['y'], attribute=mrdh65)
+        world.node_pc4_dict[pc4].append(node)
+        world.node_mrdh65_dict[mrdh65].append(node)
 
     # Create Links in UXsim from OSMnx graph edges
     for u, v, data in road_network.edges(data=True):
