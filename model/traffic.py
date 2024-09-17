@@ -2,14 +2,14 @@
 # - [OSMnx](https://www.github.com/gboeing/osmnx)
 # - [UXsim](https://www.github.com/toruseo/uxsim)
 
-from data import Data
+from data import data
 
 from collections import defaultdict
 
 import osmnx as ox
 import uxsim
 
-data1 = Data()
+data1 = data
 
 # print(f"UXsim version: {uxsim.__version__}")
 

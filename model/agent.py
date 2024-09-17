@@ -1,6 +1,6 @@
 from mesa import Agent
 
-from data import Data
+from data import data
 
 import numpy as np
 import random
@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 # Import model for type hinting, to avoid circular imports
 
-data = Data()
+data = data
 
 @dataclass
 class Journey:

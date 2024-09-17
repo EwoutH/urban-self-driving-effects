@@ -1,6 +1,6 @@
 # local imports
 from agent import Traveler
-from data import Data
+from data import data
 from traffic import get_uxsim_world
 
 # package imports
@@ -9,9 +9,10 @@ from mesa.experimental.devs.simulator import DEVSimulator
 import numpy as np
 import pandas as pd
 from dataclasses import asdict
+import pickle
 
 
-data = Data()
+data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
 simulated_population = int(real_population / 10)  # UXsim platoon size
 
@@ -60,6 +61,12 @@ class UrbanModel(Model):
 
         # Create a dictionary of pc4 locations and their populations
         self.pop_dict_pc4_city = {pc4: pop for pc4, pop in zip(gdf.index, gdf["aantal_inwoners"])}
+
+        # SAVE THE pop_dict_pc4_city and gdf to a pickle file
+        with open("../data/TEMP_pop_dict_pc4_city.pkl", "wb") as f:
+            pickle.dump(self.pop_dict_pc4_city, f)
+        gdf.to_pickle("../data/TEMP_gdf.pkl")
+
         # Normalize the population weights
         weights = np.array(list(self.pop_dict_pc4_city.values())) / sum(self.pop_dict_pc4_city.values())
 
@@ -190,7 +197,6 @@ model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bi
 model1.uxsim_data.drop(columns="n_links", inplace=True)
 
 # Save uxsim_data as pickle
-import pickle
 with open("results/uxsim_df.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
 
