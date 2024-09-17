@@ -72,9 +72,12 @@ def get_uxsim_world(save_mode=False, show_mode=False):
             return default_density  # Default for unspecified or other road types
 
 
-    # Create Nodes in UXsim from OSMnx graph nodes
+    # Create Nodes in UXsim from OSMnx graph nodes.
     world.node_pc4_dict = defaultdict(list)
+    for pc4 in data1.city_pc4s:
+        world.node_pc4_dict[pc4] = []
     world.node_mrdh65_dict = defaultdict(list)
+
     for node_id, data in road_network.nodes(data=True):
         pc4 = int(data['postcode'])
         try:
@@ -84,6 +87,12 @@ def get_uxsim_world(save_mode=False, show_mode=False):
         node = world.addNode(name=str(node_id), x=data['x'], y=data['y'], attribute=mrdh65)
         world.node_pc4_dict[pc4].append(node)
         world.node_mrdh65_dict[mrdh65].append(node)
+
+    # If any pc4 has no nodes, add the mrdh65 nodes to the pc4 nodes
+    for pc4, nodes in world.node_pc4_dict.items():
+        if not nodes:
+            # Add the mrdh65 nodes to the pc4 nodes
+            world.node_pc4_dict[pc4] = world.node_mrdh65_dict[data1.pc4_to_mrdh65_city[pc4]]
 
     # Create Links in UXsim from OSMnx graph edges
     for u, v, data in road_network.edges(data=True):
@@ -111,3 +120,5 @@ def get_uxsim_world(save_mode=False, show_mode=False):
     nodes = {node.name: node for node in world.NODES}  # List of node names
 
     return world
+
+world = get_uxsim_world(save_mode=False, show_mode=False)

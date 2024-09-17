@@ -10,12 +10,18 @@ class Data:
         # Load travel time and distance data from Google Maps API
         self.travel_time_mrdh = {}
         self.travel_distance_mrdh  = {}
+        self.travel_time_pc4 = {}
+        self.travel_distance_pc4 = {}
 
         for mode in ["transit", "bicycling"]:
             with open(f"../data/travel_time_distance_google_{mode}.pkl", "rb") as f:
                 self.travel_time_mrdh[mode], self.travel_distance_mrdh[mode] = pickle.load(f)
                 # Convert distance from meters to kilometers
                 self.travel_distance_mrdh[mode] = {key: value / 1000 for key, value in self.travel_distance_mrdh[mode].items()}
+            with open(f"../data/travel_time_distance_google_{mode}_pc4.pkl", "rb") as f:
+                self.travel_time_pc4[mode], self.travel_distance_pc4[mode] = pickle.load(f)
+                # Convert distance from meters to kilometers
+                self.travel_distance_pc4[mode] = {key: value / 1000 for key, value in self.travel_distance_pc4[mode].items()}
 
         # Load Shapely polygons
         with open("../data/polygons.pkl", "rb") as f:
@@ -38,8 +44,15 @@ class Data:
         # Create a dict mapping the gdf_mrdh_65 keys to the ["65x65 Naam"] column
         self.mrdh65_to_name = {n65: name for n65, name in zip(self.gdf_mrdh_65.index, self.gdf_mrdh_65["65x65 Naam"])}
 
-        # Create a dict mapping mrdh65 to pc4. pc4: pop_gdf_nl_pc4["postcode"], mrdh65: pop_gdf_nl_pc4["65x65 Nummer"]
+        # Create a dict mapping pc4 to mrdh65. pc4: pop_gdf_nl_pc4["postcode"], mrdh65: pop_gdf_nl_pc4["65x65 Nummer"]
         self.pc4_to_mrdh65 = dict(zip(self.pop_gdf_nl_pc4.index, self.pop_gdf_nl_pc4["65x65 Nummer"]))
+        # Create a dict mapping mrdh65 to pc4. Use mrhd65 as key, and a list of pc4 as value.
+        self.mrdh65_to_pc4 = {n65: self.pop_gdf_nl_pc4[self.pop_gdf_nl_pc4["65x65 Nummer"] == n65].index.tolist() for n65 in self.gdf_mrdh_65.index}
+
+        # Load pc4_to_n65 dict for the 125 pc4 areas
+        with open("../data/pc4_to_n65_dict.pkl", "rb") as f:
+            self.pc4_to_mrdh65_city = pickle.load(f)
+        self.city_pc4s = set(self.pc4_to_mrdh65_city.keys())
 
         # For both pc4 and mrdh add a column if the centroid is in the target_area
         for target_area, polygon in zip(["in_city", "in_area"], [self.city_polygon_series, self.area_polygon_series]):

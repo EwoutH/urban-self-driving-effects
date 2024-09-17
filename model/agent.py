@@ -51,7 +51,7 @@ class Traveler(Agent):
         self.mrdh65: int = int(mrdh65)
         self.mrdh65_name: str = data.mrdh65_to_name[mrdh65]
 
-        self.current_location = self.mrdh65
+        self.current_location = self.pc4
         self.current_vehicle = None
         self.traveling = False
         self.reschedules = 0
@@ -104,12 +104,16 @@ class Traveler(Agent):
         self.trip_times.sort()
 
         # For each trip time, assign a destination based on the origin-destination chance data
-        self.destinations = random.choices(population=list(data.od_chance_dicts["Totaal"][self.mrdh65].keys()),
+        mrdh65_destinations = random.choices(population=list(data.od_chance_dicts["Totaal"][self.mrdh65].keys()),
                                            weights=list(data.od_chance_dicts["Totaal"][self.mrdh65].values()),
                                            k=len(self.trip_times))
+        # Pick a random pc4 from the mrdh65 area, using data.mrdh65_to_pc4
+        for destination in mrdh65_destinations:
+            pc4_destinations = data.mrdh65_to_pc4[destination]
+            self.destinations.append(random.choice(pc4_destinations))
         # Replace every second destination with the origin
         for i in range(1, len(self.destinations), 2):
-            self.destinations[i] = self.mrdh65
+            self.destinations[i] = self.pc4
 
         # Schedule events for the trip times (use self.model.simulator.schedule_event_absolute)
         # Schedule the first trip:
@@ -117,7 +121,7 @@ class Traveler(Agent):
             first_journey = Journey(agent=self, destination=self.destinations[0])
             self.model.simulator.schedule_event_absolute(self.start_journey, self.trip_times[0], function_kwargs={"journey": first_journey})
 
-        # print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.mrdh65} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
+        # print(f"Agent {self.unique_id} has {len(self.trip_times)} trips scheduled from {self.pc4} at times {[f"{t:.3f}" for t in self.trip_times]} to destinations {self.destinations}.")
 
     def start_journey(self, journey: Journey):
         self.journeys.append(journey)
@@ -135,17 +139,17 @@ class Traveler(Agent):
         if journey.mode in ["car", "av"]:
             self.schedule_car_trip(journey)
             if journey.mode == "car":
-                self.model.parked_per_area[self.current_location] -= 1
+                self.model.parked_per_area[data.pc4_to_mrdh65[self.current_location]] -= 1
         else:
             self.model.simulator.schedule_event_relative(self.finish_journey, journey.travel_time / 3600, function_kwargs={"journey": journey})
 
-        # print(f"Agent {self.unique_id} at {self.mrdh65} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
+        # print(f"Agent {self.unique_id} at {self.pc4} performs a journey! Time = {self.model.simulator.time:.3f}, destination = {destination}, mode = {self.mode}")
 
         # Update the current location and available modes
     def finish_journey(self, journey: Journey):
         journey.end_time = self.model.simulator.time
 
-        if journey.destination == self.mrdh65:
+        if journey.destination == self.pc4:
             self.currently_available_modes = self.available_modes
         else:
             match journey.mode:
@@ -159,7 +163,7 @@ class Traveler(Agent):
         journey.finished = True
 
         if journey.mode == "car":
-            self.model.parked_per_area[self.current_location] += 1
+            self.model.parked_per_area[data.pc4_to_mrdh65[self.current_location]] += 1
             journey.act_perceived_cost = journey.cost + journey.act_travel_time * self.value_of_time[journey.mode]
 
         # schedule the next journey
@@ -202,14 +206,14 @@ class Traveler(Agent):
 
             case "bike":
                 # Get travel time from Google Maps API, costs are assumed to be zero
-                travel_time = data.travel_time_mrdh["bicycling"][(self.current_location, journey.destination)]
-                distance = data.travel_distance_mrdh["bicycling"][(self.current_location, journey.destination)]
+                travel_time = data.travel_time_pc4["bicycling"][(self.current_location, journey.destination)]
+                distance = data.travel_distance_pc4["bicycling"][(self.current_location, journey.destination)]
                 costs = 0
 
             case "transit":
                 # Get travel time from Google Maps API, costs from distance conversion (NS staffel)
-                travel_time = data.travel_time_mrdh["transit"][(self.current_location, journey.destination)]
-                distance = data.travel_distance_mrdh["transit"][(self.current_location, journey.destination)]
+                travel_time = data.travel_time_pc4["transit"][(self.current_location, journey.destination)]
+                distance = data.travel_distance_pc4["transit"][(self.current_location, journey.destination)]
                 costs = self.calculate_transit_cost(distance, self.model.transit_price_per_km)
 
         # print(f"Agent {self.unique_id} at {origin} to {destination} by {mode} has travel time {travel_time:.3f}, costs {costs:.2f} and perceived costs {costs + travel_time * self.value_of_time:.2f}")
@@ -220,8 +224,13 @@ class Traveler(Agent):
         max_attempts = 5
 
         while attempts < max_attempts:
-            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_mrdh65_dict[journey.origin])
-            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_mrdh65_dict[journey.destination])
+            o_nodes = self.model.uw.node_pc4_dict[journey.origin]
+            d_nodes = self.model.uw.node_pc4_dict[journey.destination]
+            # If one is empty, break
+            if len(o_nodes) == 0 or len(d_nodes) == 0:
+                print(f"Agent {self.unique_id} at {self.pc4} has no nodes for origin {journey.origin} or destination {journey.destination}")
+            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_pc4_dict[journey.origin])
+            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_pc4_dict[journey.destination])
             # Not all OD pairs are in the network, so we need to check if the nodes are connected
             travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
             if travel_time > 1e6:
