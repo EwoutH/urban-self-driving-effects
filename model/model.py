@@ -192,6 +192,12 @@ for journey in all_journeys:
 journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
 journeys_df.to_pickle("results/journeys_df.pkl")
 
+mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
+print(f"Mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts.items()})}")
+
+mode_counts_weighted = journeys_df.groupby('mode')['distance'].sum() / journeys_df['distance'].sum()
+print(f"Distance weighted mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts_weighted.items()})}")
+
 
 ### UXsim data
 area_names, areas = zip(*model1.uw.node_mrdh65_dict.items())
