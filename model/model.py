@@ -18,7 +18,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -181,8 +181,11 @@ all_journeys = [journey for agent in model1.agents for journey in agent.journeys
 # In all_journeys, replace the agent with the agent unique_id, the o_node, d_node and vehicle with their names in each Journey class.
 for journey in all_journeys:
     journey.agent = journey.agent.unique_id
-    journey.o_node = journey.o_node.name
-    journey.d_node = journey.d_node.name
+    try:
+        journey.o_node = journey.o_node.name
+        journey.d_node = journey.d_node.name
+    except AttributeError:
+        pass  # In this case the o_node and d_node are already None
     if journey.vehicle:
         journey.vehicle = journey.vehicle.name
 
