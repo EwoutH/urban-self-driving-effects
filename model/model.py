@@ -118,54 +118,20 @@ class UrbanModel(Model):
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world(save_mode=False, show_mode=True, uxsim_platoon_size=self.uxsim_platoon_size)
 
+        self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
+        self.ext_vehicles = 0
+
+        # Convert to NumPy, int16
+        self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load / self.uxsim_platoon_size
+        self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load / self.uxsim_platoon_size
         # External vehicle load
         # Get a list of origin and destination areas for the external trips
-        def add_external_vehicle_load():
-            print(f"Adding external vehicles to the simulation.")
-            ext_vehicles = 0
-            self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
-
-            # Convert to NumPy, int16
-            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load / self.uxsim_platoon_size
-            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load / self.uxsim_platoon_size
-
-            for hour in range(self.start_time, self.end_time):
-
-                # Calculate the start and end times for this hour
-                sim_hour = hour - self.start_time
-                start_time = sim_hour * 3600
-                end_time = (sim_hour + 1) * 3600
-
-                # Get the trip multiplier for this hour
-                hour_multiplier = self.trips_by_hour_chance[hour]
-
-                for ext_area in self.mrdh65s_ext:
-                    for int_area in self.mrdh65s:
-                        volume_in = round(self.od_ext_into_city[int_area][ext_area] * hour_multiplier)
-                        volume_out = round(self.od_ext_out_city[ext_area][int_area] * hour_multiplier)
-
-                        # print(f"Hour {hour}, ext {ext_area}, int {int_area}: in {volume_in}, out {volume_out}")
-
-                        ext_nodes = self.uw.node_mrdh65_dict[ext_area]
-                        int_nodes = self.uw.node_mrdh65_dict[int_area]
-
-                        def add_vehicle_load(volume, orig_nodes, dest_nodes):
-                            times = np.random.uniform(start_time, end_time, volume)
-                            os, ds = self.random.choices(orig_nodes, k=volume), self.random.choices(dest_nodes, k=volume)
-                            for time, o, d in zip(times, os, ds):
-                                self.uw.addVehicle(orig=o, dest=d, departure_time=time)
-
-                        if volume_in > 0:
-                            add_vehicle_load(volume_in, ext_nodes, int_nodes)
-                        if volume_out > 0:
-                            add_vehicle_load(volume_out, int_nodes, ext_nodes)
-
-                        ext_vehicles += volume_in + volume_out
-
-            print(f"Added {ext_vehicles} external vehicles to the simulation.")
 
         if self.ext_vehicle_load:
-            add_external_vehicle_load()
+            self.simulator.schedule_event_now(function=self.add_external_vehicle_load, function_args=[self.start_time])
+            for hour in range(self.start_time+1, self.end_time):
+                # Schedule an event 15 minutes before that hour
+                self.simulator.schedule_event_absolute(function=self.add_external_vehicle_load, time=hour-0.25, function_args=[hour])
 
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
@@ -221,6 +187,38 @@ class UrbanModel(Model):
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
 
+    def add_external_vehicle_load(self, hour):
+        # Calculate the start and end times for this hour
+        sim_hour = hour - self.start_time
+        start_time = sim_hour * 3600
+        end_time = (sim_hour + 1) * 3600
+
+        # Get the trip multiplier for this hour
+        hour_multiplier = self.trips_by_hour_chance[hour]
+
+        for ext_area in self.mrdh65s_ext:
+            for int_area in self.mrdh65s:
+                volume_in = round(self.od_ext_into_city[int_area][ext_area] * hour_multiplier)
+                volume_out = round(self.od_ext_out_city[ext_area][int_area] * hour_multiplier)
+
+                # print(f"Hour {hour}, ext {ext_area}, int {int_area}: in {volume_in}, out {volume_out}")
+
+                ext_nodes = self.uw.node_mrdh65_dict[ext_area]
+                int_nodes = self.uw.node_mrdh65_dict[int_area]
+
+                def add_vehicle_load(volume, orig_nodes, dest_nodes):
+                    times = np.random.uniform(start_time, end_time, volume)
+                    os, ds = self.random.choices(orig_nodes, k=volume), self.random.choices(dest_nodes, k=volume)
+                    for time, o, d in zip(times, os, ds):
+                        self.uw.addVehicle(orig=o, dest=d, departure_time=time)
+
+                if volume_in > 0:
+                    add_vehicle_load(volume_in, ext_nodes, int_nodes)
+                if volume_out > 0:
+                    add_vehicle_load(volume_out, int_nodes, ext_nodes)
+
+                self.ext_vehicles += volume_in + volume_out
+
 # Create a simulator and model
 simulator1 = DEVSimulator()
 model1 = UrbanModel(simulator=simulator1)
@@ -229,6 +227,7 @@ simulator1.model = model1
 print(f"### Running the model from {model1.start_time} to {model1.end_time}")
 simulator1.run_until(model1.end_time)
 print(f"### Model finished at {model1.simulator.time}")
+print(f"External vehicles added: {model1.ext_vehicles}")
 
 ### Journey data
 # Create a flat list with all journeys from all agents. Each agent has a journeys list.
