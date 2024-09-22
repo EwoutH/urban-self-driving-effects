@@ -207,16 +207,16 @@ class UrbanModel(Model):
         print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.1f}).", end=" ")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
         # Schedule the travel_time execution 1 timestep ahead. This way all agents have had a chance to add their trips.
-        self.simulator.schedule_event_relative(function=self.exec_simulation, time_delta=self.step_time)
+        self.simulator.schedule_event_relative(function=self.req_exec_simulation, time_delta=self.step_time)
 
         # Schedule next event
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
 
         self.parked_dict[self.simulator.time] = self.parked_per_area.copy()
 
-    def exec_simulation(self):
+    def req_exec_simulation(self):
         # Execute the simulation for a given duration
-        self.uw.exec_simulation(duration_t=self.step_time * 3600)
+        self.uw.exec_simulation(until_t=self.uw_time)
 
         # show simulation
         # self.uw.analyzer.network(self.uw.TIME, detailed=0, network_font_size=0, figsize=(6, 6), left_handed=0, node_size=0.2)
