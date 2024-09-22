@@ -28,7 +28,7 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
 
     # Set simulation parameters
     simulation_name = "trafficsim"
-    simulation_duration = (23-6)*3600  # in seconds (e.g., 3600 = 1 hour)
+    simulation_duration = (24-5)*3600  # in seconds (e.g., 3600 = 1 hour)
     reaction_time = 1  # in seconds
     duo_update_time = 300  # in seconds, for dynamic user equilibrium (DUO) route choice update
     duo_update_weight = 0.5  # weight for DUO update
