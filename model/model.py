@@ -14,16 +14,18 @@ import pickle
 
 data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
-simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=1, simulator=None):
+    def __init__(self, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=1, uxsim_platoon_size=25, simulator=None):
         super().__init__()
+        n_agents = int(real_population / uxsim_platoon_size)
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
+        self.n_agents = n_agents
         self.simulator = simulator
         self.simulator.time = float(start_time)
+        self.uxsim_platoon_size = uxsim_platoon_size
 
         # Set up time variables
         self.step_time = step_time
@@ -114,7 +116,7 @@ class UrbanModel(Model):
         # print(f"Trip counts distribution: {self.trip_counts_distribution}")
 
         # UXsim world (from traffic.py)
-        self.uw = get_uxsim_world(save_mode=False, show_mode=True)
+        self.uw = get_uxsim_world(save_mode=False, show_mode=True, uxsim_platoon_size=self.uxsim_platoon_size)
 
         # External vehicle load
         # Get a list of origin and destination areas for the external trips
@@ -124,8 +126,8 @@ class UrbanModel(Model):
             self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
 
             # Convert to NumPy, int16
-            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load / 10  # UXsim platoon size
-            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load / 10
+            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load / self.uxsim_platoon_size
+            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load / self.uxsim_platoon_size
 
             for hour in range(self.start_time, self.end_time):
 

@@ -13,7 +13,7 @@ data1 = data
 
 # print(f"UXsim version: {uxsim.__version__}")
 
-def get_uxsim_world(save_mode=False, show_mode=False):
+def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
     city_name = "Rotterdam"
     surrounding_area_name = "South Holland"
 
@@ -29,7 +29,6 @@ def get_uxsim_world(save_mode=False, show_mode=False):
     # Set simulation parameters
     simulation_name = "trafficsim"
     simulation_duration = (23-6)*3600  # in seconds (e.g., 3600 = 1 hour)
-    platoon_size = 10  # vehicles per platoon
     reaction_time = 1  # in seconds
     duo_update_time = 300  # in seconds, for dynamic user equilibrium (DUO) route choice update
     duo_update_weight = 0.5  # weight for DUO update
@@ -40,7 +39,7 @@ def get_uxsim_world(save_mode=False, show_mode=False):
 
     # Create the World object with the specified parameters
     world = uxsim.World(name=simulation_name,
-                        deltan=platoon_size,
+                        deltan=uxsim_platoon_size,  # vehicles per platoon
                         reaction_time=reaction_time,
                         duo_update_time=duo_update_time,
                         duo_update_weight=duo_update_weight,
@@ -55,7 +54,6 @@ def get_uxsim_world(save_mode=False, show_mode=False):
                         show_progress=1,  # Show simulation progress
                         show_progress_deltat=300,  # Interval for showing progress, in seconds
                         tmax=simulation_duration)  # Total simulation duration
-
 
     # Helper function to determine max density based on road type and number of lanes
     def calculate_max_density(road_type, network_name):
