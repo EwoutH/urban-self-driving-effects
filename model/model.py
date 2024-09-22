@@ -119,14 +119,16 @@ class UrbanModel(Model):
         # External vehicle load
         # Get a list of origin and destination areas for the external trips
         def add_external_vehicle_load():
+            print(f"Adding external vehicles to the simulation.")
+            ext_vehicles = 0
             self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
 
             # Convert to NumPy, int16
-            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load
-            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load
+            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load / 10  # UXsim platoon size
+            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load / 10
 
             for hour in range(self.start_time, self.end_time):
-                print(f"Hour {hour}")
+
                 # Calculate the start and end times for this hour
                 sim_hour = hour - self.start_time
                 start_time = sim_hour * 3600
@@ -145,24 +147,21 @@ class UrbanModel(Model):
                         ext_nodes = self.uw.node_mrdh65_dict[ext_area]
                         int_nodes = self.uw.node_mrdh65_dict[int_area]
 
-                        # Add trips into the city
-                        # TODO: Double check if this is per platoon or per vehicle
-                        self.uw.adddemand_nodes2nodes(
-                            origs=ext_nodes,
-                            dests=int_nodes,
-                            t_start=start_time,
-                            t_end=end_time,
-                            volume=volume_in
-                        )
+                        def add_vehicle_load(volume, orig_nodes, dest_nodes):
+                            times = np.random.uniform(start_time, end_time, volume)
+                            os, ds = self.random.choices(orig_nodes, k=volume), self.random.choices(dest_nodes, k=volume)
+                            for time, o, d in zip(times, os, ds):
+                                self.uw.addVehicle(orig=o, dest=d, departure_time=time)
 
-                        # Add trips out of the city
-                        self.uw.adddemand_nodes2nodes(
-                            origs=int_nodes,
-                            dests=ext_nodes,
-                            t_start=start_time,
-                            t_end=end_time,
-                            volume=volume_out
-                        )
+                        if volume_in > 0:
+                            add_vehicle_load(volume_in, ext_nodes, int_nodes)
+                        if volume_out > 0:
+                            add_vehicle_load(volume_out, int_nodes, ext_nodes)
+
+                        ext_vehicles += volume_in + volume_out
+
+            print(f"Added {ext_vehicles} external vehicles to the simulation.")
+
         if self.ext_vehicle_load:
             add_external_vehicle_load()
 
