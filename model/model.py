@@ -17,7 +17,7 @@ real_population = 991575  # sum(self.pop_dict_pc4_city.values())
 
 
 class UrbanModel(Model):
-    def __init__(self, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=0.75, uxsim_platoon_size=25, simulator=None):
+    def __init__(self, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=0.75, uxsim_platoon_size=10, car_comfort=0.75, bike_comfort=1.5, simulator=None):
         super().__init__()
         n_agents = int(real_population / uxsim_platoon_size)
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
@@ -58,6 +58,13 @@ class UrbanModel(Model):
         }
         self.default_value_of_times["av"] = self.default_value_of_times["car"] * self.av_vot_factor
         self.default_value_of_times = {mode: vot / 3600 for mode, vot in self.default_value_of_times.items()}  # Euros per second
+
+        self.comfort_factors = {
+            "car": car_comfort,
+            "bike": bike_comfort,
+            "transit": 1,
+            "av": 1
+        }
 
         # Create a dictionary of locations pc4 locations and their populations from pop_gdf_nl_pc4 with in_city == True
         gdf = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["in_city"] == True]

@@ -22,9 +22,11 @@ class Journey:
     distance: float = None
     cost: float = None
     perceived_cost: float = None
+    comf_perceived_cost: float = None
     used_network: bool = False  # True for car and av
     available_modes: list = None
     perceived_cost_dict: dict = None
+    comf_perceived_cost_dict: dict = None
     started: bool = False
     finished: bool = False
     # All variables below are only for car and av
@@ -176,20 +178,24 @@ class Traveler(Agent):
     def choice_rational_vot(self, journey: Journey):
         travel_times, costs, distances = {}, {}, {}
         perceived_costs = {}
+        comf_perceived_costs = {}
         for mode in journey.available_modes:
             travel_time, cost, distance = self.get_travel_time_and_costs(journey, mode)
             travel_times[mode], costs[mode], distances[mode] = travel_time, cost, distance
             perceived_costs[mode] = cost + travel_time * self.value_of_time[mode]
+            comf_perceived_costs[mode] = perceived_costs[mode] * self.model.comfort_factors[mode]
 
-        chosen_mode = min(perceived_costs, key=perceived_costs.get)
+        chosen_mode = min(comf_perceived_costs, key=comf_perceived_costs.get)
         journey.mode = chosen_mode
 
         journey.travel_time = travel_times[chosen_mode]
         journey.cost = costs[chosen_mode]
         journey.distance = distances[chosen_mode]
         journey.perceived_cost = perceived_costs[chosen_mode]
+        journey.comf_perceived_cost = comf_perceived_costs[chosen_mode]
 
         journey.perceived_cost_dict = perceived_costs
+        journey.comf_perceived_cost_dict = comf_perceived_costs
 
     def get_travel_time_and_costs(self, journey, mode):
         # Get the travel time and costs for a destination and mode
