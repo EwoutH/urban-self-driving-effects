@@ -17,7 +17,7 @@ real_population = 991575  # sum(self.pop_dict_pc4_city.values())
 
 
 class UrbanModel(Model):
-    def __init__(self, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=0.5, uxsim_platoon_size=25, simulator=None):
+    def __init__(self, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=0.75, uxsim_platoon_size=25, simulator=None):
         super().__init__()
         n_agents = int(real_population / uxsim_platoon_size)
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
