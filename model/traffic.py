@@ -120,5 +120,3 @@ def get_uxsim_world(save_mode=False, show_mode=False):
     nodes = {node.name: node for node in world.NODES}  # List of node names
 
     return world
-
-world = get_uxsim_world(save_mode=False, show_mode=False)

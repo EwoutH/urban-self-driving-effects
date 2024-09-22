@@ -92,6 +92,9 @@ class Data:
                     if total > 0:
                         self.od_chance_dicts[mode][origin] = {key: value / total for key, value in self.od_chance_dicts[mode][origin].items()}
 
+        # Load the dataframes. Generated in v_mrdh_od_demand.ipynb
+        self.od_ext_into_city = pd.read_pickle("../data/od_ext_into_city.pkl")
+        self.od_ext_out_city = pd.read_pickle("../data/od_ext_out_city.pkl")
 
 # Initialize the data
 data = Data()

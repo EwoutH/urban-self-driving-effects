@@ -18,7 +18,7 @@ simulated_population = int(real_population / 10)  # UXsim platoon size
 
 
 class UrbanModel(Model):
-    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, simulator=None):
+    def __init__(self, n_agents=simulated_population, step_time=1/12, start_time=6, end_time=22, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=1, simulator=None):
         super().__init__()
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
         # Set up simulator time
@@ -30,11 +30,16 @@ class UrbanModel(Model):
         self.start_time = start_time
         self.end_time = end_time
 
+        # External vehicle load
+        self.ext_vehicle_load = ext_vehicle_load
+
         # Set up the choice model
         self.choice_model = choice_model
         self.available_modes = ["car", "bike", "transit"]
         if enable_av:
             self.available_modes.append("av")
+
+        # Set up the cost factors
         self.transit_price_per_km = 0.169  # https://www.treinonderweg.nl/wat-kost-de-trein.html
         self.car_price_per_km_variable = 0.268
         # kleine middenklasse, https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
@@ -90,7 +95,7 @@ class UrbanModel(Model):
             trav_license.shuffle(inplace=True).select(at_most=n_car).set('has_car', True)
 
         # Get all the unique mrdh65 values
-        self.areas = list(set([a.mrdh65 for a in self.agents]))
+        self.mrdh65s = list(set([a.mrdh65 for a in self.agents]))
         self.pc4s = list(set([a.pc4 for a in self.agents]))
 
         # For agents that don't have a car, remove the car from the available modes
@@ -111,13 +116,63 @@ class UrbanModel(Model):
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world(save_mode=False, show_mode=True)
 
+        # External vehicle load
+        # Get a list of origin and destination areas for the external trips
+        def add_external_vehicle_load():
+            self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
+
+            # Convert to NumPy, int16
+            self.od_ext_into_city = data.od_ext_into_city * self.ext_vehicle_load
+            self.od_ext_out_city = data.od_ext_out_city * self.ext_vehicle_load
+
+            for hour in range(self.start_time, self.end_time):
+                print(f"Hour {hour}")
+                # Calculate the start and end times for this hour
+                sim_hour = hour - self.start_time
+                start_time = sim_hour * 3600
+                end_time = (sim_hour + 1) * 3600
+
+                # Get the trip multiplier for this hour
+                hour_multiplier = self.trips_by_hour_chance[hour]
+
+                for ext_area in self.mrdh65s_ext:
+                    for int_area in self.mrdh65s:
+                        volume_in = round(self.od_ext_into_city[int_area][ext_area] * hour_multiplier)
+                        volume_out = round(self.od_ext_out_city[ext_area][int_area] * hour_multiplier)
+
+                        # print(f"Hour {hour}, ext {ext_area}, int {int_area}: in {volume_in}, out {volume_out}")
+
+                        ext_nodes = self.uw.node_mrdh65_dict[ext_area]
+                        int_nodes = self.uw.node_mrdh65_dict[int_area]
+
+                        # Add trips into the city
+                        # TODO: Double check if this is per platoon or per vehicle
+                        self.uw.adddemand_nodes2nodes(
+                            origs=ext_nodes,
+                            dests=int_nodes,
+                            t_start=start_time,
+                            t_end=end_time,
+                            volume=volume_in
+                        )
+
+                        # Add trips out of the city
+                        self.uw.adddemand_nodes2nodes(
+                            origs=int_nodes,
+                            dests=ext_nodes,
+                            t_start=start_time,
+                            t_end=end_time,
+                            volume=volume_out
+                        )
+        if self.ext_vehicle_load:
+            add_external_vehicle_load()
+
         # KPIs
         self.trips_by_mode = {mode: 0 for mode in self.available_modes}
         # Create nested dict
         self.trips_by_hour_by_mode = {(hour, mode): 0 for hour in range(start_time, end_time) for mode in self.available_modes}
         self.uxsim_data = {}
 
-        self.parked_per_area = {area: 0 for area in self.areas}
+        self.parked_per_area = {area: 0 for area in self.mrdh65s}
         groups = self.agents.select(lambda a: a.has_car).groupby(by="mrdh65", result_type="list")
         parked = {area: len(group) for area, group in groups}
         self.parked_per_area.update(parked)
@@ -151,14 +206,14 @@ class UrbanModel(Model):
         print(f"Model step (sim time: {self.simulator.time:.3f}, uw time: {self.uw_time:.1f}).", end=" ")
         # A step is considerd once the step_time. Default is 1/12 hour (5 minutes).
         # Schedule the travel_time execution 1 timestep ahead. This way all agents have had a chance to add their trips.
-        self.simulator.schedule_event_relative(function=self.exec_simulation_travel_times, time_delta=self.step_time)
+        self.simulator.schedule_event_relative(function=self.exec_simulation, time_delta=self.step_time)
 
         # Schedule next event
         self.simulator.schedule_event_relative(function=self.step, time_delta=self.step_time)
 
         self.parked_dict[self.simulator.time] = self.parked_per_area.copy()
 
-    def exec_simulation_travel_times(self):
+    def exec_simulation(self):
         # Execute the simulation for a given duration
         self.uw.exec_simulation(duration_t=self.step_time * 3600)
 
