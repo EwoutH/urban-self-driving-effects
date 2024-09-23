@@ -53,7 +53,9 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
                         route_choice_principle="homogeneous_DUO",
                         show_progress=1,  # Show simulation progress
                         show_progress_deltat=300,  # Interval for showing progress, in seconds
-                        tmax=simulation_duration)  # Total simulation duration
+                        tmax=simulation_duration,  # Maximum simulation time
+                        vehicle_logging_timestep_interval=-1,  # Log no vehicle data
+                    )
 
     # Helper function to determine max density based on road type and number of lanes
     def calculate_max_density(road_type, network_name):
