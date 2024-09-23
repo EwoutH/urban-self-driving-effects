@@ -57,14 +57,20 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
 
     # Helper function to determine max density based on road type and number of lanes
     def calculate_max_density(road_type, network_name):
-        default_density = 0.15  # Default maximum density in vehicles per meter per lane
+        # If road type is a list, take the most common value
+        if isinstance(road_type, list):
+            road_type = max(set(road_type), key=road_type.count)
+
+        default_density = 0.17  # Default maximum density in vehicles per meter per lane
         if network_name == surrounding_area_name:
-            return 5  # We don't care about the density in the surrounding area
-        if road_type in ['motorway', 'trunk']:
-            return 0.07  # Lower density due to higher speeds and longer headways
-        elif road_type in ['primary', 'secondary']:
-            return 0.10
-        elif road_type in ['residential', 'tertiary']:
+            return 1  # We don't care about the density in the surrounding area.
+        if road_type in ['motorway', 'trunk', 'motorway_link', 'trunk_link']:
+            return 0.14  # Lower density due to higher speeds and longer headways
+        elif road_type in ['primary', 'primary_link']:
+            return 0.16
+        elif road_type in ['secondary', 'secondary_link']:
+            return 0.18
+        elif road_type in ['residential', 'tertiary', 'tertiary_link']:
             return 0.20  # Higher density due to lower speeds
         else:
             return default_density  # Default for unspecified or other road types
