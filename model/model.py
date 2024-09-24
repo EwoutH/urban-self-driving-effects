@@ -14,13 +14,13 @@ import pickle
 
 data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
-
+suffix = "sens1"
 
 class UrbanModel(Model):
-    def __init__(self, step_time=1/12, start_time=5, end_time=24, choice_model="rational_vot", enable_av=False, av_cost_factor=1, av_vot_factor=1, ext_vehicle_load=0.5, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.2, simulator=None):
+    def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, ext_vehicle_load=0.6, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.2, simulator=None):
         super().__init__()
         n_agents = int(real_population / uxsim_platoon_size)
-        print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}.")
+        print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}, external vehicle load {ext_vehicle_load}, UXsim platoon size {uxsim_platoon_size}, car comfort {car_comfort}, bike comfort {bike_comfort}.")
         # Set up simulator time
         self.n_agents = n_agents
         self.simulator = simulator
@@ -252,7 +252,7 @@ for journey in all_journeys:
         journey.vehicle = journey.vehicle.name
 
 journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
-journeys_df.to_pickle("results/journeys_df.pkl")
+journeys_df.to_pickle(f"results/journeys_df_{suffix}.pkl")
 
 mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
 print(f"Mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts.items()})}")
@@ -268,13 +268,13 @@ model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bi
 model1.uxsim_data.drop(columns="n_links", inplace=True)
 
 # Save uxsim_data as pickle
-with open("results/uxsim_df.pkl", "wb") as f:
+with open(f"results/uxsim_df_{suffix}.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
 # Save uxsim_data to a file
-with open("results/parked_dict.pkl", "wb") as f:
+with open(f"results/parked_dict_{suffix}.pkl", "wb") as f:
     pickle.dump(model1.parked_dict, f)
 
 # W.analyzer.print_simple_stats()
