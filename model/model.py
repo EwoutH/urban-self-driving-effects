@@ -11,6 +11,7 @@ import pandas as pd
 from dataclasses import asdict
 import pickle
 
+from uxsim.Utilities import get_shortest_path_distance_between_all_nodes
 
 data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
@@ -162,8 +163,7 @@ class UrbanModel(Model):
 
         self.uw.finalize_scenario()
 
-        self.car_travel_distance_array = np.array(self.uw.ROUTECHOICE.get_all_distances()) / 1000
-        # Create a boolean mask for where the values are 'inf'
+        self.car_travel_distance_array = get_shortest_path_distance_between_all_nodes(self.uw, return_matrix=True) / 1000
         inf_mask = np.isinf(self.car_travel_distance_array)
         # Transpose the matrix and replace the 'inf' values using the inverse values
         self.car_travel_distance_array[inf_mask] = self.car_travel_distance_array.T[inf_mask]
