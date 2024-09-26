@@ -18,10 +18,10 @@ real_population = 991575  # sum(self.pop_dict_pc4_city.values())
 suffix = "sens1"
 
 class UrbanModel(Model):
-    def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, ext_vehicle_load=0.6, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.2, simulator=None):
+    def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, ext_vehicle_load=0.6, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.2, induced_demand=1.0, simulator=None):
         super().__init__()
         n_agents = int(real_population / uxsim_platoon_size)
-        print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}, external vehicle load {ext_vehicle_load}, UXsim platoon size {uxsim_platoon_size}, car comfort {car_comfort}, bike comfort {bike_comfort}.")
+        print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}, external vehicle load {ext_vehicle_load}, UXsim platoon size {uxsim_platoon_size}, car comfort {car_comfort}, bike comfort {bike_comfort}, induced demand {induced_demand}.")
         # Set up simulator time
         self.n_agents = n_agents
         self.simulator = simulator
@@ -35,6 +35,7 @@ class UrbanModel(Model):
 
         # External vehicle load
         self.ext_vehicle_load = ext_vehicle_load
+        self.induced_demand = induced_demand
 
         # Set up the choice model
         self.choice_model = choice_model
@@ -116,6 +117,8 @@ class UrbanModel(Model):
 
         # For a weekday, take the average of days 0-3 (Monday-Thursday)
         self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")
+        # Multiply the dict by the induced demand factor
+        self.trips_by_hour_chance *= self.induced_demand
         # Drop the hours that are not in the range of the model and save as a dictionary
         self.trips_by_hour_chance = self.trips_by_hour_chance.loc[start_time:(end_time-1)].to_dict()
         print(f"Trip chance sum: {sum(self.trips_by_hour_chance.values()):.3f}, chance by hour: {self.trips_by_hour_chance}")
