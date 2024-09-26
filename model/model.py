@@ -248,8 +248,6 @@ for journey in all_journeys:
         journey.d_node = journey.d_node.name
     except AttributeError:
         pass  # In this case the o_node and d_node are already None
-    if journey.vehicle:
-        journey.vehicle = journey.vehicle.name
 
 journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
 journeys_df.to_pickle(f"results/journeys_df_{suffix}.pkl")

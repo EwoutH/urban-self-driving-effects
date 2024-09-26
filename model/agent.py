@@ -282,5 +282,6 @@ class Traveler(Agent):
             old_end_trip()
             self.model.simulator.schedule_event_now(self.finish_journey, function_kwargs={"journey": journey})
             journey.act_travel_time = journey.vehicle.arrival_time - journey.vehicle.departure_time
+            journey.vehicle = int(journey.vehicle.name)
 
         journey.vehicle.end_trip = end_trip_with_event
