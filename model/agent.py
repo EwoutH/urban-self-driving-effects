@@ -268,8 +268,24 @@ class Traveler(Agent):
 
     def schedule_car_trip(self, journey: Journey):
         """"Schedule an event for the car trip with UXsim"""
-        journey.vehicle = self.model.uw.addVehicle(orig=journey.o_node, dest=journey.d_node,
-                                                   departure_time=self.model.uw_time)
+        if journey.mode == "av" and self.model.av_density != 1.0:
+            av_d = self.model.av_density
+
+            # Case where density is smaller than 1
+            if av_d < 1.0:
+                # Chance that no trip gets scheduled
+                if self.random.random() > av_d:
+                    return
+
+            # Case where density is larger than 1
+            elif av_d > 1.0:
+                if self.random.random() < (av_d - 1):
+                    # Schedule an additional trip at the same time
+                    self.model.uw.addVehicle(orig=journey.o_node, dest=journey.d_node, departure_time=self.model.uw_time)
+
+        # In any case, schedule the regular trip
+        journey.vehicle = self.model.uw.addVehicle(orig=journey.o_node, dest=journey.d_node, departure_time=self.model.uw_time)
+
         journey.used_network = True
 
         # Trigger the finish_journey function from the vehicle
