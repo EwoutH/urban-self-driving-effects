@@ -26,7 +26,6 @@ class Journey:
     used_network: bool = False  # True for car and av
     available_modes: list = None
     perceived_cost_dict: dict = None
-    comf_perceived_cost_dict: dict = None
     started: bool = False
     finished: bool = False
     # All variables below are only for car and av
@@ -195,7 +194,6 @@ class Traveler(Agent):
         journey.comf_perceived_cost = comf_perceived_costs[chosen_mode]
 
         journey.perceived_cost_dict = perceived_costs
-        journey.comf_perceived_cost_dict = comf_perceived_costs
 
     def get_travel_time_and_costs(self, journey, mode):
         # Get the travel time and costs for a destination and mode

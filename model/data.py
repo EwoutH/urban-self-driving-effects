@@ -96,5 +96,29 @@ class Data:
         self.od_ext_into_city = pd.read_pickle("../data/od_ext_into_city.pkl")
         self.od_ext_out_city = pd.read_pickle("../data/od_ext_out_city.pkl")
 
+        self.journey_dtypes = {
+            'agent': "UInt32",
+            'origin': "UInt32",
+            'destination': "UInt32",
+            'mode': "category",
+            'start_time': "float32",
+            'travel_time': "float32",
+            'end_time': "float32",
+            'distance': "float32",
+            'cost': "float32",
+            'perceived_cost': "float32",
+            'comf_perceived_cost': "float32",
+            'used_network': bool,
+            'car_available': bool,
+            'av_available': bool,
+            'started': bool,
+            'finished': bool,
+            'act_travel_time': "float32",
+            'act_perceived_cost': "float32",
+            'o_node': "UInt32",
+            'd_node': "UInt32",
+            'vehicle': "UInt32",
+        }
+
 # Initialize the data
 data = Data()

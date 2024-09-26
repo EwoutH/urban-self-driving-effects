@@ -255,7 +255,27 @@ for journey in all_journeys:
         journey.vehicle = int(journey.vehicle.name)
 
 journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
-journeys_df.to_pickle(f"results/journeys_df_{suffix}.pkl")
+
+# Split the dict in available_modes in car_available and av_available
+journeys_df['car_available'] = journeys_df['available_modes'].apply(lambda x: "car" in x).astype(bool)
+journeys_df['av_available'] = journeys_df['available_modes'].apply(lambda x: "av" in x).astype(bool)
+journeys_df.drop(columns="available_modes", inplace=True)
+
+# Split the dict in perceived_cost_dict column in perceived_cost_{mode} columns (np.float32)
+for mode in model1.available_modes:
+    journeys_df[f"perceived_cost_{mode}"] = journeys_df['perceived_cost_dict'].apply(lambda x: x.get(mode, np.nan)).astype(np.float32)
+journeys_df.drop(columns="perceived_cost_dict", inplace=True)
+
+# convert the columns to the dtypes in the data.journey_dtypes dict
+journeys_df = journeys_df.astype(data.journey_dtypes)
+
+# Warn if any column is other than int, float, bool or category
+for col in journeys_df.columns:
+    if journeys_df[col].dtype not in ["UInt32", "float32", bool, "category"]:
+        print(f"Warning: {col} has dtype {journeys_df[col].dtype}.")
+
+# Save in feather format
+journeys_df.to_feather(f"results/journeys_df_{suffix}.feather")
 
 mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
 print(f"Mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts.items()})}")
