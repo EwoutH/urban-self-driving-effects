@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: uv pip install --system --pre mesa numpy pandas geopandas networkx shapely osmnx
       - name: Install uxsim
-        run: uv pip install --system git+https://github.com/EwoutH/uxsim@time_bin_and_get_distance#egg=uxsim
+        run: uv pip install --system git+https://github.com/EwoutH/uxsim@time_bin_mem_opt#egg=uxsim
       - name: Run model script
         working-directory: model
         run: python model.py
