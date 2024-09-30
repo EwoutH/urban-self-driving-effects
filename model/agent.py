@@ -104,10 +104,13 @@ class Traveler(Agent):
         self.trip_times = [t + random.random() for t in self.trip_times]
         self.trip_times.sort()
 
-        # For each trip time, assign a destination based on the origin-destination chance data
-        mrdh65_destinations = random.choices(population=list(data.od_chance_dicts["Totaal"][self.mrdh65].keys()),
-                                           weights=list(data.od_chance_dicts["Totaal"][self.mrdh65].values()),
-                                           k=len(self.trip_times))
+        # For each trip time, assign a destination based on the origin-destination chance data for that time period
+        mrdh65_destinations = []
+        for trip_time in self.trip_times:
+            od_chance_dict = self.time_to_od_dict(trip_time)
+            pop, weights = zip(*od_chance_dict[self.mrdh65].items())
+            mrdh65_destinations.append(random.choices(population=pop, weights=weights, k=1)[0])
+
         # Pick a random pc4 from the mrdh65 area, using data.mrdh65_to_pc4
         for destination in mrdh65_destinations:
             pc4_destinations = data.mrdh65_to_pc4[destination].copy()
@@ -271,6 +274,14 @@ class Traveler(Agent):
             prev_limit = limit
 
         return cost
+
+    def time_to_od_dict(self, time):
+        if 7 <= time < 9:  # Morning rush hour (ochtendspits, 7-9)
+            return data.od_chance_dicts_periods["os"]
+        elif 16 <= time < 18:  # Evening rush hour (avondspits, 16-18)
+            return data.od_chance_dicts_periods["as"]
+        else:
+            return data.od_chance_dicts_periods["rd"]
 
     def schedule_car_trip(self, journey: Journey):
         """"Schedule an event for the car trip with UXsim"""

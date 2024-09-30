@@ -71,26 +71,29 @@ class Data:
         self.trip_counts_distribution = pd.read_pickle("../data/trip_counts_distribution.pickle")
 
         # Origin-Destination volumes
-        with open("../data/od_chance_dicts.pickle", "rb") as f:
+        with open("../data/od_chance_dicts_periods.pickle", "rb") as f:
             # totaal, auto, fiets, ov
-            self.od_chance_dicts = pickle.load(f)
-            # Set all keys higher than 50 to chance 0. We limit trips to roughly the south-holland area.
-            for mode in self.od_chance_dicts:
-                for origin in self.od_chance_dicts[mode]:
-                    for destination in self.od_chance_dicts[mode][origin]:
-                        # Remove these if larger API runs are performed.
-                        # if destination >= 50:  # MRDH area
-                        #     self.od_chance_dicts[mode][origin][destination] = 0
-                        # if destination >= 21:  # Inner Rotterdam area.
-                        #     self.od_chance_dicts[mode][origin][destination] = 0
-                        if destination not in populated_in_city:
-                            self.od_chance_dicts[mode][origin][destination] = 0
-                        if origin == destination and origin in self.mrdh65_to_pc4 and len(self.mrdh65_to_pc4[origin]) <= 1:  # No trips to the same location if only one pc4
-                            self.od_chance_dicts[mode][origin][destination] = 0
-                    # Normalize the chances back to 1. This skewes the data to more inner city trips, but with a correct total number of trips.
-                    total = sum(self.od_chance_dicts[mode][origin].values())
-                    if total > 0:
-                        self.od_chance_dicts[mode][origin] = {key: value / total for key, value in self.od_chance_dicts[mode][origin].items()}
+            self.od_chance_dicts_periods = pickle.load(f)
+
+        self.od_periods = list(self.od_chance_dicts_periods.keys())
+
+        # Set all keys higher than 50 to chance 0. We limit trips to roughly the south-holland area.
+        for period in self.od_chance_dicts_periods:
+            for origin in self.od_chance_dicts_periods[period]:
+                for destination in self.od_chance_dicts_periods[period][origin]:
+                    # Remove these if larger API runs are performed.
+                    # if destination >= 50:  # MRDH area
+                    #     self.od_chance_dicts_periods[period][origin][destination] = 0
+                    # if destination >= 21:  # Inner Rotterdam area.
+                    #     self.od_chance_dicts_periods[period][origin][destination] = 0
+                    if destination not in populated_in_city:
+                        self.od_chance_dicts_periods[period][origin][destination] = 0
+                    if origin == destination and origin in self.mrdh65_to_pc4 and len(self.mrdh65_to_pc4[origin]) <= 1:  # No trips to the same location if only one pc4
+                        self.od_chance_dicts_periods[period][origin][destination] = 0
+                # Normalize the chances back to 1. This skewes the data to more inner city trips, but with a correct total number of trips.
+                total = sum(self.od_chance_dicts_periods[period][origin].values())
+                if total > 0:
+                    self.od_chance_dicts_periods[period][origin] = {key: value / total for key, value in self.od_chance_dicts_periods[period][origin].items()}
 
         # Load the dataframes. Generated in v_mrdh_od_demand.ipynb
         self.od_ext_into_city = pd.read_pickle("../data/od_ext_into_city.pkl")
