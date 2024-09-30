@@ -110,10 +110,15 @@ class Traveler(Agent):
                                            k=len(self.trip_times))
         # Pick a random pc4 from the mrdh65 area, using data.mrdh65_to_pc4
         for destination in mrdh65_destinations:
-            pc4_destinations = data.mrdh65_to_pc4[destination]
+            pc4_destinations = data.mrdh65_to_pc4[destination].copy()
+            # If the mrdh65 destination is the same as the origin, remove the pc4 from the list. This allows traveling to the same mrdh65 (but different pc4).
+            if destination == self.mrdh65:
+                pc4_destinations.remove(self.pc4)
             self.destinations.append(random.choice(pc4_destinations))
         # Replace every second destination with the origin
         for i in range(1, len(self.destinations), 2):
+            # TODO: Implement roundtrip chance. Then also check roundtrip consistency.
+            # if i == len(self.destinations) - 1 or random.random() < self.model.roundtrip_chance:
             self.destinations[i] = self.pc4
 
         # Schedule events for the trip times (use self.model.simulator.schedule_event_absolute)

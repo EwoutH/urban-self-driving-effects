@@ -85,7 +85,7 @@ class Data:
                         #     self.od_chance_dicts[mode][origin][destination] = 0
                         if destination not in populated_in_city:
                             self.od_chance_dicts[mode][origin][destination] = 0
-                        if origin == destination:  # No trips to the same location
+                        if origin == destination and origin in self.mrdh65_to_pc4 and len(self.mrdh65_to_pc4[origin]) <= 1:  # No trips to the same location if only one pc4
                             self.od_chance_dicts[mode][origin][destination] = 0
                     # Normalize the chances back to 1. This skewes the data to more inner city trips, but with a correct total number of trips.
                     total = sum(self.od_chance_dicts[mode][origin].values())
