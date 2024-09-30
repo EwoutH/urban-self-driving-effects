@@ -210,6 +210,7 @@ class Traveler(Agent):
                 distance = self.model.car_travel_distance_array[o_id][d_id]
                 if mode == "car":
                     costs = distance * self.model.car_price_per_km_variable
+                    travel_time = travel_time + 36  # 36 seconds for parking
                 if mode == "av":
                     costs = self.model.av_initial_costs + distance * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
 
@@ -300,7 +301,7 @@ class Traveler(Agent):
         def end_trip_with_event():
             old_end_trip()
             self.model.simulator.schedule_event_now(self.finish_journey, function_kwargs={"journey": journey})
-            journey.act_travel_time = journey.vehicle.arrival_time - journey.vehicle.departure_time
+            journey.act_travel_time = journey.vehicle.arrival_time - journey.vehicle.departure_time + 36  # 36 seconds for parking
             journey.vehicle = int(journey.vehicle.name)
 
         journey.vehicle.end_trip = end_trip_with_event
