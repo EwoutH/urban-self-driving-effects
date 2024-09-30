@@ -15,7 +15,8 @@ from uxsim.Utilities import get_shortest_path_distance_between_all_nodes
 
 data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
-suffix = "sens1"
+folder = ""
+suffix = "base"
 
 class UrbanModel(Model):
     def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.5, av_vot_factor=0.5, ext_vehicle_load=0.6, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.2, av_density=1.0, induced_demand=1.0, simulator=None):
@@ -276,12 +277,12 @@ for col in journeys_df.columns:
         print(f"Warning: {col} has dtype {journeys_df[col].dtype}.")
 
 # Save in feather format
-journeys_df.to_feather(f"results/journeys_df_{suffix}.feather")
+journeys_df.to_feather(f"../results/{folder}journeys_df_{suffix}.feather")
 
 mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
 print(f"Mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts.items()})}")
 
-mode_counts_weighted = journeys_df.groupby('mode')['distance'].sum() / journeys_df['distance'].sum()
+mode_counts_weighted = journeys_df.groupby('mode', observed=True)['distance'].sum() / journeys_df['distance'].sum()
 print(f"Distance weighted mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts_weighted.items()})}")
 
 
@@ -292,13 +293,13 @@ model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bi
 model1.uxsim_data.drop(columns="n_links", inplace=True)
 
 # Save uxsim_data as pickle
-with open(f"results/uxsim_df_{suffix}.pkl", "wb") as f:
+with open(f"../results/{folder}uxsim_df_{suffix}.pkl", "wb") as f:
     pickle.dump(model1.uxsim_data, f)
 
 print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
 
 # Save uxsim_data to a file
-with open(f"results/parked_dict_{suffix}.pkl", "wb") as f:
+with open(f"../results/{folder}parked_dict_{suffix}.pkl", "wb") as f:
     pickle.dump(model1.parked_dict, f)
 
 # W.analyzer.print_simple_stats()
