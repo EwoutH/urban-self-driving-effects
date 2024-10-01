@@ -119,6 +119,8 @@ class UrbanModel(Model):
 
         # For a weekday, take the average of days 0-3 (Monday-Thursday)
         self.trips_by_hour_chance = data.trips_by_hour_chance = data.trips_by_hour_chances.iloc[:, 0:4].mean(axis=1).drop("Total")
+        # Save a copy of the original data for external vehicles, they don't need to be modified
+        self.trips_by_hour_chance_ext = self.trips_by_hour_chance.copy()
         # Multiply the dict by the induced demand factor
         self.trips_by_hour_chance *= self.induced_demand
         # Drop the hours that are not in the range of the model and save as a dictionary
@@ -206,7 +208,7 @@ class UrbanModel(Model):
         end_time = (sim_hour + 1) * 3600
 
         # Get the trip multiplier for this hour
-        hour_multiplier = self.trips_by_hour_chance[hour]
+        hour_multiplier = self.trips_by_hour_chance_ext[hour]
 
         for ext_area in self.mrdh65s_ext:
             for int_area in self.mrdh65s:
