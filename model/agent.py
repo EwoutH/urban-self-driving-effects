@@ -234,29 +234,33 @@ class Traveler(Agent):
 
     def choose_network_od_nodes(self, journey: Journey):
         attempts = 0
-        max_attempts = 5
+        max_attempts = 7
 
         while attempts < max_attempts:
             o_nodes = self.model.uw.node_pc4_dict[journey.origin]
             d_nodes = self.model.uw.node_pc4_dict[journey.destination]
-            # If one is empty, break
-            if len(o_nodes) == 0 or len(d_nodes) == 0:
-                print(f"Agent {self.unique_id} at {self.pc4} has no nodes for origin {journey.origin} or destination {journey.destination}")
-            journey.o_node = self.model.uw.rng.choice(self.model.uw.node_pc4_dict[journey.origin])
-            journey.d_node = self.model.uw.rng.choice(self.model.uw.node_pc4_dict[journey.destination])
-            # Not all OD pairs are in the network, so we need to check if the nodes are connected
-            travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
-            # Also check the reverse direction
-            travel_time2 = self.model.uw.ROUTECHOICE.dist[journey.d_node.id][journey.o_node.id]
-            if travel_time > 1e6 or travel_time2 > 1e6:
-                attempts += 1
-            else:
-                self.model.successful_car_trips += 1
-                return
 
-        # If all attempts fail, remove car and av from available modes
-        journey.available_modes = [m for m in journey.available_modes if m not in ["car", "av"]]
-        self.model.failed_car_trips += 1
+            journey.o_node = self.model.uw.rng.choice(o_nodes)
+            journey.d_node = self.model.uw.rng.choice(d_nodes)
+
+            # Check if OD pairs are connected in both directions
+            travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
+            travel_time2 = self.model.uw.ROUTECHOICE.dist[journey.d_node.id][journey.o_node.id]
+
+            if travel_time <= 1e6 and travel_time2 <= 1e6:
+                # Successful trip
+                self.model.successful_car_trips += 1
+                break  # Exit the loop as successful connection is found
+            else:
+                attempts += 1
+
+        else:
+            # If all attempts fail, adjust available modes and count failed trip
+            journey.available_modes = [m for m in journey.available_modes if m not in ["car", "av"]]
+            if len(journey.available_modes) == 0:
+                print(f"Agent {self.unique_id} at {self.pc4} to {journey.destination} has no available modes left.")
+                journey.available_modes = ["bike", "transit"]
+            self.model.failed_car_trips += 1
 
     def calculate_transit_cost(self, distance, price_per_km, subscription=False):
         # Calculate the cost of a transit journey based on distance and price per km.
