@@ -246,7 +246,9 @@ class Traveler(Agent):
             journey.d_node = self.model.uw.rng.choice(self.model.uw.node_pc4_dict[journey.destination])
             # Not all OD pairs are in the network, so we need to check if the nodes are connected
             travel_time = self.model.uw.ROUTECHOICE.dist[journey.o_node.id][journey.d_node.id]
-            if travel_time > 1e6:
+            # Also check the reverse direction
+            travel_time2 = self.model.uw.ROUTECHOICE.dist[journey.d_node.id][journey.o_node.id]
+            if travel_time > 1e6 or travel_time2 > 1e6:
                 attempts += 1
             else:
                 self.model.successful_car_trips += 1
