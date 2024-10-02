@@ -15,8 +15,6 @@ from uxsim.Utilities import get_shortest_path_distance_between_all_nodes
 
 data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
-folder = ""
-suffix = "base1"
 
 class UrbanModel(Model):
     def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=False, av_cost_factor=1.0, av_vot_factor=1.0, ext_vehicle_load=0.8, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.33, av_density=1.0, induced_demand=1.0, simulator=None):
@@ -233,77 +231,73 @@ class UrbanModel(Model):
 
                 self.ext_vehicles += volume_in + volume_out
 
-# Create a simulator and model
-simulator1 = DEVSimulator()
-model1 = UrbanModel(simulator=simulator1)
-simulator1.model = model1
+def run_model(save_results=False, suffix="default", folder="default", params=None):
+    if params is None:
+        params = {}
+    simulator = DEVSimulator()
+    model = UrbanModel(simulator=simulator, **params)
+    simulator.model = model
 
-print(f"### Running the model from {model1.start_time} to {model1.end_time}")
-simulator1.run_until(model1.end_time)
-print(f"### Model finished at {model1.simulator.time}")
-print(f"External vehicles added: {model1.ext_vehicles}")
+    print(f"### Running the model from {model.start_time} to {model.end_time} with {suffix}")
+    simulator.run_until(model.end_time)
+    print(f"### Model finished at {model.simulator.time}")
+    print(f"External vehicles added: {model.ext_vehicles}")
+    if save_results:
+        process_results(model, suffix, folder)
 
-### Journey data
-# Create a flat list with all journeys from all agents. Each agent has a journeys list.
-all_journeys = [journey for agent in model1.agents for journey in agent.journeys]
+def process_results(model, suffix, folder):
+    # Journey data processing
+    all_journeys = [journey for agent in model.agents for journey in agent.journeys]
+    for journey in all_journeys:
+        journey.agent = journey.agent.unique_id
+        try:
+            journey.o_node = journey.o_node.name
+            journey.d_node = journey.d_node.name
+        except AttributeError:
+            pass
+        if not isinstance(journey.vehicle, int) and journey.vehicle is not None:
+            journey.vehicle = int(journey.vehicle.name)
 
-# In all_journeys, replace the agent with the agent unique_id, the o_node, d_node and vehicle with their names in each Journey class.
-for journey in all_journeys:
-    journey.agent = journey.agent.unique_id
-    try:
-        journey.o_node = journey.o_node.name
-        journey.d_node = journey.d_node.name
-    except AttributeError:
-        pass  # In this case the o_node and d_node are already None
-    if not isinstance(journey.vehicle, int) and journey.vehicle is not None:
-        journey.vehicle = int(journey.vehicle.name)
+    journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
+    journeys_df['car_available'] = journeys_df['available_modes'].apply(lambda x: "car" in x).astype(bool)
+    journeys_df['av_available'] = journeys_df['available_modes'].apply(lambda x: "av" in x).astype(bool)
+    journeys_df.drop(columns="available_modes", inplace=True)
 
-journeys_df = pd.DataFrame([asdict(journey) for journey in all_journeys])
+    for mode in model.available_modes:
+        journeys_df[f"perceived_cost_{mode}"] = journeys_df['perceived_cost_dict'].apply(
+            lambda x: x.get(mode, np.nan)).astype(np.float32)
+    journeys_df.drop(columns="perceived_cost_dict", inplace=True)
 
-# Split the dict in available_modes in car_available and av_available
-journeys_df['car_available'] = journeys_df['available_modes'].apply(lambda x: "car" in x).astype(bool)
-journeys_df['av_available'] = journeys_df['available_modes'].apply(lambda x: "av" in x).astype(bool)
-journeys_df.drop(columns="available_modes", inplace=True)
+    journeys_df = journeys_df.astype(data.journey_dtypes)
+    journeys_df.to_feather(f"../results/{folder}journeys_df_{suffix}.feather")
 
-# Split the dict in perceived_cost_dict column in perceived_cost_{mode} columns (np.float32)
-for mode in model1.available_modes:
-    journeys_df[f"perceived_cost_{mode}"] = journeys_df['perceived_cost_dict'].apply(lambda x: x.get(mode, np.nan)).astype(np.float32)
-journeys_df.drop(columns="perceived_cost_dict", inplace=True)
+    # UXsim data processing
+    area_names, areas = zip(*model.uw.node_mrdh65_dict.items())
+    uxsim_data = model.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900, set_index=True)
+    uxsim_data.drop(columns="n_links", inplace=True)
 
-# convert the columns to the dtypes in the data.journey_dtypes dict
-journeys_df = journeys_df.astype(data.journey_dtypes)
+    with open(f"../results/{folder}uxsim_df_{suffix}.pkl", "wb") as f:
+        pickle.dump(uxsim_data, f)
 
-# Warn if any column is other than int, float, bool or category
-for col in journeys_df.columns:
-    if journeys_df[col].dtype not in ["UInt32", "float32", bool, "category"]:
-        print(f"Warning: {col} has dtype {journeys_df[col].dtype}.")
+    with open(f"../results/{folder}parked_dict_{suffix}.pkl", "wb") as f:
+        pickle.dump(model.parked_dict, f)
 
-# Save in feather format
-journeys_df.to_feather(f"../results/{folder}journeys_df_{suffix}.feather")
+    # Print summary statistics
+    mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
+    print(f"Mode choice distribution: {({mode: f'{count:.2%}' for mode, count in mode_counts.items()})}")
 
-mode_counts = journeys_df['mode'].value_counts(normalize=True).to_dict()
-print(f"Mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts.items()})}")
+    mode_counts_weighted = journeys_df.groupby('mode', observed=True)['distance'].sum() / journeys_df['distance'].sum()
+    print(
+        f"Distance weighted mode choice distribution: {({mode: f'{count:.2%}' for mode, count in mode_counts_weighted.items()})}")
 
-mode_counts_weighted = journeys_df.groupby('mode', observed=True)['distance'].sum() / journeys_df['distance'].sum()
-print(f"Distance weighted mode choice distribution: {({mode: f"{count:.2%}" for mode, count in mode_counts_weighted.items()})}")
+    print(
+        f"{model.successful_car_trips} of {model.successful_car_trips + model.failed_car_trips} car trips were successful.")
+    model.uw.analyzer.basic_analysis()
+    print(f"\nSimple stats: {model.uw.analyzer.print_simple_stats()}")
 
+    # Clear memory
+    del journeys_df
+    del uxsim_data
 
-### UXsim data
-area_names, areas = zip(*model1.uw.node_mrdh65_dict.items())
-# link_cumulative_to_pandas
-model1.uxsim_data = model1.uw.analyzer.area_to_pandas(areas, area_names, time_bin=900, set_index=True)
-model1.uxsim_data.drop(columns="n_links", inplace=True)
-
-# Save uxsim_data as pickle
-with open(f"../results/{folder}uxsim_df_{suffix}.pkl", "wb") as f:
-    pickle.dump(model1.uxsim_data, f)
-
-print(f"{model1.successful_car_trips} of {model1.successful_car_trips + model1.failed_car_trips} car trips were successful.")
-
-# Save uxsim_data to a file
-with open(f"../results/{folder}parked_dict_{suffix}.pkl", "wb") as f:
-    pickle.dump(model1.parked_dict, f)
-
-# W.analyzer.print_simple_stats()
-model1.uw.analyzer.basic_analysis()
-print(f"\nSimple stats: {model1.uw.analyzer.print_simple_stats()}")
+if __name__ == "__main__":
+    run_model(save_results=False, suffix="default", folder="default")
