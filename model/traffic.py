@@ -55,6 +55,7 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
                         show_progress_deltat=300,  # Interval for showing progress, in seconds
                         tmax=simulation_duration,  # Maximum simulation time
                         vehicle_logging_timestep_interval=-1,  # Log no vehicle data
+                        reduce_memory_delete_vehicle_route_pref=True,
                     )
 
     # Helper function to determine max density based on road type and number of lanes
