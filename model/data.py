@@ -25,13 +25,16 @@ class Data:
 
         # Load Shapely polygons
         with open("../data/polygons.pkl", "rb") as f:
-            self.city_polygon, self.area_polygon = pickle.load(f)
+            self.city_polygon, self.area_polygon, self.autoluw_polygon = pickle.load(f)
 
         self.city_polygon_series = gpd.GeoSeries(self.city_polygon, crs="epsg:4326")
         self.city_polygon_series = self.city_polygon_series.to_crs(epsg=28992)
 
         self.area_polygon_series = gpd.GeoSeries(self.area_polygon, crs="epsg:4326")
         self.area_polygon_series = self.area_polygon_series.to_crs(epsg=28992)
+
+        self.autoluw_polygon_series = gpd.GeoSeries(self.autoluw_polygon, crs="epsg:4326")
+        self.autoluw_polygon_series = self.autoluw_polygon_series.to_crs(epsg=28992)
 
         # Load the population data geodataframes
         # On PC4 level (postal code areas)
@@ -55,7 +58,7 @@ class Data:
         self.city_pc4s = set(self.pc4_to_mrdh65_city.keys())
 
         # For both pc4 and mrdh add a column if the centroid is in the target_area
-        for target_area, polygon in zip(["in_city", "in_area"], [self.city_polygon_series, self.area_polygon_series]):
+        for target_area, polygon in zip(["in_city", "in_area", "autoluw"], [self.city_polygon_series, self.area_polygon_series, self.autoluw_polygon_series]):
             self.pop_gdf_nl_pc4[target_area] = self.pop_gdf_nl_pc4.centroid.within(polygon.geometry[0])
             self.gdf_mrdh_65[target_area] = self.gdf_mrdh_65.centroid.within(polygon.geometry[0])
 
