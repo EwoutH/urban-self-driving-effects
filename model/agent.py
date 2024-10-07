@@ -216,6 +216,9 @@ class Traveler(Agent):
                     travel_time = travel_time + 36  # 36 seconds for parking
                 if mode == "av":
                     costs = self.model.av_initial_costs + distance * self.model.av_costs_per_km + travel_time * self.model.av_costs_per_sec
+                    if (self.model.policy_tarif > 0 and int(journey.start_time) in self.model.policy_tarif_hours
+                            and (journey.origin in self.model.policy_pc4s or journey.destination in self.model.policy_pc4s)):
+                        costs += self.model.policy_tarif
 
             case "bike":
                 # Get travel time from Google Maps API, costs are assumed to be zero

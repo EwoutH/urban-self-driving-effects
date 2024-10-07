@@ -17,7 +17,7 @@ data = data
 real_population = 991575  # sum(self.pop_dict_pc4_city.values())
 
 class UrbanModel(Model):
-    def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=False, av_cost_factor=1.0, av_vot_factor=1.0, ext_vehicle_load=0.8, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.33, av_density=1.0, induced_demand=1.0, policy_tarif=0, policy_speed_reduction=0, policy_area="autoluw", simulator=None):
+    def __init__(self, step_time=1/12, start_time=5, end_time=11, choice_model="rational_vot", enable_av=True, av_cost_factor=0.25, av_vot_factor=0.5, ext_vehicle_load=0.8, uxsim_platoon_size=10, car_comfort=0.5, bike_comfort=1.33, av_density=1.0, induced_demand=1.0, policy_tarif=0, policy_tarif_time="peak", policy_speed_reduction=0, policy_area="autoluw", simulator=None):
         super().__init__()
         n_agents = int(real_population / uxsim_platoon_size)
         print(f"### Initializing UrbanModel with {n_agents} agents, step time {step_time:.3f} hours, start time {start_time}, end time {end_time}, choice model {choice_model}, AV enabled {enable_av}, AV cost factor {av_cost_factor}, AV VOT factor {av_vot_factor}, external vehicle load {ext_vehicle_load}, UXsim platoon size {uxsim_platoon_size}, car comfort {car_comfort}, bike comfort {bike_comfort}, av density {av_density}, induced demand {induced_demand}.")
@@ -39,6 +39,13 @@ class UrbanModel(Model):
 
         # Policy variables
         self.policy_tarif = policy_tarif
+        self.policy_tarif_time = policy_tarif_time
+        policy_hour_dict = {
+            "peak": set([7, 8, 16, 17]),  # Peak traffic according to V-MRDH model (7-9, 16-18)
+            "day": set(range(6, 18)),  # Daytime as used for speed limits in the Netherlands (6-19)
+            "all": set(range(24))
+        }
+        self.policy_tarif_hours = policy_hour_dict[policy_tarif_time]
         self.policy_speed_reduction = policy_speed_reduction
         self.policy_area = policy_area
 
@@ -116,7 +123,7 @@ class UrbanModel(Model):
 
         # Policy PC4s used for congestion pricing
         self.pc4s_autoluw = data.pop_gdf_nl_pc4[data.pop_gdf_nl_pc4["autoluw"] == True].index.to_list()
-        self.policy_pc4s = self.pc4s_autoluw if self.policy_area == "autoluw" else self.pc4s
+        self.policy_pc4s = set(self.pc4s_autoluw if self.policy_area == "autoluw" else self.pc4s)
 
         # Policy area for reducing the speed limits
         polygon_dict = {"autoluw": data.autoluw_polygon_series, "city": data.city_polygon_series, "area": data.area_polygon_series}
