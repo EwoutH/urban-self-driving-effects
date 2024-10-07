@@ -117,7 +117,10 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10, pol
         osmid = data['osmid']
         length = data['length']  # Assuming 'length' attribute exists
         # Assuming 'speed' attribute exists, convert speed from km/h to m/s
-        speed_limit = data.get('speed', 30) * 1000 / 3600  # Default speed: 30 km/h
+        speed_limit = data.get('speed_kph', 50)
+        # If speed limit is a list, sort and take the median value
+        if isinstance(speed_limit, list):
+            speed_limit = sorted(speed_limit)[len(speed_limit) // 2]
         # Calculate max density based on road type and lanes
         road_type = data.get('highway', '')
         network_name = data.get('network', '')
@@ -127,6 +130,7 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10, pol
             speed_limit = max(20, speed_limit - 20)  # Reduce speed limit by 20 km/h with a minimum of 20 km/h
             max_density += 0.02
             world.reduced_link_speeds += 1
+        speed_limit = speed_limit * 1000 / 3600  # km/h to m/s
         priority = 1  # Example value
         # Get the lanes
         lanes = data.get('lanes', 1)
