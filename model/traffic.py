@@ -3,6 +3,7 @@
 # - [UXsim](https://www.github.com/toruseo/uxsim)
 
 from data import data
+import random
 
 from collections import defaultdict
 
@@ -13,11 +14,17 @@ data1 = data
 
 # print(f"UXsim version: {uxsim.__version__}")
 
-def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
+def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10, policy_speed_reduction=0, policy_polygon=None):
     city_name = "Rotterdam"
     surrounding_area_name = "South Holland"
 
     road_network = ox.load_graphml("../network/graphs/merged_network.graphml")
+    network_crs = road_network.graph['crs']
+
+    # Convert the policy_polygon to the network_crs
+    if policy_polygon is not None:
+        policy_polygon = policy_polygon.to_crs(network_crs)
+        policy_polygon = policy_polygon.geometry[0]
 
     # Print number of nodes and edges
     print(f"Number of nodes: {len(road_network.nodes)}\nNumber of edges: {len(road_network.edges)}")
@@ -101,7 +108,9 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
             # Add the mrdh65 nodes to the pc4 nodes
             world.node_pc4_dict[pc4] = world.node_mrdh65_dict[data1.pc4_to_mrdh65_city[pc4]]
 
-    # Create Links in UXsim from OSMnx graph edges
+    reduce_speeds = policy_speed_reduction > 0
+    world.reduced_link_speeds = 0
+
     for u, v, data in road_network.edges(data=True):
         start_node_name = str(u)
         end_node_name = str(v)
@@ -113,6 +122,11 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
         road_type = data.get('highway', '')
         network_name = data.get('network', '')
         max_density = calculate_max_density(road_type, network_name)
+
+        if reduce_speeds and random.random() < policy_speed_reduction and data["geometry"].centroid.within(policy_polygon):
+            speed_limit = max(20, speed_limit - 20)  # Reduce speed limit by 20 km/h with a minimum of 20 km/h
+            max_density += 0.02
+            world.reduced_link_speeds += 1
         priority = 1  # Example value
         # Get the lanes
         lanes = data.get('lanes', 1)
@@ -122,6 +136,9 @@ def get_uxsim_world(save_mode=False, show_mode=False, uxsim_platoon_size=10):
 
         world.addLink(name=f"{u}_{v}_{osmid}", start_node=start_node_name, end_node=end_node_name, length=length,
                       free_flow_speed=speed_limit, jam_density_per_lane=max_density, merge_priority=priority, number_of_lanes=lanes)
+
+    if world.reduced_link_speeds > 0:
+        print(f"Reduced speed on {world.reduced_link_speeds} of {len(road_network.edges)} links ({world.reduced_link_speeds / len(road_network.edges):.2%})")
 
     # Assuming 'world' is your UXsim world and it has been populated with nodes and links as per previous steps
     nodes = {node.name: node for node in world.NODES}  # List of node names
