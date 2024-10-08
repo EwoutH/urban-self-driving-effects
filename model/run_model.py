@@ -52,5 +52,7 @@ if __name__ == "__main__":
     with mp.Pool(processes=num_cores, maxtasksperchild=1) as pool:
         run_args = [(True, suffix, folder, params) for suffix, params in combinations_to_run.items()]
         pool.starmap(run_model, run_args)
+        pool.close()
+        pool.join()
 
     print("All experiments completed.")

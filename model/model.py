@@ -266,6 +266,12 @@ def run_model(save_results=False, suffix="default", folder="default", params=Non
     print(f"External vehicles added: {model.ext_vehicles}")
     if save_results:
         process_results(model, suffix, folder)
+    # Force garbage collection after the run
+    print("### Cleaning up memory.")
+    del simulator.model
+    del simulator
+    del model
+    gc.collect()
 
 def process_results(model, suffix, folder):
     # Journey data processing
