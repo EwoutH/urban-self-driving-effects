@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from dataclasses import asdict
 import pickle
+import gc
 
 from uxsim.Utilities import get_shortest_path_distance_between_all_nodes
 
@@ -151,7 +152,6 @@ class UrbanModel(Model):
         # UXsim world (from traffic.py)
         self.uw = get_uxsim_world(save_mode=False, show_mode=True, uxsim_platoon_size=self.uxsim_platoon_size,
                                   policy_speed_reduction=self.policy_speed_reduction, policy_polygon=self.policy_polygon)
-        print(f"Reduced link speeds: {self.uw.reduced_link_speeds} ({self.uw.reduced_link_speeds / len(self.uw.LINKS):.2%})")
 
         self.mrdh65s_ext = data.od_ext_into_city.index.to_list()
         self.ext_vehicles = 0
