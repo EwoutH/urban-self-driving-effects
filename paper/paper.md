@@ -50,6 +50,7 @@ The model consists of the following main entities:
 1. **Travelers (Agents)**: Represent individual residents of the urban area who make travel decisions.
 2. **Urban Model**: Represents the overall simulation environment, including the transportation network and global variables.
 3. **UXsim World**: Represents the traffic simulation environment, including road network and vehicle movements.
+4. **Journeys**: Represent individual trips made by travelers.
 
 #### 2.2 State Variables
 
@@ -83,6 +84,19 @@ The model consists of the following main entities:
 - `start_time`: Start time of the simulation (in hours)
 - `end_time`: End time of the simulation (in hours)
 - `choice_model`: Type of mode choice model used
+- `enable_av`: Boolean indicating if AVs are enabled in the simulation
+- `av_cost_factor`: Cost factor for AVs
+- `av_vot_factor`: Value of time factor for AVs
+- `ext_vehicle_load`: External vehicle load factor
+- `uxsim_platoon_size`: Platoon size for UXsim traffic simulation
+- `car_comfort`: Comfort factor for cars
+- `bike_comfort`: Comfort factor for bicycles
+- `av_density`: Density factor for AVs
+- `induced_demand`: Factor for induced demand
+- `policy_tarif`: Tariff for policy implementation
+- `policy_tarif_time`: Time period for policy tariff
+- `policy_speed_reduction`: Speed reduction factor for policy
+- `policy_area`: Area where policy is applied
 - `available_modes`: List of available transportation modes
 - `transit_price_per_km`: Price per kilometer for public transit
 - `car_price_per_km_variable`: Variable cost per kilometer for cars
@@ -90,10 +104,10 @@ The model consists of the following main entities:
 - `av_initial_costs`: Initial costs for using an autonomous vehicle
 - `av_costs_per_km`: Cost per kilometer for autonomous vehicles
 - `av_costs_per_sec`: Cost per second for autonomous vehicles
-- `av_vot_factor`: Value of time factor for autonomous vehicles
 - `default_value_of_times`: Default values of time for different modes
+- `comfort_factors`: Comfort factors for different modes
 - `pop_dict_pc4_city`: Dictionary of population by postal code
-- `areas`: List of unique MRDH regions in the simulation
+- `mrdh65s`: List of unique MRDH regions in the simulation
 - `pc4s`: List of unique postal codes in the simulation
 - `trips_by_hour_chance`: Dictionary of trip probabilities by hour
 - `trips_by_mode`: Dictionary tracking the number of trips by mode
@@ -119,24 +133,49 @@ The model consists of the following main entities:
 - `node_pc4_dict`: Dictionary mapping postal codes to network nodes
 - `node_mrdh65_dict`: Dictionary mapping MRDH regions to network nodes
 
+##### 2.2.4 Journey State Variables
+
+- `agent`: Reference to the agent making the journey
+- `origin`: Origin of the journey (postal code)
+- `destination`: Destination of the journey (postal code)
+- `mode`: Chosen mode of transport
+- `start_time`: Start time of the journey
+- `travel_time`: Estimated travel time
+- `end_time`: End time of the journey
+- `distance`: Journey distance
+- `cost`: Monetary cost of the journey
+- `perceived_cost`: Perceived cost (including time value)
+- `comf_perceived_cost`: Comfort-adjusted perceived cost
+- `used_network`: Boolean indicating if the journey used the road network
+- `available_modes`: List of available modes for this journey
+- `perceived_cost_dict`: Dictionary of perceived costs for all available modes
+- `started`: Boolean indicating if the journey has started
+- `finished`: Boolean indicating if the journey has finished
+- `act_travel_time`: Actual travel time (for car/AV journeys)
+- `act_perceived_cost`: Actual perceived cost (for car/AV journeys)
+- `o_node`: Origin node in the road network
+- `d_node`: Destination node in the road network
+- `vehicle`: Vehicle object for car/AV journeys
+
 #### 2.3 Scales
 
 - **Spatial scale**: The model covers the Rotterdam urban area, represented by 125 4-digit postal code (PC4) regions within 21 MRDH (Metropoolregio Rotterdam Den Haag) areas.
-- **Temporal scale**: The simulation runs from 6:00 to 22:00 (16 hours) with a default step time of 5 minutes (1/12 hour).
-- **Population scale**: The model simulates approximately 100,000 agents, representing about 1/10 of the actual population (991,575) of the area.
+- **Temporal scale**: The simulation typically runs from 5:00 to 24:00 (19 hours) with a default step time of 5 minutes (1/12 hour).
+- **Population scale**: The model simulates approximately 100,000 agents, with each agent representing a platoon of vehicles (default size 10), approximating the actual population of 991,575 in the area.
 
 ### 3. Process Overview and Scheduling
 
 The model follows a discrete event simulation approach, with the following main processes:
 
 1. **Initialization**: 
-   - Set up the simulation environment
-   - Create agents and assign them to locations
+   - Set up the simulation environment and parameters
+   - Create agents and assign them to locations based on population data
    - Initialize the road network and traffic simulation (UXsim)
+   - Assign car ownership and driver's licenses based on postal code data
 
-2. **Generate trip times**: 
+2. **Generate trip times and destinations**: 
    - Each agent generates a set of trip times based on hourly probabilities
-   - Destinations are assigned for each trip
+   - Destinations are assigned for each trip based on origin-destination matrices
 
 3. **Start journey**:
    - Determine available modes for the journey
@@ -152,7 +191,10 @@ The model follows a discrete event simulation approach, with the following main 
    - Update agent's location and available modes
    - Schedule the next journey if available
 
-6. **Data collection and analysis**:
+6. **Add external vehicle load**:
+   - Add vehicles representing external traffic at specified intervals
+
+7. **Data collection and analysis**:
    - Collect data on mode choices, travel times, and system-level metrics
    - Analyze and visualize results
 
@@ -228,6 +270,7 @@ The model incorporates stochasticity in several ways:
 - Value of Time: Each agent's Value of Time factor is drawn from a lognormal distribution.
 - Initial conditions: Agent attributes like car ownership and possession of a driver's license are assigned probabilistically based on data for each postal code area.
 - Traffic simulation: The UXsim component includes stochastic elements in route choice and traffic flow.
+- Origin-destination pairs: Trip destinations are chosen probabilistically based on origin-destination matrices.
 
 #### 4.10 Collectives
 
@@ -237,37 +280,42 @@ The model does not explicitly represent collectives or agent groups. However, ag
 
 The model collects and outputs various data for analysis:
 
-- Mode choice distribution
+- Mode choice distribution (overall and distance-weighted)
 - Trips by mode and time of day
-- Traffic conditions (from UXsim)
-- Parking demand by area
-- Journey details for each completed trip
+- Traffic conditions (from UXsim), including speed, density, and flow
+- Parking demand by area over time
+- Journey details for each completed trip, including origin, destination, mode, travel time, and costs
+- System-level metrics such as total vehicle kilometers traveled, average speeds, and congestion levels
 
-This data is saved in various formats (Python pickle files, CSV) for further analysis and visualization.
+This data is saved in various formats (Python pickle files, Feather files) for further analysis and visualization.
 
 ### 5. Initialization
 
 The model is initialized with the following steps:
 
-1. Set up the simulation environment with specified parameters (e.g., number of agents, start and end times, time step).
-2. Load geographical and population data for the Rotterdam area.
+1. Set up the simulation environment with specified parameters (e.g., number of agents, start and end times, time step, policy variables).
+2. Load geographical and population data for the Rotterdam area from various sources (CBS, MRDH, OpenStreetMap).
 3. Create agents and assign them to postal code areas based on population distribution.
 4. Assign car ownership and driver's licenses to agents based on data for each postal code.
-5. Generate trip schedules for each agent.
+5. Generate trip schedules for each agent based on time-of-day probabilities.
 6. Initialize the UXsim traffic simulation component with the road network data.
+7. Set up initial parking distribution based on car ownership in each area.
+8. Initialize data collection structures for various metrics.
 
-The initial state can vary between simulation runs due to the stochastic elements in agent creation and trip generation.
+The initial state can vary between simulation runs due to the stochastic elements in agent creation, attribute assignment, and trip generation.
 
 ### 6. Input Data
 
 The model uses several external data sources:
 
-1. Population data by postal code (PC4) and MRDH region
-2. Car ownership and driver's license data by postal code
+1. Population data by postal code (PC4) and MRDH region (CBS)
+2. Car ownership and driver's license data by postal code (CBS)
 3. Road network data from OpenStreetMap
 4. Travel time and distance data for public transit and cycling (from Google Maps API)
 5. Trip generation probabilities by hour (derived from ODiN 2023 data)
-6. Origin-destination matrices for the Rotterdam area
+6. Origin-destination matrices for the Rotterdam area (V-MRDH model)
+7. Geographical boundaries for policy areas (city, area, autoluw)
+8. Value of Time data from Dutch transportation studies
 
 These data are preprocessed and stored in various formats (CSV, pickle files, GraphML) for use in the simulation.
 
@@ -279,7 +327,7 @@ Trips are generated for each agent using the following process:
 
 1. For each hour in the simulation period, generate a trip with probability given by `trips_by_hour_chance`.
 2. Ensure an even number of trips by potentially adding or removing a trip.
-3. Assign destinations based on origin-destination probability matrices.
+3. Assign destinations based on origin-destination probability matrices, differentiating between peak and off-peak hours.
 4. Schedule the trips as events in the simulation.
 
 #### 7.2 Mode Choice
@@ -288,9 +336,10 @@ The mode choice model is implemented in the `choice_rational_vot` method of the 
 
 ```python
 perceived_cost = monetary_cost + travel_time * value_of_time[mode]
+comf_perceived_cost = perceived_cost * comfort_factor[mode]
 ```
 
-The mode with the lowest perceived cost is chosen.
+The mode with the lowest comfort-adjusted perceived cost is chosen.
 
 #### 7.3 Traffic Simulation
 
@@ -299,19 +348,35 @@ Traffic is simulated using the UXsim library, which implements a mesoscopic traf
 - Dynamic User Equilibrium (DUE) for route choice
 - Platoon-based vehicle representation
 - Link-based traffic flow calculations
+- Consideration of road characteristics (e.g., speed limits, number of lanes)
+- Integration of external traffic based on origin-destination matrices
+
+The traffic simulation is updated at regular intervals (default 5 minutes) and provides data on link speeds, densities, and flows.
 
 #### 7.4 Parking
 
-Parking is modeled by tracking the number of parked vehicles in each MRDH region. When a car trip starts, a parking space is freed in the origin area. When a car trip ends, a parking space is occupied in the destination area.
+Parking is modeled by tracking the number of parked vehicles in each MRDH region:
+
+- When a car trip starts, a parking space is freed in the origin area.
+- When a car trip ends, a parking space is occupied in the destination area.
+
+The `parked_per_area` dictionary is updated in real-time, and the `parked_dict` stores the parking situation over time for later analysis.
 
 #### 7.5 Cost Calculation
 
 Travel costs are calculated differently for each mode:
 
-- Car: Distance-based cost using `car_price_per_km_variable`
+- Car: Distance-based cost using a fixed price per kilometer
+  - `distance * car_price_per_km_variable`
 - AV: Initial cost plus distance and time-based costs
+  - `av_initial_costs + distance * av_costs_per_km + travel_time * av_costs_per_sec`
 - Bike: Assumed to be zero
-- Transit: Distance-based cost with a non-linear pricing scheme
+- Transit: Distance-based cost with a non-linear pricing scheme, simulating real-world transit pricing:
+  ```python
+  ranges = [(40, 1), (80, .979), (100, .8702), (120, .7),
+            (150, .48), (200, .4), (250, .15), (float('inf'), 0)]
+  ```
+  - In practice, the vast majority of trips are under 40 kilometers, and thus priced at the full rate, but this allows to extend the model further. 
 
 #### 7.6 Value of Time
 
@@ -323,3 +388,50 @@ value_of_time = {mode: default_vot[mode] * vot_factor for mode in modes}
 ```
 
 This creates heterogeneity in how agents value their time, influencing their mode choices.
+
+#### 7.7 External Vehicle Load
+
+External vehicle traffic is modeled based on origin-destination matrices:
+
+- Vehicles are added at the start of each hour based on time-of-day probabilities.
+- The number of vehicles is scaled by `ext_vehicle_load` factor.
+- Origins and destinations are chosen from predefined external and internal areas.
+
+#### 7.8 Scenario & Policy Implementation
+
+The model includes several scenario uncertainties and policy levers that can be adjusted:
+
+##### Scenario uncertainties
+1. AV cost factor: Scales the fixed, time based and distance based cost of using autonomous vehicles.
+2. AV Value of Time factor: Scales how users perceive time spent in AVs.
+3. AV Density factor: Scales the number of AVs that get generated, as a proxy for the space (per person) an AV takes up on the road.
+4. Induced demand factor: Scales the overall trip generation rates.
+
+##### Policy levers
+1. Congestion pricing:
+   - `policy_tarif`: Sets the pricing level.
+   - `policy_tarif_time`: Determines when the pricing is active (e.g., peak hours, all day).
+   - `policy_area`: Defines the geographical area where the pricing is applied.
+2. Speed reduction:
+   - `policy_speed_reduction`: Probability of reducing speed on a given road.
+   - `policy_area`: Defines the area where speed reductions are applied.
+
+These scenario uncertainties and policies levers can be combined and varied into different scenarios and policies to explore their impacts on the transportation system.
+
+#### 7.9 Journey Management
+
+The `Journey` class encapsulates all information about a single trip:
+
+- It tracks the origin, destination, mode, costs, and timings of each trip.
+- For car and AV trips, it interfaces with the UXsim traffic simulation to schedule vehicle movements.
+- It handles the logic for trip chaining, ensuring that agents return to their original location and maintaining mode consistency (e.g., if an agent leaves with a car, they must return with a car).
+
+#### 7.10 Data Collection and Analysis
+
+The model collects data at multiple levels:
+
+- Agent level: Individual trip details, mode choices, and costs.
+- Network level: Traffic conditions from UXsim (speed, density, flow) for each network link.
+- System level: Aggregated metrics like mode shares, total vehicle kilometers traveled, and parking occupancy.
+
+Data is collected at regular intervals and stored for post-simulation analysis. The `process_results` function in the `UrbanModel` class handles the aggregation and storage of this data.
