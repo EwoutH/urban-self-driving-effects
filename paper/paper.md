@@ -494,6 +494,73 @@ This appendix lists the most important assumptions made in the model design and 
 6. Simplified AV behavior: Autonomous vehicles are assumed to operate similarly to human-driven vehicles, with adjustments only to cost structure and value of time.
 7. No adaptation of public transit: The public transit system is assumed to remain constant, not adapting to changes in demand or competing modes.
 
+## Appendix B: Limitations
+### Agent behavior
+The Agent mode-choice model is the most limited part of the model, mainly because of data-availability and computational constraints. Ideally an activity-based model would be used, but this would require carefully designed surveys with large sample sizes, which weren't available.
+
+Some specific limitations include:
+1. Limited behavioral complexity: The model does not capture complex decision-making processes, psychological factors, or habitual behaviors that may influence mode choice.
+   - Implementing more complex behavioral models needs carefully designed stated-preference (SP) studies, which also collects socio-economical data. Only revealed-preference studies were available, but different to fit to scenarios and modalities that currently do not exist.
+2. Lack of sociodemographic factors: Beyond value of time, the model does not consider how factors like age, income, or household composition affect travel behavior.
+   - Data for these factors is available, but would only make sense to use with proper stated-preference studies (or other calibrated models).
+3. Simplified trip chaining: The model only implements simple two-leg trip chains, not capturing more complex trip patterns (e.g., home-work-shop-home).
+   - More complex trip chaining would also require additional data on activity patterns.
+4. No long-term adaptation: Agents do not learn or adapt their behavior over time based on experiences.
+   - Implementing learning behaviors would require longer simulation periods, for which compute budgets where out of scope for this study.
+5. Limited mode options: The model considers only four modes (car, bike, transit, AV), not including options like walking, e-bikes, or shared mobility services.
+   - Adding more modes would require additional data and increase the complexity of the mode choice model.
+
+One interesting thing to note is that for most metrics, like congestion, it doesn't matter how the agents make their decisions, as long as they are consistent. The model is about the system-level effects of the decisions, rather than the individual decisions themselves. Of course the feedback loops and stabilizing mechanisms would be different for different decision-making models, leading to different system-level outcomes.
+
+Highly recommended for future research is to conduct a stated-preference study, which can be used to calibrate the model to real-world data. Learning mechanisms and an activity-based model would also be beneficial to capture more realistic agent behavior.
+
+### Traffic Model
+The traffic model mainly lacks in details on crossings and intersections, which are not specifically modeled. The remainder of the model is relatively detailed, but still has some limitations:
+
+1. Limited network detail: The mesoscopic approach does not capture detailed vehicle interactions or traffic signal operations.
+   - A more detailed microscopic simulation would be computationally intensive for a city-scale model.
+2. Simplified parking model: Parking is modeled at an aggregate level, not considering specific parking locations or search time. Parking costs were also not included.
+   - Detailed parking modeling would require extensive data on parking supply, which wasn't accurately available.
+3. No consideration of freight traffic: The model focuses on passenger transport, not explicitly modeling freight movements.
+   - Freight transport is a relatively small part of urban traffic, but could be included in future versions.
+4. Limited representation of public transit: Transit is modeled simplistically, not capturing details of transit routes, schedules, or capacity constraints.
+   - Detailed transit modeling would require integration with a separate transit simulation model.
+5. No modeling of active modes infrastructure: The model does not consider the impact of bicycle lanes or pedestrian infrastructure on mode choice and traffic flow.
+   - Bicycle and public transport don't face many delays due to congestion, so the impact of infrastructure is limited.
+   - It was found that bicycle travel times are remarkable consistent with distance for bicycle trips (see [travel_time_distance_google.ipynb](..%2Ftravel_api%2Ftravel_time_distance_google.ipynb)), so an explicit model was not deemed necessary as long as the lookup tables have enough detail.
+
+### Data
+Data availability is always a limitation in ABM models, and this model is no exception. Especially validation data for congestion, mode choice and AV pricing was hard to come by. Some specific limitations include:
+
+1. Temporal specificity of travel time data: Google Maps API data used for non-car modes represents conditions at a specific time, not capturing variations throughout the day.
+   - Collecting time-varying data for all origin-destination pairs would be prohibitively expensive (current lookups were 156.25 USD, within a 200 USD free tier).
+2. Aggregation of origin-destination data: Trip distribution is based on larger traffic analysis zones used by [V-MRDH], not capturing fine-grained variations in travel patterns.
+   - More detailed O-D data was not available. A problem is that the more fine-grained the data, the more sparse it becomes, decreasing the signal-to-noise ratio.
+3. Simplified representation of transit costs: The transit cost model uses a simplified distance-based approach, not capturing the complexity of real-world fare systems.
+   - Implementing detailed fare structures for all transit operators would require extensive data collection, which was out of scope.
+4. Limited validation data: The model lacks comprehensive data for validating results, especially for future scenarios involving autonomous vehicles.
+   - Detailed validation data for emerging transportation technologies is inherently limited. Behavior was examined to see if it was plausible, but no real-world data was available to compare to.
+
+### Other
+The main other limitation is the lack of long-term dynamics and feedback loops. The model is a static scenario analysis, not capturing how the system might evolve over time. This was a conscious choice in the model scope, since this study was primarily about how the urban transportation system might respond to AV adoption and policy interventions, and how people might make different day-to-day decisions based on these changes.
+
+Some specific limitations include:
+1. Static scenario analysis: The model simulates a single day, not capturing longer-term evolving dynamics of AV adoption and system adaptation.
+   - Long-term dynamic simulations would require additional assumptions about technology adoption and system changes, increasing uncertainty.
+2. Limited policy options: While the model includes some policy levers (congestion pricing, speed reductions), it does not cover the full range of potential policy interventions.
+   - Implementing a wider range of policies was consciously avoided, since this study was primarily about the system-level effects of AVs.
+3. No feedback between transportation and land use: The model does not capture how changes in the transportation system might influence land use patterns over time.
+   - Land use requires long-term simulations and detailed urban planning models, which were out of scope.
+4. Limited environmental impact assessment: The model does not directly calculate emissions or other environmental impacts of transportation choices.
+   - Adding detailed environmental impact modeling would require additional data on vehicle characteristics and emissions factors. However, the distance traveled by car and AV is available, which is a good proxy for emissions.
+5. No consideration of equity impacts: The model does not explicitly address how changes in the transportation system affect different socioeconomic groups.
+   - Equity analysis would require more detailed socioeconomic data and additional post-processing of model outputs.
+6. Simplified AV implementation: The model treats AVs essentially as cheaper, more comfortable cars, not capturing potential transformative impacts on urban form or travel behavior.
+   - The exact impacts of AVs are still uncertain, and more complex representations would require speculative assumptions.
+   - Density is used as a proxy for the space an AV takes up on the road and the average number of people in a car. This is a simplification, but a good first-order approximation.
+7. Limited geographic scope: The model focuses on the Rotterdam area, potentially missing broader regional or national-level impacts.
+   - Expanding the geographic scope would require significantly more data and computational resources. Other regions could be relatively easily added, population and network data is available for the whole of the Netherlands. OD-matrix data would need to be added if going beyond the MRDH area.
+
 # References
 
 [CBS-mobility]: https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4 "CBS data on cars, kilometers driven, and driver's licenses per postcode"
