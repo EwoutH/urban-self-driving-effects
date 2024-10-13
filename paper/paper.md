@@ -29,6 +29,10 @@ By addressing these questions, this research aims to provide valuable insights f
 
 ## Model Description
 
+
+# Appendices
+## Appendix A: Model description
+
 The model description follows the ODD (Overview, Design concepts, Details) protocol (Grimm et al., 2006, 2020). This protocol provides a standardized format for describing agent-based models, ensuring clarity and reproducibility.
 
 ### 1. Purpose
@@ -435,3 +439,80 @@ The model collects data at multiple levels:
 - System level: Aggregated metrics like mode shares, total vehicle kilometers traveled, and parking occupancy.
 
 Data is collected at regular intervals and stored for post-simulation analysis. The `process_results` function in the `UrbanModel` class handles the aggregation and storage of this data.
+
+
+## Appendix B: Assumptions
+This appendix lists the most important assumptions made in the model design and implementation.
+
+### Agent behavior
+1. Rational decision-making: Agents make mode choices based on minimizing comfort-adjusted perceived costs, including monetary costs and time costs weighted by their value of time, and a comfort factor.
+2. Perfect information: Agents have complete knowledge of travel times and costs for all available modes.
+3. Heterogeneous value of time: Each agent's value of time is drawn from a lognormal distribution, representing varying sensitivities to travel time, and differs by mode ([KiM 2023](https://www.kimnet.nl/publicaties/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort)).
+4. Trip generation: The number and timing of trips for each agent are determined probabilistically based on hourly trip probabilities derived from [ODiN 2023](https://www.cbs.nl/nl-nl/longread/rapportages/2024/onderweg-in-nederland--odin---2023-onderzoeksbeschrijving).
+5. Trip chaining: Agents always return to their origin location after each outbound trip, creating simple two-leg trip chains.
+   - ODiN 2022 data showed 43.8% of trips start at home, 43.8% end at home (total 87.6%), and only 12.4% are neither.
+6. Mode availability: An agent's available modes depend on car ownership, possession of a driver's license, and the previous leg of their trip chain.
+   - Notably, if a car is used for the first leg of a trip, it must be used for the return leg as well.
+7. Bicycle ownership: All agents are assumed to have access to a bicycle.
+8. No en-route mode switching: Once a mode is chosen for a trip, it cannot be changed during the journey.
+9. No trip cancellation: Agents do not cancel trips due to high costs or unavailable modes.
+10. No carpooling or ride-sharing: Each car or AV trip represents a single agent.
+
+### Traffic model
+1. Mesoscopic simulation: Traffic is modeled at a medium level of detail, balancing computational efficiency with realistic traffic dynamics.
+2. Platoon-based representation: Vehicles are grouped into platoons (of 10 by default) for computational efficiency, with each agent representing multiple actual vehicles.
+3. Dynamic User Equilibrium: Drivers choose routes based on experienced travel times, updating their choices periodically.
+4. Simplified intersection behavior: Detailed intersection dynamics (e.g., traffic signals, turn lanes) are not explicitly modeled.
+5. Constant road capacity: Road capacities do not change due to weather, incidents, or other temporary factors.
+6. Homogeneous vehicle types: All vehicles are assumed to have the same physical characteristics and performance.
+7. External traffic: Traffic entering and leaving the study area is modeled based on fixed origin-destination matrices and time-of-day factors.
+
+### Data
+1. Population distribution: Agent locations are based on actual population data at the 4-digit postal code level, as reported by the CBS for 2020 ([CBS-postcode]).
+   - In total 991.575 people live in the simulation area.
+2. Car ownership and driver's licenses: Distribution of car ownership and driver's licenses is based on 4-digit postal code level data ([CBS-mobility]).
+   - On average, 31.5% of agents in the simulation area own a car, and thus have car as a mode option. This varies per postal code area.
+3. Road network: The road network is derived from OpenStreetMap data, on September 30, 2024, using [OSMnx] 2.0.0b2. It includes ternary roads and larger roads, with speed limits, lane counts and lengths.
+   - The road network contains 1575 nodes and 3328 edges.
+4. Travel times and distances: Non-car mode travel times and distances are based on Google Maps Distance Matrix API data ([Google-Maps-API]), on Thursday 2024-09-17 at 08:00 (a normal workday without major construction).
+   - Note that cycling and public transit times are relatively stable throughout the day, while car travel times can vary significantly.
+5. Trip generation rates: Hourly trip probabilities are derived from the Dutch National Travel Survey ([ODiN 2023]).
+6. Origin-destination patterns: Origin-destination lookup is based on matrices from the [V-MRDH] transport model.
+   - Only the total values for all modes are used, not the per-mode values, since mode-choice is integrated in the model.
+7. Value of Time: Default values of time for different modes are based on Dutch transportation studies ([KiM-valuation]). AV is assumed to be the same as car (and varied in experiments with the AV VOT factor).
+   - The default value of times are €10.42 for car, €10.39 for bike, and €7.12 for transit. 
+8. Default AV costs are based on own research, as no public data was available. A survey was put out on Reddit, on which a linear regression model was estimated ([Waymo-pricing]).
+   - The default AV costs are €3.79 plus €1.41 per kilometer and €0.40 per minute.
+
+### Other
+1. Static land use: The model assumes no changes in land use or population distribution during the simulation period.
+2. No seasonal variations: The model does not account for seasonal changes in travel behavior or weather conditions.
+3. No special events: The impact of large events (e.g., sports matches, festivals) on travel patterns is not considered.
+4. Constant fuel/energy prices: The model assumes static prices for fuel and energy throughout the simulation.
+5. No technological improvements: The model assumes constant vehicle efficiency and performance over time.
+   - AV density and costs can be adjusted to represent technological improvements.
+6. Simplified AV behavior: Autonomous vehicles are assumed to operate similarly to human-driven vehicles, with adjustments only to cost structure and value of time.
+7. No adaptation of public transit: The public transit system is assumed to remain constant, not adapting to changes in demand or competing modes.
+
+# References
+
+[CBS-mobility]: https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4 "CBS data on cars, kilometers driven, and driver's licenses per postcode"
+[CBS-postcode]: https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode "CBS geographical data by postcode"
+[CBS-statistics]: https://www.cbs.nl/nl-nl/longread/diversen/2023/statistische-gegevens-per-vierkant-en-postcode-2022-2021-2020-2019/bijlagen "CBS statistical data by grid and postcode (2019-2022)"
+[CBS-vehicles]: https://www.cbs.nl/nl-nl/maatwerk/2023/24/voertuigen-naar-brandstofsoort-en-postcode-2023 "CBS data on vehicles by fuel type and postcode (2023)"
+[Google-Maps-API]: https://developers.google.com/maps/documentation/distance-matrix/overview "Google Maps Distance Matrix API documentation"
+[KiM-valuation]: https://www.kimnet.nl/publicaties/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort "KiM publication on travel time valuation"
+[MPN]: https://www.mpndata.nl/ "Netherlands Mobility Panel (MPN) data"
+[Mapshaper]: https://mapshaper.org/ "Tool for converting VMRDH areas"
+[Mesa]: https://github.com/projectmesa/mesa "Mesa agent-based modeling framework"
+[NS-API]: https://apiportal.ns.nl/ "NS (Dutch Railways) API portal"
+[Nibud-car-costs]: https://www.nibud.nl/onderwerpen/uitgaven/autokosten/ "Nibud information on car costs"
+[ODiN 2022]: https://ssh.datastations.nl/dataset.xhtml?persistentId=doi:10.17026/SS/BXIK2X "Onderweg in Nederland (ODiN) 2022 dataset"
+[ODiN 2023]: https://www.cbs.nl/nl-nl/longread/rapportages/2024/onderweg-in-nederland--odin---2023-onderzoeksbeschrijving "Onderweg in Nederland (ODiN) 2023 dataset"
+[OSMnx]: https://www.github.com/gboeing/osmnx "OSMnx library for working with OpenStreetMap data"
+[OpenStreetMap]: https://www.openstreetmap.org/about "OpenStreetMap data source"
+[Train-costs]: https://www.treinonderweg.nl/wat-kost-de-trein.html "Information on train costs in the Netherlands"
+[UXsim-original]: https://www.github.com/toruseo/uxsim "Original UXsim repository"
+[UXsim]: https://github.com/EwoutH/UXsim/ "UXsim traffic simulation library"
+[V-MRDH]: https://www.mrdh.nl/verkeersmodel "MRDH Verkeersmodel (V-MRDH)"
+[Waymo-pricing]: https://github.com/EwoutH/Waymo-pricing "Repository for Waymo pricing data"
