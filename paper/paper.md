@@ -494,7 +494,7 @@ This appendix lists the most important assumptions made in the model design and 
 6. Simplified AV behavior: Autonomous vehicles are assumed to operate similarly to human-driven vehicles, with adjustments only to cost structure and value of time.
 7. No adaptation of public transit: The public transit system is assumed to remain constant, not adapting to changes in demand or competing modes.
 
-## Appendix B: Limitations
+## Appendix C: Limitations
 ### Agent behavior
 The Agent mode-choice model is the most limited part of the model, mainly because of data-availability and computational constraints. Ideally an activity-based model would be used, but this would require carefully designed surveys with large sample sizes, which weren't available.
 
@@ -561,6 +561,120 @@ Some specific limitations include:
 7. Limited geographic scope: The model focuses on the Rotterdam area, potentially missing broader regional or national-level impacts.
    - Expanding the geographic scope would require significantly more data and computational resources. Other regions could be relatively easily added, population and network data is available for the whole of the Netherlands. OD-matrix data would need to be added if going beyond the MRDH area.
 
+
+## Appendix D: Experimental setup
+
+This appendix describes the experimental setup used in this study. Two main experiments were conducted: a scenario analysis exploring uncertainties in autonomous vehicle (AV) adoption and a policy analysis testing various interventions across different scenarios.
+
+### 1. Scenario Analysis
+
+The scenario analysis employed a full-factorial design to explore four key uncertainties related to the adoption and impact of autonomous vehicles. These uncertainties were represented by the following variables:
+
+1. AV Cost Factor (`av_cost_factor`): Represents the relative cost of using AVs compared to the current cost AVs (as operated by Waymo in Los Angeles in September 2024 ([Waymo-pricing]), see [Appendix B](#appendix-b-assumptions) for more details).
+2. AV Value of Time Factor (`av_vot_factor`): Reflects how users perceive time spent in AVs compared to conventional vehicles.
+3. AV Density (`av_density`): Represents the space efficiency of AVs on the road compared to conventional vehicles.
+4. Induced Demand (`induced_demand`): Reflects the potential increase in overall travel demand (either due to the introduction of AVs or other mobility or macroeconomic factors).
+
+Note that AV density represents the average space a single person transported with an AV takes up on the road (a lower value means more people can be transported with the same road space). How that density is achieved is not relevant for the simulation outcomes, but it can be for interpretation. AV density can be improved by either increasing the average number of people in a car (picking up more people on the way, driving less empty between trips) or taking up less road space (smaller vehicle sizes, faster reaction times, platooning).
+The table below shows the values used for each variable in the full-factorial design:
+
+| Variable | Values |
+|----------|--------|
+| `av_cost_factor` | 1.0, 0.5, 0.25, 0.125 |
+| `av_vot_factor` | 1.0, 0.5, 0.25 |
+| `av_density` | 1.5, 1.0, 0.5, 0.333333 |
+| `induced_demand` | 1.0, 1.25, 1.5 |
+
+This design resulted in a total of 4 × 3 × 4 × 3 = 144 unique combinations, each representing a possible future scenario for AV adoption and its impacts.
+
+The scenario analysis was executed using the [`run_model.py`](../model/run_model.py) script, which implemented the full-factorial design and managed the parallel execution of simulations for each combination of variables.
+
+Other relevant model settings for the scenario analysis included:
+
+- Time step: 5 minutes (1/12 hour)
+- Simulation period: 5:00 to 24:00 (19 hours)
+- Choice model: Rational value of time
+- AVs enabled: Yes
+- External vehicle load: 0.8
+- UXsim platoon size: 10
+- Car comfort factor: 0.5
+- Bike comfort factor: 1.33
+
+### 2. Policy Analysis
+
+The policy analysis was designed to test the effectiveness of various policy interventions across different AV adoption scenarios. This analysis used a set of predefined scenarios and policies, as specified in the [`scenarios_policies.py`](../model/scenarios_policies.py) file.
+
+#### 2.1 Scenarios
+
+Eight scenarios were defined, representing different possible futures for AV adoption and its impacts. Table A.2 summarizes these scenarios:
+
+| Scenario Key | Description | `av_cost_factor` | `av_density` | `induced_demand` |
+|--------------|-------------|------------------|--------------|------------------|
+| 0_current | Current situation | 1.0 | 1.5 | 1.0 |
+| 1_moderate_progress | Moderate AV progress | 0.5 | 1.0 | 1.125 |
+| 2_extensive_progress | Extensive AV progress | 0.25 | 0.5 | 1.25 |
+| 3_extreme_progress | Extreme AV progress | 0.125 | 0.333333 | 1.5 |
+| 4_private_race_to_the_bottom | Cheap, inefficient AVs | 0.125 | 1.5 | 1.25 |
+| 5_mixed_race_to_the_bottom | Cheap AVs, mixed efficiency | 0.125 | 1.0 | 1.25 |
+| 6_shared_race_to_the_bottom | Cheap, efficient AVs | 0.125 | 0.5 | 1.25 |
+| 7_dense_progress | Efficient AVs, moderate demand | 0.25 | 0.333333 | 1.125 |
+
+All scenarios used an `av_vot_factor` of 0.5.
+
+#### 2.2 Policies
+
+Nine different policy combinations were tested, varying in their approach to speed reduction, congestion pricing, and geographical scope. Table A.3 summarizes these policies:
+
+| Policy Key | Area | Speed Reduction | Tariff | Tariff Time |
+|------------|------|-----------------|--------|-------------|
+| 0_no_policy | City | 0 | 0 | Day |
+| 1_autoluw_peak | Autoluw | 1 | 5 | Peak |
+| 2_autoluw_day | Autoluw | 1 | 5 | Day |
+| 3_city_peak | City | 1 | 5 | Peak |
+| 4_city_day | City | 1 | 5 | Day |
+| 5_city_speed_reduction | City | 1 | 0 | Day |
+| 6_city_peak_tarif | City | 0 | 5 | Peak |
+| 7_city_day_tarif | City | 0 | 5 | Day |
+| 8_all_out | City | 1 | 10 | Day |
+
+Where:
+- "Autoluw" refers to a specific low-traffic area within the city, and city indicates the entire city area ([Rotterdam-verkeerscirculatieplan]).
+- Speed Reduction: The fraction of roads in that area that get a 20 km/h maximum speed reduction (0 meaning 0% of roads, 1 meaning 100% of roads)
+- Tariff: Congestion charge in euros per trip, if either the origin or destination is in the area
+- Tariff Time: "Peak" = applied during peak hours (7:00-9:00 and 16:00-18:00), "Day" = applied throughout the day (6:00-19:00)
+
+#### 2.3 Experimental Design
+
+The policy analysis involved running simulations for all combinations of the 8 scenarios and 9 policies, resulting in 72 unique experiments. This was implemented in the [`run_model_2.py`](../model/run_model_2.py) script, which managed the execution of simulations for each scenario-policy combination.
+
+For each combination, the script:
+1. Combined the scenario and policy parameters
+2. Generated a unique suffix for the output files
+3. Checked if the simulation had already been run (to avoid duplication)
+4. Executed the simulation if needed
+
+The simulations were run in parallel across multiple cores to improve computational efficiency.
+
+### 3. Data Collection and Analysis
+
+For both the scenario and policy analyses, each simulation run collected the following data:
+
+1. Journey details: Origin, destination, mode, travel time, costs, etc.
+2. Traffic conditions: Speed, density, and flow for each network link
+3. Parking occupancy over time
+
+This data was saved in various formats (Feather files for journey data, Python pickle files for UXsim and parking data) for subsequent analysis.
+
+The collected data allowed for the evaluation of various metrics, including:
+- Mode share distributions
+- Network performance (average speeds, congestion levels)
+- Parking demand patterns
+- Total vehicle kilometers traveled
+- Distribution of travel times and costs
+
+These metrics were used to assess the impacts of different AV adoption scenarios and the effectiveness of various policy interventions.
+
+
 # References
 
 [CBS-mobility]: https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4 "CBS data on cars, kilometers driven, and driver's licenses per postcode"
@@ -583,3 +697,4 @@ Some specific limitations include:
 [UXsim]: https://github.com/EwoutH/UXsim/ "UXsim traffic simulation library"
 [V-MRDH]: https://www.mrdh.nl/verkeersmodel "MRDH Verkeersmodel (V-MRDH)"
 [Waymo-pricing]: https://github.com/EwoutH/Waymo-pricing "Repository for Waymo pricing data"
+[Rotterdam-verkeerscirculatieplan]: https://www.rotterdam.nl/verkeerscirculatieplan "Rotterdam's traffic circulation plan"
