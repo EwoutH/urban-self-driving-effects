@@ -40,9 +40,10 @@ The model simulates travel behavior in the Rotterdam urban area, focusing on mod
 ## 3.1 Spatial and temporal structure
 The model covers Rotterdam and immediate surroundings, divided into 125 four-digit postal code areas nested within 21 larger traffic analysis zones. The Rotterdam area was selected due to its current significant congestion levels, relatively extensive public transport network, fitting size and data availability. The road network, derived from OpenStreetMap, comprises 1,575 nodes and 3,328 edges, including all roads from tertiary level upward. Simulations typically run from 05:00 to 24:00 with 5-minute time steps, capturing a full day of urban mobility patterns.
 
-While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region.
+![rotterdam_mrdh65_pc4_areas.svg](img%2Frotterdam_mrdh65_pc4_areas.svg)
+_Fig 3.1: Spatial structure of the model, showing MRDH regions and their postal code areas_
 
-<!-- TODO: Insert figure -->
+While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region.
 
 ## 3.2 Key submodels
 <!-- TODO: Write intro -->
@@ -50,7 +51,8 @@ While these parameters were used in the model, most source data is available for
 - mode choice (agent behavior)
 - traffic simulation
 
-<!-- TODO: Insert conceptual diagram, without experiments -->
+![Conceptual-model-v2-no-exp.svg](img%2FConceptual-model-v2-no-exp.svg)
+_Fig 3.2: Conceptual model displaying the submodels, variables and their interactions_
 
 ### 3.2.1 Input data
 We utilized multiple data sources to parameterize the model:
@@ -118,7 +120,8 @@ At least include:
 # 4. Experimental design
 Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
 
-<!-- TODO: Insert conceptual diagram with experiments -->
+![Conceptual-model-v2.svg](img%2FConceptual-model-v2.svg)
+_Fig 4.1: Conceptual model including scenario uncertainties and policy levers_
 
 ## 4.1 Scenario analysis
 To answer subquestions B and C, a wide variety of uncertainties were explored. The scenario analysis employed a full-factorial design exploring four key uncertainties:
