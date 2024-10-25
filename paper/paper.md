@@ -1,6 +1,6 @@
 _Very WIP version of a possible paper_
 
-# Introduction
+# 1. Introduction
 
 The introduction of the automobile fundamentally transformed human transportation and urban development in the 20th century. While providing unprecedented mobility and economic opportunities, the widespread adoption of cars has also led to significant challenges in urban environments. These include traffic congestion, parking scarcity, air and noise pollution, and safety concerns for pedestrians and cyclists. As we progress into the 21st century, a new technological revolution is on the horizon: self-driving cars.
 
@@ -25,10 +25,146 @@ To answer this overarching question, we will explore several key sub-questions:
 
 By addressing these questions, this research aims to provide valuable insights for urban planners, policymakers, and transportation engineers as they prepare for the advent of self-driving cars. Understanding the potential system-wide effects of AVs is crucial for developing proactive strategies to maximize their benefits while mitigating unintended negative consequences in our urban environments.
 
-# Method
+# 2. Methods
+This study employs agent-based modeling (ABM) combined with mesoscopic traffic simulation to investigate the system-level effects of autonomous vehicle (AV) adoption in urban environments. The model was developed following the Modeling & Simulation lifecycle (Law, 2014) and structured according to the ODD (Overview, Design concepts, Details) protocol (Grimm et al., 2020). The complete ODD protocol description is provided in [Appendix A](#appendix-a-model-description). Peer and supervisor feedback was incorporated throughout the development process, and Ockham's razor was applied to minimize unnecessary complexity while maintaining essential dynamics.
 
-## Model Description
+The model was implemented in Python using Mesa 3.0.0b1 for agent-based modeling and a modified version of UXsim 1.6.0 for traffic simulation. Mesa was selected for its ability to handle large agent populations and flexible scheduling, while UXsim implements Newell's simplified car-following model, providing an appropriate balance between computational efficiency and traffic dynamics representation. A full list of modeling assumptions and their justifications is available in [Appendix B](#appendix-b-assumptions).
 
+Model verification and validation followed a systematic approach combining multiple techniques. Verification included continuous integration testing, git version control with detailed commit messages, and manual validation of key metrics. Validation against current travel patterns used Dutch National Travel Survey (ODiN) 2023 data for mode shares and trip distributions, while acknowledging the inherent difficulty of validating future scenarios involving autonomous vehicles. Model limitations and validation challenges are discussed in detail in [Appendix C](#appendix-c-limitations).
+
+Data sources include population and vehicle ownership statistics from CBS (Dutch Central Bureau Statistics), road network data from OpenStreetMap, cycling and public transport travel times from Google Maps API, and origin-destination matrices from the V-MRDH transport model. The simulation represents approximately one million residents of Rotterdam, with each agent representing a platoon of 10 actual travelers for computational efficiency. The experimental design utilized full-factorial analysis for exploring uncertainties and a systematic evaluation of policy interventions, as detailed in [Appendix D](#appendix-d-experimental-setup).
+
+# 3. Model description
+The model simulates travel behavior in the Rotterdam urban area, focusing on mode choice decisions and their collective impact on the transportation system. It consists of three main components: (1) an agent-based model for traveler decision-making, (2) a mesoscopic traffic simulation for vehicle movements, and (3) a discrete event system for scheduling and coordination.
+
+## 3.1 Spatial and temporal structure
+The model covers Rotterdam and immediate surroundings, divided into 125 four-digit postal code areas nested within 21 larger traffic analysis zones. The Rotterdam area was selected due to its current significant congestion levels, relatively extensive public transport network, fitting size and data availability. The road network, derived from OpenStreetMap, comprises 1,575 nodes and 3,328 edges, including all roads from tertiary level upward. Simulations typically run from 05:00 to 24:00 with 5-minute time steps, capturing a full day of urban mobility patterns.
+
+While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region.
+
+<!-- TODO: Insert figure -->
+
+## 3.2 Key submodels
+<!-- TODO: Write intro -->
+
+- mode choice (agent behavior)
+- traffic simulation
+
+<!-- TODO: Insert conceptual diagram, without experiments -->
+
+### 3.2.1 Input data
+We utilized multiple data sources to parameterize the model:
+ue of Time data from Dutch transpor
+<!-- TODO: Insert conceptual diagram -->
+
+### 3.2.2 Agent behavior
+Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time (drawn from a lognormal distribution). Each agent generates a set of trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
+
+For each trip, agents choose between available modes (conventional car, autonomous vehicle, bicycle, public transit) based on a rational choice model that minimizes comfort-adjusted perceived costs:
+
+The perceived cost $C_{p,m}$ for a trip using mode $m$ is calculated as:
+
+   $C_{p,m} = (C_{m,m} + T_m \cdot V_m) \cdot \alpha_m$
+
+where:
+
+- $C_{p,m}$ is the perceived cost for mode $m$
+- $C_{m,m}$ is the monetary cost for mode $m$
+- $T_m$ is the travel time for mode $m$
+- $V_m$ is the value of time for mode $m$
+- $\alpha_m$ is the comfort factor for mode $m$
+
+Trip chains are implemented as simple two-leg journeys (outbound and return), with mode availability constrained by previous choices (e.g., if departing by car, the return trip must also be by car).
+
+### 3.2.3 Traffic simulation
+Vehicle movements are simulated using a modified version of UXsim, implementing Newell's simplified car-following model at a mesoscopic level. The simulation includes:
+- Dynamic User Equilibrium (DUE) route choice updated every 5 minutes
+- Link-specific characteristics (speed limits, number of lanes, capacity)
+- External traffic based on V-MRDH matrices
+- Simplified intersection dynamics
+- Area-based data collection for performance metrics
+
+<!-- TODO: Describe -->
+
+## 3.3 Model interaction and behavior
+<!-- TODO: Write -->
+
+_How do the different components interact with each other, which feedback loops are present, if they are stabilizing or destabilizing, path dependencies, emergent behavior, tipping points, etc._
+- Key model interactions
+- feedback loops
+- Emergent properties
+
+Path dependencies: If agents start by car, they have to return by car.
+
+## 3.4 Limitations
+<!-- TODO: Write -->
+Two main limitations:
+1. The model does not include long-term effects, such as land use changes, which could significantly impact travel patterns and urban development.
+2. The travel demand model is static and does not account for changes in trip timing and destinations based on the availability of AVs (like activity-based models do).
+3. The model does not consider irrational or habitual mode choice, which could influence individual travel decisions in ways not captured by a rational choice framework.
+
+At least include:
+- no long term effects, like land use changes
+- no explicit learning mechanisms
+- no changes in the destinations of trips based on the availability of AVs
+- no irrational or behavioral mode choice
+- no explicit agent-to-agent interactions, like social belief system diffusion or car sharing among households
+- no explicit representation of traffic signals or detailed intersection dynamics
+- no weather, seasonal, or incident-based variations in both traffic and mode choice
+- no explicit representation of public transit schedules or route networks
+- no other modes than car, bike, AV and public transit, like walking or e-scooters
+- parking not explicitly modeled or included in mode choice
+
+# 4. Experimental design
+Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
+
+<!-- TODO: Insert conceptual diagram with experiments -->
+
+## 4.1 Scenario analysis
+To answer subquestions B and C, a wide variety of uncertainties were explored. The scenario analysis employed a full-factorial design exploring four key uncertainties:
+
+1. AV Cost Factor (4 levels: 1.0, 0.5, 0.25, 0.125)
+   - Relative cost of using AVs compared to current Waymo prices
+2. AV Value of Time Factor (3 levels: 1.0, 0.5, 0.25)
+   - Perceived value of time spent in AVs versus conventional vehicles
+3. AV Density (4 levels: 1.5, 1.0, 0.5, 0.333)
+   - Space efficiency of AVs relative to conventional vehicles
+4. Induced Demand (3 levels: 1.0, 1.25, 1.5)
+   - Potential increase in overall travel demand
+
+This design resulted in 144 unique combinations (4×3×4×3), each representing a possible future scenario. Each scenario was simulated for a full day (19 hours) with consistent base parameters including road network configuration, population distribution, and external traffic patterns.
+
+## 4.2 Policy analysis
+To answer subquestion D, eight representative scenarios were selected from the scenario analysis results, ranging from "current situation" to "extreme progress" in AV adoption. These scenarios were tested against nine policy combinations varying in:
+
+1. Speed Reduction
+   - 20 km/h reduction on selected roads
+   - Coverage: none, autoluw area only, or city-wide
+2. Congestion Pricing
+   - Tariff levels: €0, €5, or €10 per trip
+   - Timing: peak hours only or all-day
+   - Geographic scope: autoluw area or city-wide
+
+This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled.
+
+Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
+
+# 5. Results
+
+## 5.1 AV adoption & modal shift
+_Answer on subquestion B_
+
+## 5.2 Undesired system effects
+_Answer on subquestion C_
+
+## 5.3 Policy effectiveness
+_Answer on subquestion D_
+
+# 6. Conclusions
+_Objective answers from the results and how they answer the research question_
+
+# 7. Discussion
+_What do the results mean, what are the implications, what are the limitations_
 
 # Appendices
 ## Appendix A: Model description
@@ -309,6 +445,7 @@ The model is initialized with the following steps:
 The initial state can vary between simulation runs due to the stochastic elements in agent creation, attribute assignment, and trip generation.
 
 ### 6. Input Data
+<!-- TODO: Extend section a little -->
 
 The model uses several external data sources:
 
