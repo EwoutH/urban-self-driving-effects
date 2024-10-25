@@ -41,23 +41,21 @@ The model simulates travel behavior in the Rotterdam urban area, focusing on mod
 The model covers Rotterdam and immediate surroundings, divided into 125 four-digit postal code areas nested within 21 larger traffic analysis zones. The Rotterdam area was selected due to its current significant congestion levels, relatively extensive public transport network, fitting size and data availability. The road network, derived from OpenStreetMap, comprises 1,575 nodes and 3,328 edges, including all roads from tertiary level upward. Simulations typically run from 05:00 to 24:00 with 5-minute time steps, capturing a full day of urban mobility patterns.
 
 ![rotterdam_mrdh65_pc4_areas.svg](img%2Frotterdam_mrdh65_pc4_areas.svg)
-_Fig 3.1: Spatial structure of the model, showing MRDH regions and their postal code areas_
+_Fig 3.1: The main study area, divided into 21 MRDH regions and 125 postal code areas_
 
 While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region.
 
 ## 3.2 Key submodels
-<!-- TODO: Write intro -->
-
-- mode choice (agent behavior)
-- traffic simulation
+The model consists of two main submodels: the agent mode-choice model and the traffic simulation model. These submodels interact through agent decisions, which influence traffic flow and congestion patterns, which in turn affect mode choices of future agents. The conceptual model in Fig. 3.2 illustrates the key variables and interactions between submodels.
 
 ![Conceptual-model-v2-no-exp.svg](img%2FConceptual-model-v2-no-exp.svg)
 _Fig 3.2: Conceptual model displaying the submodels, variables and their interactions_
 
+Around these three submodels a lot of data plu
+
 ### 3.2.1 Input data
 We utilized multiple data sources to parameterize the model:
 ue of Time data from Dutch transpor
-<!-- TODO: Insert conceptual diagram -->
 
 ### 3.2.2 Agent behavior
 Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time (drawn from a lognormal distribution). Each agent generates a set of trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
@@ -87,6 +85,9 @@ Vehicle movements are simulated using a modified version of UXsim, implementing 
 - Area-based data collection for performance metrics
 
 <!-- TODO: Describe -->
+
+![merged_network.svg](img%2Fmerged_network.svg)
+_Fig 3.3: The road network used in the traffic simulation_
 
 ## 3.3 Model interaction and behavior
 <!-- TODO: Write -->
@@ -149,6 +150,8 @@ To answer subquestion D, eight representative scenarios were selected from the s
    - Geographic scope: autoluw area or city-wide
 
 This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled.
+
+
 
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
@@ -778,10 +781,13 @@ Nine different policy combinations were tested, varying in their approach to spe
 | 8_all_out | City | 1 | 10 | Day |
 
 Where:
-- "Autoluw" refers to a specific low-traffic area within the city, and city indicates the entire city area ([Rotterdam-verkeerscirculatieplan]).
+- "Autoluw" refers to a specific low-traffic area within the city ([Rotterdam-verkeerscirculatieplan]), and city indicates the entire city area (all roads in the main network).
 - Speed Reduction: The fraction of roads in that area that get a 20 km/h maximum speed reduction (0 meaning 0% of roads, 1 meaning 100% of roads)
 - Tariff: Congestion charge in euros per trip, if either the origin or destination is in the area
 - Tariff Time: "Peak" = applied during peak hours (7:00-9:00 and 16:00-18:00), "Day" = applied throughout the day (6:00-19:00)
+
+![merged_network_autoluw.svg](img%2Fmerged_network_autoluw.svg)
+_Figure A.1: The network with the autoluw area highlighted in green._
 
 #### 2.3 Experimental Design
 
