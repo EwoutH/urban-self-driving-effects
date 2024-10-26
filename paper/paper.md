@@ -456,13 +456,35 @@ The initial state can vary between simulation runs due to the stochastic element
 The model uses several external data sources:
 
 1. Population data by postal code (PC4) and MRDH region (CBS)
+
+![pop_density_pc4.svg](img%2Fpop_density_pc4.svg)
+
 2. Car ownership and driver's license data by postal code (CBS)
+
+![car_per_inhabitant_pc4.svg](img%2Fcar_per_inhabitant_pc4.svg)
+
 3. Road network data from OpenStreetMap
+
+![merged_network.svg](img%2Fmerged_network.svg)
+
 4. Travel time and distance data for public transit and cycling (from Google Maps API)
+
+![travel_time_google_maps_api_hist_boxplot.svg](..%2Fimg%2Ftravel_time_google_maps_api_hist_boxplot.svg)
+![travel_time_distance_scatter.png](..%2Ftravel_api%2Fimg%2Ftravel_time_distance_scatter.png)
+
 5. Trip generation probabilities by hour (derived from ODiN 2023 data)
+
+![trips_by_weekday_and_hour_heatmap.svg](img%2Ftrips_by_weekday_and_hour_heatmap.svg)
+![chance_of_starting_trip_by_hour.svg](img%2Fchance_of_starting_trip_by_hour.svg)
+
 6. Origin-destination matrices for the Rotterdam area (V-MRDH model)
+
+![inbound_outbound_traffic.png](img%2Finbound_outbound_traffic.png)
+
 7. Geographical boundaries for policy areas (city, area, autoluw)
 8. Value of Time data from Dutch transportation studies
+
+
 
 These data are preprocessed and stored in various formats (CSV, pickle files, GraphML) for use in the simulation.
 
