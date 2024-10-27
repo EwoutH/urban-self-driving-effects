@@ -812,7 +812,22 @@ Where:
 - Tariff Time: "Peak" = applied during peak hours (7:00-9:00 and 16:00-18:00), "Day" = applied throughout the day (6:00-19:00)
 
 ![merged_network_autoluw.svg](img%2Fmerged_network_autoluw.svg)
-_Figure A.1: The network with the autoluw area highlighted in green._
+_Fig A.1: The network with the autoluw area highlighted in green._
+
+The following PC4 areas are within the autoluw area (and thus potentially affected by the policies):
+
+- Rotterdam Centrum (1): [3011, 3016, 3015, 3012, 3014, 3013]
+- Delfshaven (2): [3022, 3021, 3023]
+- Noord (3): [3039, 3041, 3037, 3032, 3038, 3036, 3035, 3033]
+- Kralingen (4): [3031]
+
+AV pricing, if enabled for the autoluw area, will affect about 13% of the agents in the simulation. 130.835 of 991.575 inhabitants live in the autoluw area, of which:
+- Rotterdam Centrum (1): 38.705
+- Delfshaven (2): 31.410
+- Noord (3): 52.420
+- Kralingen (4): 8.300
+
+The city area covers the all 125 PC4 areas in the research area and thus all agents.
 
 #### 2.3 Experimental Design
 
