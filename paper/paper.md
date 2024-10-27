@@ -151,8 +151,6 @@ To answer subquestion D, eight representative scenarios were selected from the s
 
 This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled.
 
-
-
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
 # 5. Results
@@ -450,44 +448,95 @@ The model is initialized with the following steps:
 
 The initial state can vary between simulation runs due to the stochastic elements in agent creation, attribute assignment, and trip generation.
 
-### 6. Input Data
-<!-- TODO: Extend section a little -->
+### 6. Input data
+The model uses several external data sources as input for agent and system behavior:
 
-The model uses several external data sources:
+#### 6.1 Population data by 4-digit postal code (PC4) from CBS
 
-1. Population data by postal code (PC4) and MRDH region (CBS)
+Population data from the CBS is used to distribute agents across the urban area ([CBS-postcode]). The Dutch 4-digit postal code areas are used, which roughly represent a neighbourhood each. This gives heterogeneity in the system and enables adequate travel counts and traffic pressure on the network. In the 125 PC4 areas, there are in total 991,575 residents. The population in each area gets scaled down with the platoon size (10 by default), resulting in approximately 100,000 agents in the simulation.
 
 ![pop_density_pc4.svg](img%2Fpop_density_pc4.svg)
+_Fig A.x: Population count for each PC4 area (number) and population density (color)_
 
-2. Car ownership and driver's license data by postal code (CBS)
+#### 6.2 Car ownership and driver's license data by postal code (CBS)
 
+Car ownership is also sourced from the CBS per PC4 area. For each area, a certain percentage of agents gets assigned a car as additional available mode. On average that's 35.4% and varies between ~19% and ~65% per area. This enables heterogeneity among agents and enables realistic mode choices.
 ![car_per_inhabitant_pc4.svg](img%2Fcar_per_inhabitant_pc4.svg)
+_Fig A.x: Car ownership per inhabitant for each PC4 area_
 
-3. Road network data from OpenStreetMap
+The full analysis for both the population and car ownership data is available in the [`prototyping/pc4.ipynb`](../prototyping/pc4.ipynb) notebook.
+
+#### 6.3 Road network data from OpenStreetMap
+
+The road network data was extracted from OpenStreetMap (OSM) using the [OSMnx] library (version 2.0.0b2) on September 30, 2024. The network consists of two distinct components: a detailed inner-city network covering the city area and a broader surrounding network covering supporting area. This dual-network approach allows for higher resolution within the primary study area while still allowing traffic to flow in and out of the city.
+
+The inner-city network includes all roads from tertiary level and above (motorways, trunks, primary, secondary, and tertiary roads, including their respective link roads), which are all arterial roads to allow traffic to flow accurately. The surrounding network includes only major roads (secondary level and above) to reduce computational complexity, since precise traffic flow is less critical in these areas (and are not included in the measurements). Roads under construction, particularly the new A16 motorway and Blankenburg tunnel, were included to ensure the network represents the near-future situation.
+
+The downloaded networks contained:
+- City network: 44,464 nodes and 56,236 edges
+- Supporting network: 48,674 nodes and 57,024 edges
+- Combined raw network: 93,138 nodes and 113,260 edges
+
+Since the computational complexity scales quadratically with the number of edges, the raw networks were simplified to reduce the number of nodes and edges. This was done by eliminating nodes with degree 2, which are not intersections, and consolidating intersections within a certain distance threshold.
+
+These networks were processed through the following steps:
+1. Projection to a unified coordinate reference system (EPSG:28992, Amersfoort / RD New)
+2. Network attribute assignment, including:
+   - Speed limits (derived from OSM maxspeed tags)
+   - Number of lanes (from OSM lane tags)
+   - Road type classification
+   - Network identification (city or surrounding area)
+3. Intersection consolidation using variable tolerances:
+   - 10-meter tolerance for the city network
+   - 50-meter tolerance for the surrounding network
+4. Network simplification while preserving essential attributes (length, travel time, lanes)
+
+The final processed network contains 1,575 nodes and 3,328 edges, which was both suitable for the research problem and feasible to simulate. Each edge in the network contains the following key attributes:
+- Length (meters)
+- Speed limit (km/h)
+- Number of lanes
+- Road type (motorway, trunk, primary, secondary, tertiary)
+- Network identification (city or surrounding)
+- Travel time (seconds, calculated from length and speed limit)
 
 ![merged_network.svg](img%2Fmerged_network.svg)
+*Fig A.x: The processed road network showing hierarchical road types (line width) and network components (color). The main network (red) includes tertiary and larger roads within Rotterdam, while the supporting network (blue) includes secondary and larger roads in the surrounding area.*
 
-4. Travel time and distance data for public transit and cycling (from Google Maps API)
+During simulation, the network is used by the UXsim traffic model to:
+- Calculate shortest paths between origins and destinations
+- Simulate traffic flow and congestion
+- Track vehicle movements and area-based metrics
+- Apply speed reductions in policy scenarios
 
-![travel_time_google_maps_api_hist_boxplot.svg](..%2Fimg%2Ftravel_time_google_maps_api_hist_boxplot.svg)
-![travel_time_distance_scatter.png](..%2Ftravel_api%2Fimg%2Ftravel_time_distance_scatter.png)
+The simplified network structure proved particularly efficient for the mesoscopic simulation approach, allowing for city-scale simulations while maintaining adequate detail for analyzing both local and system-wide effects of autonomous vehicles and policy interventions.
 
-5. Trip generation probabilities by hour (derived from ODiN 2023 data)
+The full analysis is available in the [`network/create_network.ipynb`](../network/create_network.ipynb) notebook.
+
+#### 6.4 Travel time and distance data for public transit and cycling (from Google Maps API)
+
+![travel_time_google_maps_api_hist_boxplot.svg](img%2Ftravel_time_google_maps_api_hist_boxplot.svg)
+![travel_time_distance_scatter.png](img%2Ftravel_time_distance_scatter.png)
+
+The full analysis is available in the [`travel_api/travel_time_distance_google.ipynb`](../travel_api/travel_time_distance_google.ipynb) notebook.
+
+#### 6.5 Trip generation probabilities by hour (derived from ODiN 2023 data)
 
 ![trips_by_weekday_and_hour_heatmap.svg](img%2Ftrips_by_weekday_and_hour_heatmap.svg)
 ![chance_of_starting_trip_by_hour.svg](img%2Fchance_of_starting_trip_by_hour.svg)
 
-6. Origin-destination matrices for the Rotterdam area (V-MRDH model)
+The full analysis is available in the [`prototyping/ODiN_analysis.ipynb`](../prototyping/ODiN_analysis.ipynb) notebook.
+
+#### 6.6 Origin-destination matrices for the Rotterdam area (V-MRDH model)
 
 ![mrdh_areas_65.svg](img%2Fmrdh_areas_65.svg)
 ![od_demand.png](img%2Fod_demand.png)
 ![od_demand_int_ext.png](img%2Fod_demand_int_ext.png)
 ![inbound_outbound_traffic.png](img%2Finbound_outbound_traffic.png)
 
-7. Geographical boundaries for policy areas (city, area, autoluw)
-8. Value of Time data from Dutch transportation studies
+The full analysis is available in the [`v_mrdh/v_mrdh_od_demand.ipynb`](../v_mrdh/v_mrdh_od_demand.ipynb) notebook.
 
-
+#### 6.7 Geographical boundaries for policy areas (city, area, autoluw)
+#### 6.8 Value of Time data from Dutch transportation studies
 
 These data are preprocessed and stored in various formats (CSV, pickle files, GraphML) for use in the simulation.
 
