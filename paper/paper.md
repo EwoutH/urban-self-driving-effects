@@ -479,6 +479,9 @@ The model uses several external data sources:
 
 6. Origin-destination matrices for the Rotterdam area (V-MRDH model)
 
+![mrdh_areas_65.svg](img%2Fmrdh_areas_65.svg)
+![od_demand.png](img%2Fod_demand.png)
+![od_demand_int_ext.png](img%2Fod_demand_int_ext.png)
 ![inbound_outbound_traffic.png](img%2Finbound_outbound_traffic.png)
 
 7. Geographical boundaries for policy areas (city, area, autoluw)
