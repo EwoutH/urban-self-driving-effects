@@ -54,8 +54,37 @@ _Fig 3.2: Conceptual model displaying the submodels, variables and their interac
 Around these three submodels a lot of data plu
 
 ### 3.2.1 Input data
-We utilized multiple data sources to parameterize the model:
-ue of Time data from Dutch transpor
+To enable realistic simulation of both individual travel decisions and emergent system-level effects, the model integrates multiple empirical data sources that inform agent behavior and validate aggregate outcomes.
+
+#### Population and vehicle data
+Population distribution and vehicle ownership data from CBS (2023) were used at the 4-digit postal code (PC4) level, representing approximately one million residents across 125 postal code areas. Car ownership varies significantly by area (19-65%, averaging 31.5%), enabling heterogeneous mode availability among agents.
+
+#### Travel times and costs
+Data for non-car modes was collected using the Google Maps Distance Matrix API for all 15,500 possible origin-destination pairs between postal codes, captured on a typical Thursday morning (2024-09-17, 08:00). For cars, travel times are calculated dynamically by the traffic simulation based on network conditions. Travel costs were derived from multiple sources:
+- Car: Variable costs of €0.268/km based on Nibud data ([Nibud-car-costs]).
+- Public Transit: Distance-based pricing following NS tariff structure (€0.169/km base rate, with declining rates for longer distances above 40 km, which turned out to not be present in the final simulation area).
+- Bicycle: Assumed zero marginal cost.
+- Autonomous Vehicles: Base fare €3.79 plus €1.41/km and €0.40/min, derived from Waymo pricing analysis as of September 2024 in Los Angeles ([Waymo-pricing]).
+
+#### Road network
+The network was extracted from OpenStreetMap (September 2024) and processed to include a detailed inner-city network with all roads from tertiary level upward, and a simplified surrounding network with major roads only. The complete network consists of 1,575 nodes and 3,328 edges, including attributes like speed limits, number of lanes, and road types. Roads under construction, including the new A16 motorway and Blankenburg tunnel, were included to represent near-future conditions.
+
+#### Trip generation and distribution
+Temporal trip patterns were derived from the Dutch National Travel Survey (ODiN 2023). The data shows a distinct sharp morning peak between 8 and 9 o'clock, and a little more spread out evening peak between 16 and 18 o'clock on weekdays. These patterns were used to create hourly trip generation probabilities for agents, to ensure agents start their trips at representative times.
+
+#### Trip distribution
+V-MRDH transport model for spatial distribution, which provides origin-destination matrices for different time periods (morning peak, evening peak, and off-peak). These matrices were processed to create probability distributions for trip destinations given each origin based on all transportation modes combined, so that the mode choice could be modelled internally as an agent decision rather than using mode-specific matrices.
+
+#### Value of Time
+Base values from KiM (2023) were used:
+- Car: €10.42/hour
+- Bicycle: €10.39/hour
+- Public Transit: €7.12/hour
+- AV: Scaled from car value using an adjustable factor (explored in scenarios)
+
+Individual variation was introduced by applying agent-specific factors drawn from a lognormal distribution (mean 1.0, standard deviation 0.5, capped at 4.0), reflecting heterogeneous time valuations while maintaining reasonable bounds.
+
+Section 6 of Appendix A provides more details on the input data sources, processing steps and motivation behind certain choices.
 
 ### 3.2.2 Agent behavior
 Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time (drawn from a lognormal distribution). Each agent generates a set of trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
@@ -78,7 +107,7 @@ Trip chains are implemented as simple two-leg journeys (outbound and return), wi
 
 ### 3.2.3 Traffic simulation
 Vehicle movements are simulated using a modified version of UXsim, implementing Newell's simplified car-following model at a mesoscopic level. The simulation includes:
-- Dynamic User Equilibrium (DUE) route choice updated every 5 minutes
+- Dynamic User Equilibrium (DUE) route choice updated (by default) every 5 minutes
 - Link-specific characteristics (speed limits, number of lanes, capacity)
 - External traffic based on V-MRDH matrices
 - Simplified intersection dynamics
