@@ -665,6 +665,60 @@ All VoT values are converted from euros per hour to euros per second in the mode
 
 This implementation of heterogeneous Values of Time helps capture realistic variation in travel preferences and mode choices among agents. It also prevents hard tipping points in mode choice, where small changes in travel times or costs could lead to large shifts in behavior.
 
+### 6.9 Data storage, preprocessing, and integration
+The model integrates multiple data sources through a centralized `Data` class in `data.py`, which is initialized once at model startup and made available throughout the simulation. This section describes how different data sources are processed and utilized within the model.
+
+The following key data structures are loaded and processed during model initialization:
+
+1. **Travel time and distance data**
+   - Stored in pickle files: `travel_time_distance_google_{mode}.pkl` and `travel_time_distance_google_{mode}_pc4.pkl`
+   - Available for modes: "transit" and "bicycling"
+   - Contains matrices of travel times and distances between origins and destinations
+   - Distances are converted from meters to kilometers during loading
+   - Used by agents to determine travel times and costs for non-car modes
+2. **Geographic information**
+   - Loaded from `polygons.pkl`
+   - Contains three key polygons: city_polygon, area_polygon, autoluw_polygon
+   - Converted to GeoSeries with EPSG:28992 projection
+   - Used for spatial queries and policy implementation zones
+3. **Population and area data**
+   - Population data: `population_data_pc4_65coded.pkl`
+   - Areas data: `areas_mrdh_weighted_centroids.pkl`
+   - Various mapping dictionaries maintained for cross-referencing:
+     - `mrdh65_to_name`: Maps region numbers to names
+     - `pc4_to_mrdh65`: Maps postal codes to MRDH regions
+     - `mrdh65_to_pc4`: Maps MRDH regions to lists of postal codes
+4. **Car ownership and licenses**
+   - Stored in `rijbewijzen_personenautos.pkl`
+   - Contains car ownership and driver's license rates by postal code
+   - Used to assign cars and licenses to agents based on their location
+5. **Trip generation data**
+   - Trip probabilities: `trips_by_hour_chances.pickle`
+   - Trip count distribution: `trip_counts_distribution.pickle`
+   - Used to generate realistic temporal patterns of trip starts
+6. **Origin-destination matrices**
+   - Stored in `od_chance_dicts_periods.pickle`
+   - Contains matrices for different time periods (morning peak, evening peak, off-peak)
+   - Used to determine trip destinations based on origins
+
+Several data transformations are performed during initialization, the most notable:
+
+1. **Geographic filtering**
+   - Centroids are calculated for both postal codes and MRDH65 regions
+   - Areas are classified as "in_city", "in_area", or "autoluw" based on polygon containment
+   - Limited to populated areas within the city (21 specific MRDH65 regions)
+2. **Origin-destination processing**
+   - OD matrices are normalized to create probability distributions
+   - Destinations outside the study area are assigned zero probability
+   - Same-location trips are handled specially based on area size
+   - Probabilities are renormalized after filtering
+3. **Travel time data**
+   - Conversions from raw units to model units (meters to kilometers, etc.)
+   - Creation of lookup dictionaries for efficient runtime access
+   - Validation of data completeness for all required origin-destination pairs
+
+A trade-off was made here between pre-processing data for efficiency and maintaining flexibility for future extensions. While much data was pre-processed to reduce runtime overhead, some of the more destructive processing (like selecting and aggregating) was done on data initialization, to allow for easy modification and extension of the model, without needed to alter data files themselves.
+
 ### 7. Submodels
 
 #### 7.1 Trip Generation
