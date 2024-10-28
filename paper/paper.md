@@ -635,10 +635,35 @@ One limitation is that the matrices represent current travel patterns, which may
 
 The full analysis is available in the [`v_mrdh/v_mrdh_od_demand.ipynb`](../v_mrdh/v_mrdh_od_demand.ipynb) notebook.
 
-#### 6.7 Geographical boundaries for policy areas (city, area, autoluw)
-#### 6.8 Value of Time data from Dutch transportation studies
+#### 6.8 Value of Time data
+The model uses Value of Time (VoT) data from the Dutch Institute for Transport Policy Analysis (KiM)'s 2023 study on travel time valuation ([KiM-valuation]). Default values per mode were set at:
+- Car: €10.42 per hour 
+- Bicycle: €10.39 per hour
+- Public Transit: €7.12 per hour
+- Autonomous Vehicle: Scaled from car VoT using the av_vot_factor parameter. Experimental values of 1.0, 0.5, and 0.25 were used, resulting in the following VoT values:
+  - AV VoT factor 1.0: €10.42 per hour
+  - AV VoT factor 0.5: €5.21 per hour
+  - AV VoT factor 0.25: €2.61 per hour
 
-These data are preprocessed and stored in various formats (CSV, pickle files, GraphML) for use in the simulation.
+To capture heterogeneity in how individuals value their time, each agent's personal value of time is drawn from a lognormal distribution with parameters μ = -0.1116 and σ = 0.4724, capped at 4 times the default value. These parameters were chosen to produce a distribution with:
+- Mean of 1.0 (preserving the base VoT values on average)
+- Standard deviation of 0.5 (representing reasonable variation between individuals)
+- Maximum of 4.0 (preventing extreme outliers)
+
+The resulting distribution is shown in Figure A.x:
+
+![vot_distribution.svg](img%2Fvot_distribution.svg)
+_Fig A.x: Distribution of agents' Value of Time factors._
+
+An agent's final VoT for each mode is calculated by multiplying the mode's default value by their personal VoT factor. For example, an agent with a VoT factor of 1.5 would value car travel at €15.63 per hour (1.5 × €10.42). This heterogeneous valuation leads to varied mode choices among agents even when faced with identical travel options.
+
+Note that the VoT factor is consistent for all modes, meaning that an agent who values their time highly for car travel will also value their time highly for other modes.
+
+For autonomous vehicles, an additional `av_vot_factor` parameter scales the car VoT before applying the agent's personal factor. This represents potential differences in how time is valued in AVs compared to conventional cars, for example due to the ability to engage in other activities while traveling. The av_vot_factor is one of the key uncertainties explored in the scenario analysis.
+
+All VoT values are converted from euros per hour to euros per second in the model for computational efficiency, since travel times are tracked in seconds. The values represent 2022 price levels and include VAT, following standard Dutch transportation analysis practice.
+
+This implementation of heterogeneous Values of Time helps capture realistic variation in travel preferences and mode choices among agents. It also prevents hard tipping points in mode choice, where small changes in travel times or costs could lead to large shifts in behavior.
 
 ### 7. Submodels
 
@@ -708,7 +733,7 @@ vot_factor = min(np.random.lognormal(mean=-0.1116, sigma=0.4724), 4)
 value_of_time = {mode: default_vot[mode] * vot_factor for mode in modes}
 ```
 
-This creates heterogeneity in how agents value their time, influencing their mode choices.
+This creates heterogeneity in how agents value their time, influencing their mode choices. It prevents sharp tipping points in mode choice and allows for more realistic variation in travel preferences. For more details and sources, see the Value of Time data section.
 
 #### 7.7 External Vehicle Load
 
