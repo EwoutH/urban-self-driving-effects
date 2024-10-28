@@ -537,8 +537,40 @@ The full analysis is available in the [`travel_api/travel_time_distance_google.i
 
 #### 6.5 Trip generation probabilities by hour (derived from ODiN 2023 data)
 
+Trip generation probabilities were derived from the Dutch National Travel Survey (ODiN) 2023 dataset to create temporal patterns of travel demand. The ODiN survey provides detailed information about travel behavior in the Netherlands, including the timing of trip starts throughout the day. Since it is a survey, the data is not perfect, and more care was taken to ensure the data was cleaned properly and representative for this research.
+
+While ODiN offers a wealth of data, the focus was on the timing of trips, which was used to create hourly trip generation probabilities for the simulation model. The data was aggregated to count the number of trips starting in each hour of the day, resulting in a distribution of travel demand over time.
+
 ![trips_by_weekday_and_hour_heatmap.svg](img%2Ftrips_by_weekday_and_hour_heatmap.svg)
+_Fig A.x: Heatmap showing the number of trips by hour and day of the week. The color intensity indicates the number of trips, with lighter colors representing more trips._
+
+The heatmap in Figure A.x shows several distinct temporal patterns:
+- A sharp morning peak (8:00-9:00) and more spread out evening peak (16:00-18:00) peak hours on weekdays
+- Lower (especially on Sunday) but more spread out travel demand during weekends
+- Very low travel activity between midnight and 5:00
+- Relatively consistent patterns Monday through Thursday (except with a small lunch peak on Wednesday, probably due to school schedules)
+- Slightly different pattern on Fridays, with a less pronounced evening peak, more spread out through the afternoon
+- Weekend travel starting later in the day and more evenly distributed
+
+For use in the simulation model, the trip generation probabilities were calculated by:
+1. Counting the number of unique travelers per day of the week
+2. Counting trips starting in each hour
+3. Dividing the hourly trip counts by the number of unique travelers to get the probability that an individual starts a trip in that hour
+4. Averaging the probabilities for Monday through Thursday to get representative weekday patterns (done in the Model itself, any day or combination of days can be selected there).
+
+Since there are relatively large steps between some hours, 15-minute intervals were also explored to see if more smoother steps could be achieved.
+
+![trips_by_weekday_and_quarter_hour_heatmap.png](img%2Ftrips_by_weekday_and_quarter_hour_heatmap.png)
+_Fig A.x: Heatmap showing the number of trips by quarter-hour and day of the week._
+
+However, as can be seen in the quarter-hour heatmap, there are very distinct pattern in which the whole, and in a lesser extent half, hours are over-represented. This is likely caused by people rounding their travel times to the nearest hour in the survey, and the data was therefore kept in hourly bins.
+
+As a default value the travel distribution is averaged over Monday to Thursday, as weekdays are when the largest congestion and travel demand is expected, and thus most interesting for this research. The number of trip for each hour of each day was normalized over the number of the number of people taking trips that day, to create a lookup table giving the probability of a person starting trip starting in a specific hour of a specific day.
+
 ![chance_of_starting_trip_by_hour.svg](img%2Fchance_of_starting_trip_by_hour.svg)
+_Fig A.x: Average probability of an individual starting a trip by hour during weekdays (Monday-Thursday).
+
+Using these lookup tables, the start time, end time (and thus duration) and day of the week could be varied in the model, while always initiating a representative number of trips. Many initial tests were only performed on a few hours (like 7:00-11:00), while the full 05:00-24:00 in which significant travel demand is present was used for all experiments.
 
 The full analysis is available in the [`prototyping/ODiN_analysis.ipynb`](../prototyping/ODiN_analysis.ipynb) notebook.
 
