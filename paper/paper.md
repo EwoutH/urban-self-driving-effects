@@ -575,11 +575,63 @@ Using these lookup tables, the start time, end time (and thus duration) and day 
 The full analysis is available in the [`prototyping/ODiN_analysis.ipynb`](../prototyping/ODiN_analysis.ipynb) notebook.
 
 #### 6.6 Origin-destination matrices for the Rotterdam area (V-MRDH model)
+Origin-destination (OD) matrices were obtained from the V-MRDH 3.0 transport model (October 2023 version), which provides detailed travel demand data for the Rotterdam-The Hague metropolitan area. The V-MRDH model divides The Netherlands into 65 traffic analysis zones with varying sizes - smaller zones in dense urban areas and larger zones in peripheral regions. This model was selected because it:
+- Provides validated OD patterns based on extensive traffic counts and travel surveys
+- Captures different time periods (morning peak 7-9h, evening peak 16-18h, and off-peak)
+- Contains separate matrices for different transport modes (car, bicycle, public transport)
+- Covers both internal traffic within Rotterdam and external traffic to/from surrounding areas
 
 ![mrdh_areas_65.svg](img%2Fmrdh_areas_65.svg)
+_Fig A.x: The 65 traffic analysis zones defined in the V-MRDH model, with decreasing resolution farther from the MRDH area. Numbers indicate zone identifiers._
+
+The OD matrices were processed in several steps:
+
+1. Data extraction and normalization:
+   - Raw matrices were extracted for each mode and time period
+   - Values were normalized to create probability distributions for each origin zone
+   - Total travel demand was preserved while converting absolute numbers to relative flows
+
+2. Area selection and filtering:
+   - 21 zones covering the Rotterdam city area were selected as internal zones
+   - 13 surrounding zones were designated as external zones for modeling boundary traffic
+   - Remaining peripheral zones were excluded from the simulation
+   
+3. Creation of lookup tables:
+   - Probability matrices were created for trip distribution in different time periods
+   - Separate tables were made for internal-internal and internal-external flows
+   - Data was stored in efficient dictionary format for quick runtime lookup
+
 ![od_demand.png](img%2Fod_demand.png)
-![od_demand_int_ext.png](img%2Fod_demand_int_ext.png)
+_Fig A.x: Travel demand visualization by mode (total, car, bicycle, public transport) between zones in the Rotterdam area. Line thickness indicates trip volume._
+
+The matrices revealed several interesting patterns, used for both model validation and input:
+
+First, the modal split varies significantly by area. In the inner Rotterdam area (Noord, Kralingen, Rotterdam Centrum, Feyenoord, Delfshaven), the model split was 13.4% car, 69.9% bicycle and 16.7% public transport.
+In the (full study area) of broader Rotterdam, the split was 37.7% car, 49.0% bicycle and 13.3% public transport. These modal splits were used to validate and kalibrate the model.
+
+Secondly, distinct time-of-day patterns were present, as shown in the figure below.
+
 ![inbound_outbound_traffic.png](img%2Finbound_outbound_traffic.png)
+_Fig A.x: Analysis of inbound/outbound traffic patterns. Top: total traffic volume. Middle: absolute difference between inbound and outbound flows. Bottom: relative asymmetry ratio._
+
+Certain regions showed strong inbound or outbound flows during morning and evening peak hours. For example, the city center (Rotterdam Centrum) had a high volume of inbound traffic in the morning and outbound traffic in the evening, reflecting commuting patterns. The industrial harbor area (Botlek, Europoort, Maasvlakte and Vondelingenplaat) had a similar pattern, with especially the ratio of inbound to outbound traffic being high. Evening peak displays opposite outbound patterns, while off-peak hours have more balanced bi-directional flows.
+
+From this data, OD chance dictionaries were created for each of the three time periods (morning peak, evening peak, off-peak). For each origin, the probability of traveling to each destination was stored, allowing for efficient lookup during trip generation. The total summed values for all modalities were used, leaving the mode choice to the agent behavior model.
+
+Where withing the study area all internal trips were analyzed, for trips between the study area and the supporting area only the car trips were modelled. From the OD matrices, a fixed amount of cars was added to the simulation from each external zone to the internal zones and visa versa. The total daily external traffic, together with the internal demand, is shown in the figure below.
+
+![od_demand_int_ext.png](img%2Fod_demand_int_ext.png)
+_Fig A.x: Comparison of internal demand (green) and external car traffic (red) patterns.
+
+Notable is large external traffic from the directly neighboring zones, especially from the east and south.
+
+Finally, the processed OD data serves three main purposes in the model:
+
+1. Trip distribution: When agents generate trips, destinations are selected probabilistically based on the normalized OD matrices for the appropriate time period.
+2. External traffic: Car traffic entering and leaving the study area is simulated based on the external zone matrices, scaled by time-of-day factors.
+3. Validation: The modal split and spatial distribution patterns provide reference values for validating model behavior.
+
+One limitation is that the matrices represent current travel patterns, which may not fully reflect behavior in future scenarios with autonomous vehicles. However, they provide a validated baseline for trip distribution patterns, while mode choice is handled separately by the agent behavior model. This is in line with the short to medium term scope of this research.
 
 The full analysis is available in the [`v_mrdh/v_mrdh_od_demand.ipynb`](../v_mrdh/v_mrdh_od_demand.ipynb) notebook.
 
