@@ -789,20 +789,24 @@ comf_perceived_cost = perceived_cost * comfort_factor[mode]
 
 The mode with the lowest comfort-adjusted perceived cost is chosen.
 
-#### 7.3 Traffic Simulation
+### 7.3 Traffic Simulation
+The traffic simulation uses [UXsim](https://arxiv.org/abs/2309.17114), a mesoscopic traffic simulator that implements a version of [Newell's simplified car-following model](https://doi.org/10.1016/S0191-2615(00)00044-8). The driving behavior of a platoon consisting of $\Delta n$ vehicles in a link is expressed as:
 
-Traffic is simulated using the UXsim library, which implements a mesoscopic traffic model based on Newell's car-following model. Key components include:
+$X(t + \Delta t, n) = \min\{X(t, n) + u\Delta t, X(t + \Delta t - \tau \Delta n, n - \Delta n) - \delta\Delta n\}$
 
-- Dynamic User Equilibrium (DUE) for route choice
-- Platoon-based vehicle representation
-- Link-based traffic flow calculations
-- Consideration of road characteristics (e.g., speed limits, number of lanes)
-- Integration of external traffic based on origin-destination matrices
+where $X(t, n)$ denotes the position of platoon $n$ at time $t$, $\Delta t$ denotes the simulation time step width, $u$ denotes free-flow speed of the link, and $\delta$ denotes jam spacing of the link.
 
-The traffic simulation is updated at regular intervals (default 5 minutes) and provides data on link speeds, densities, and flows.
+For route choice, UXsim employs a [Dynamic User Optimum](https://doi.org/10.1016/S0191-2615(00)00005-9) (DUO) model with stochasticity and delay. The attractiveness $B^{z,i}_o$ of link $o$ for vehicles with destination $z$ at time step $i$ is updated as:
+
+$B^{z,i}_o = (1 - \lambda)B^{z,i-\Delta i_B}_o + \lambda b^{z,i}_o$
+
+where $\lambda$ is a weight parameter and $b^{z,i}_o$ indicates whether link $o$ is on the shortest path to destination $z$.
+
+Road types were differentiated through jam density parameters based on their hierarchy, with motorways having lower jam densities (0.14 vehicles/meter/lane) than local streets (0.20 vehicles/meter/lane), reflecting different headway requirements at different speeds. The [incremental node model](https://doi.org/10.1016/j.trb.2011.03.001) handles intersections, managing merging and diverging traffic flows consistently with the kinematic wave model.
+
+The model uses a hybrid simulation approach: Mesa's discrete event simulation manages agent decisions and scheduling, while UXsim handles continuous traffic flow dynamics. Synchronization between the two systems occurs at 5-minute intervals, where agents make mode choices based on current network conditions, new vehicle trips are added to UXsim, traffic flow is simulated, and the updated network conditions inform future agent decisions. Network performance data is collected at 15-minute intervals using UXsim's area-based analysis capabilities.
 
 #### 7.4 Parking
-
 Parking is modeled by tracking the number of parked vehicles in each MRDH region:
 
 - When a car trip starts, a parking space is freed in the origin area.
