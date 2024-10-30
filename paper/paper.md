@@ -486,13 +486,13 @@ The model uses several external data sources as input for agent and system behav
 
 Population data from the CBS is used to distribute agents across the urban area ([CBS-postcode]). The Dutch 4-digit postal code areas are used, which roughly represent a neighbourhood each. This gives heterogeneity in the system and enables adequate travel counts and traffic pressure on the network. In the 125 PC4 areas, there are in total 991,575 residents. The population in each area gets scaled down with the platoon size (10 by default), resulting in approximately 100,000 agents in the simulation.
 
-![pop_density_pc4.svg](img%2Fpop_density_pc4.svg)
+![pop_density_pc4.svg](img%2Fdata%2Fpop_density_pc4.svg)
 _Fig A.x: Population count for each PC4 area (number) and population density (color)_
 
 #### 6.2 Car ownership and driver's license data by postal code (CBS)
 
 Car ownership is also sourced from the CBS per PC4 area. For each area, a certain percentage of agents gets assigned a car as additional available mode. On average that's 35.4% and varies between ~19% and ~65% per area. This enables heterogeneity among agents and enables realistic mode choices.
-![car_per_inhabitant_pc4.svg](img%2Fcar_per_inhabitant_pc4.svg)
+![car_per_inhabitant_pc4.svg](img%2Fdata%2Fcar_per_inhabitant_pc4.svg)
 _Fig A.x: Car ownership per inhabitant for each PC4 area_
 
 The full analysis for both the population and car ownership data is available in the [`prototyping/pc4.ipynb`](../prototyping/pc4.ipynb) notebook.
@@ -556,7 +556,7 @@ To validate and gain insights into the collected data, an exploratory analysis w
 
 Fig A.x shows the distribution of cycling travel times are more skewed towards shorter durations, with a median and mean below 40 minutes, while transit travel times were more evenly distributed, with a median and mean above 50 minutes.
 
-![travel_time_google_maps_api_hist_boxplot.svg](img%2Ftravel_time_google_maps_api_hist_boxplot.svg)
+![travel_time_google_maps_api_hist_boxplot.svg](img%2Fdata%2Ftravel_time_google_maps_api_hist_boxplot.svg)
 _Fig A.x: Distribution of travel times between the 15.500 centroid-pairs for cycling and public transit._
 
 Fig A.x shows a scatter plot of travel times versus bird's-eye distances for both modes. It shows cycling having a clear maximum speed and relatively linear relationship between time and distance, while public transit has a lesser correlation, with a lot of variation in travel times for similar distances, and now clear minimum or maximum speeds.
@@ -572,7 +572,7 @@ Trip generation probabilities were derived from the Dutch National Travel Survey
 
 While ODiN offers a wealth of data, the focus was on the timing of trips, which was used to create hourly trip generation probabilities for the simulation model. The data was aggregated to count the number of trips starting in each hour of the day, resulting in a distribution of travel demand over time.
 
-![trips_by_weekday_and_hour_heatmap.svg](img%2Ftrips_by_weekday_and_hour_heatmap.svg)
+![trips_by_weekday_and_hour_heatmap.svg](img%2Fdata%2Ftrips_by_weekday_and_hour_heatmap.svg)
 _Fig A.x: Heatmap showing the number of trips by hour and day of the week. The color intensity indicates the number of trips, with lighter colors representing more trips._
 
 The heatmap in Figure A.x shows several distinct temporal patterns:
@@ -591,14 +591,14 @@ For use in the simulation model, the trip generation probabilities were calculat
 
 Since there are relatively large steps between some hours, 15-minute intervals were also explored to see if more smoother steps could be achieved.
 
-![trips_by_weekday_and_quarter_hour_heatmap.png](img%2Ftrips_by_weekday_and_quarter_hour_heatmap.png)
+![trips_by_weekday_and_quarter_hour_heatmap.png](img%2Fdata%2Ftrips_by_weekday_and_quarter_hour_heatmap.png)
 _Fig A.x: Heatmap showing the number of trips by quarter-hour and day of the week._
 
 However, as can be seen in the quarter-hour heatmap, there are very distinct pattern in which the whole, and in a lesser extent half, hours are over-represented. This is likely caused by people rounding their travel times to the nearest hour in the survey, and the data was therefore kept in hourly bins.
 
 As a default value the travel distribution is averaged over Monday to Thursday, as weekdays are when the largest congestion and travel demand is expected, and thus most interesting for this research. The number of trip for each hour of each day was normalized over the number of the number of people taking trips that day, to create a lookup table giving the probability of a person starting trip starting in a specific hour of a specific day.
 
-![chance_of_starting_trip_by_hour.svg](img%2Fchance_of_starting_trip_by_hour.svg)
+![chance_of_starting_trip_by_hour.svg](img%2Fdata%2Fchance_of_starting_trip_by_hour.svg)
 _Fig A.x: Average probability of an individual starting a trip by hour during weekdays (Monday-Thursday).
 
 Using these lookup tables, the start time, end time (and thus duration) and day of the week could be varied in the model, while always initiating a representative number of trips. Many initial tests were only performed on a few hours (like 7:00-11:00), while the full 05:00-24:00 in which significant travel demand is present was used for all experiments.
@@ -632,7 +632,7 @@ The OD matrices were processed in several steps:
    - Separate tables were made for internal-internal and internal-external flows
    - Data was stored in efficient dictionary format for quick runtime lookup
 
-![od_demand.png](img%2Fod_demand.png)
+![od_demand.png](img%2Fdata%2Fod_demand.png)
 _Fig A.x: Travel demand visualization by mode (total, car, bicycle, public transport) between zones in the Rotterdam area. Line thickness indicates trip volume._
 
 The matrices revealed several interesting patterns, used for both model validation and input:
@@ -642,7 +642,7 @@ In the (full study area) of broader Rotterdam, the split was 37.7% car, 49.0% bi
 
 Secondly, distinct time-of-day patterns were present, as shown in the figure below.
 
-![inbound_outbound_traffic.png](img%2Finbound_outbound_traffic.png)
+![inbound_outbound_traffic.png](img%2Fdata%2Finbound_outbound_traffic.png)
 _Fig A.x: Analysis of inbound/outbound traffic patterns. Top: total traffic volume. Middle: absolute difference between inbound and outbound flows. Bottom: relative asymmetry ratio._
 
 Certain regions showed strong inbound or outbound flows during morning and evening peak hours. For example, the city center (Rotterdam Centrum) had a high volume of inbound traffic in the morning and outbound traffic in the evening, reflecting commuting patterns. The industrial harbor area (Botlek, Europoort, Maasvlakte and Vondelingenplaat) had a similar pattern, with especially the ratio of inbound to outbound traffic being high. Evening peak displays opposite outbound patterns, while off-peak hours have more balanced bi-directional flows.
@@ -651,7 +651,7 @@ From this data, OD chance dictionaries were created for each of the three time p
 
 Where withing the study area all internal trips were analyzed, for trips between the study area and the supporting area only the car trips were modelled. From the OD matrices, a fixed amount of cars was added to the simulation from each external zone to the internal zones and visa versa. The total daily external traffic, together with the internal demand, is shown in the figure below.
 
-![od_demand_int_ext.png](img%2Fod_demand_int_ext.png)
+![od_demand_int_ext.png](img%2Fdata%2Fod_demand_int_ext.png)
 _Fig A.x: Comparison of internal demand (green) and external car traffic (red) patterns.
 
 Notable is large external traffic from the directly neighboring zones, especially from the east and south.
@@ -683,7 +683,7 @@ To capture heterogeneity in how individuals value their time, each agent's perso
 
 The resulting distribution is shown in Figure A.x:
 
-![vot_distribution.svg](img%2Fvot_distribution.svg)
+![vot_distribution.svg](img%2Fdata%2Fvot_distribution.svg)
 _Fig A.x: Distribution of agents' Value of Time factors._
 
 An agent's final VoT for each mode is calculated by multiplying the mode's default value by their personal VoT factor. For example, an agent with a VoT factor of 1.5 would value car travel at €15.63 per hour (1.5 × €10.42). This heterogeneous valuation leads to varied mode choices among agents even when faced with identical travel options.
