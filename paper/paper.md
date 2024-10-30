@@ -149,6 +149,23 @@ At least include:
 - no other modes than car, bike, AV and public transit, like walking or e-scooters
 - parking not explicitly modeled or included in mode choice
 
+## 3.5 Default behavior
+
+### 3.5.1 Mode choice
+![mode_distribution_default.svg](img%2Fdefault%2Fmode_distribution_default.svg)
+
+### 3.5.2 Journey metrics
+![journeys_data_default.svg](img%2Fdefault%2Fjourneys_data_default.svg)
+
+### 3.5.3 Network metrics
+![uxsim_data_default_default.png](img%2Fdefault%2Fuxsim_data_default_default.png)
+![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
+![uxsim_heatmaps_default_clean.png](img%2Fdefault%2Fuxsim_heatmaps_default_clean.png)
+
+### 3.5.4 Parking
+![parked_data_default.png](img%2Fdefault%2Fparked_data_default.png)
+![parked_heatmaps_default.png](img%2Fdefault%2Fparked_heatmaps_default.png)
+
 # 4. Experimental design
 Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
 
