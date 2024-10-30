@@ -99,19 +99,26 @@ Section 6 of Appendix A provides more details on the input data sources, process
 ### 3.2.2 Agent behavior
 Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time (drawn from a lognormal distribution). Each agent generates a set of trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
 
-For each trip, agents choose between available modes (conventional car, autonomous vehicle, bicycle, public transit) based on a rational choice model that minimizes comfort-adjusted perceived costs:
+The model implements an agent-based version of the traditional four-step transportation demand model (McNally, 2007), adapting it for individual-level mode choice decision making while maintaining validated travel patterns. The first two steps (trip generation and distribution) are based on empirical data, while the latter two steps (mode choice and route assignment) are modeled dynamically through agent behavior and traffic simulation. The four steps are implemented as follows:
+
+Firstly, trip generation relies on hourly probabilities derived from ODiN 2023 data, with agents generating trips through `generate_trip_times()`.
+
+Secondly, trip distribution assigns destinations using origin-destination probability matrices from the V-MRDH model through `time_to_od_dict()`. The matrices vary by time period (morning peak, evening peak, off-peak) to capture different travel patterns throughout the day.
+
+Third, mode choice is implemented in `choice_rational_vot()`, where agents choose between available modes (conventional car, autonomous vehicle, bicycle, public transit) based on a rational choice model that minimizes comfort-adjusted perceived costs:
 
 The perceived cost $C_{p,m}$ for a trip using mode $m$ is calculated as:
 
    $C_{p,m} = (C_{m,m} + T_m \cdot V_m) \cdot \alpha_m$
 
 where:
-
 - $C_{p,m}$ is the perceived cost for mode $m$
 - $C_{m,m}$ is the monetary cost for mode $m$
 - $T_m$ is the travel time for mode $m$
 - $V_m$ is the value of time for mode $m$
 - $\alpha_m$ is the comfort factor for mode $m$
+
+Finally, route assignment for car and AV trips is handled by the UXsim traffic simulation. Other modes use fixed routes from Google Maps API data, which don't need to be modeled explicitly.
 
 Trip chains are implemented as simple two-leg journeys (outbound and return), with mode availability constrained by previous choices (e.g., if departing by car, the return trip must also be by car).
 
