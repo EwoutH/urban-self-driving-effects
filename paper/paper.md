@@ -122,15 +122,24 @@ Finally, route assignment for car and AV trips is handled by the UXsim traffic s
 
 Trip chains are implemented as simple two-leg journeys (outbound and return), with mode availability constrained by previous choices (e.g., if departing by car, the return trip must also be by car).
 
-### 3.2.3 Traffic simulation
-Vehicle movements are simulated using a modified version of UXsim, implementing Newell's simplified car-following model at a mesoscopic level. The simulation includes:
-- Dynamic User Equilibrium (DUE) route choice updated (by default) every 5 minutes
-- Link-specific characteristics (speed limits, number of lanes, capacity)
-- External traffic based on V-MRDH matrices
-- Simplified intersection dynamics
-- Area-based data collection for performance metrics
+### 3.2.3 Traffic Simulation
+The traffic simulation component uses [UXsim](https://arxiv.org/abs/2309.17114), a mesoscopic traffic simulator that implements a version of [Newell's simplified car-following model](https://doi.org/10.1016/S0191-2615(00)00044-8). This model represents traffic flow as a kinematic wave, a balance between microscopic (individual vehicle) and macroscopic (flow-based) modeling. This approach provides computational efficiency while maintaining sufficient detail to model traffic dynamics and measure congestion at both link and area levels.
 
-<!-- TODO: Describe -->
+When agents choose car or AV as their travel mode, they are added to the traffic simulation as vehicles. For computational efficiency, vehicles are grouped into platoons of 10 vehicles, approximating the behavior of the actual 991,575 residents with about 100,000 agents. Each vehicle's driving behavior in a link is expressed as:
+
+$X(t + \Delta t, n) = \min\{X(t, n) + u\Delta t, X(t + \Delta t - \tau \Delta n, n - \Delta n) - \delta\Delta n\}$
+
+where $X(t, n)$ denotes the position of platoon $n$ at time $t$, $\Delta t$ denotes the simulation time step width, $u$ denotes free-flow speed of the link, and $\delta$ denotes jam spacing of the link. This equation represents vehicles traveling at free-flow speed when unconstrained, while maintaining safe following distances when in congestion.
+
+Traffic behavior at intersections is handled by the [incremental node model](https://doi.org/10.1016/j.trb.2011.03.001), which resolves conflicts between competing flows by processing vehicles sequentially based on predefined merge priorities. This approach maintains consistency with the kinematic wave model while efficiently managing complex intersection dynamics. Since OpenStreetMap data lacked explicit intersection information, merge priorities were set to default values, giving each incoming lane equal priority.
+
+For route choice, UXsim employs a [Dynamic User Optimum](https://doi.org/10.1016/S0191-2615(00)00005-9) (DUO) model with stochasticity and delay. The attractiveness $B^{z,i}_o$ of link $o$ for vehicles with destination $z$ at time step $i$ is updated as:
+
+$B^{z,i}_o = (1 - \lambda)B^{z,i-\Delta i_B}_o + \lambda b^{z,i}_o$
+
+where $\lambda$ is a weight parameter and $b^{z,i}_o$ indicates whether link $o$ is on the shortest path to destination $z$. This formulation allows vehicles to gradually adapt their routes based on evolving traffic conditions, rather than instantly responding to changes in travel times.
+
+Road characteristics are differentiated by road type, with motorways having lower jam densities (0.14 vehicles/meter/lane) than local streets (0.20 vehicles/meter/lane).
 
 ![merged_network.svg](img%2Fmerged_network.svg)
 _Fig 3.3: The road network used in the traffic simulation_
