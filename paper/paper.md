@@ -48,12 +48,20 @@ _Fig 3.1: The main study area, divided into 21 MRDH regions and 125 postal code 
 While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region. The model could also be ran for multiple days, with trip probability data being available for every day of the week.
 
 ## 3.2 Key submodels
-The model consists of two main submodels: the agent mode-choice model and the traffic simulation model. These submodels interact through agent decisions, which influence traffic flow and congestion patterns, which in turn affect mode choices of future agents. The conceptual model in Fig. 3.2 illustrates the key variables and interactions between submodels.
+The model consists of two main submodels: the agent mode-choice model and the traffic simulation model. These submodels interact through agent decisions, which influence traffic flow and congestion patterns, which in turn affect mode choices of future agents. These submodels are fed various input data, which can be seen as a third submodel. The conceptual model in Fig. 3.2 illustrates the key variables and interactions between submodels.
 
 ![Conceptual-model-v2-no-exp.svg](img%2FConceptual-model-v2-no-exp.svg)
 _Fig 3.2: Conceptual model displaying the submodels, variables and their interactions_
 
-Around these three submodels a lot of data plu
+The model's submodels interact through a series of information flows and feedback loops, as illustrated in Figure 3.2. At its core, the model combines individual travel decisions with system-level traffic dynamics.
+
+The process begins with input data feeding into both agent behavior and traffic simulation. Population data and trip patterns determine where and when agents travel, while the road network provides the physical infrastructure for the traffic simulation. For each potential journey, the agent first determines possible origins and destinations from empirical OD matrices, then evaluates available transport modes using a utility-based choice model.
+
+When agents choose conventional cars or AVs, their trips feed into the mesoscopic traffic simulation as vehicle demand. The traffic simulation then calculates network conditions including congestion, delays, and travel times, which feed back into agents' future mode choices through updated travel times. For non-motorized modes (bicycle) and public transit, travel times remain fixed based on Google Maps API data, as these modes are assumed to be largely unaffected by congestion.
+
+This creates two main feedback loops: a direct loop where traffic conditions influence immediate mode choices, and an indirect loop where accumulated trips affect network performance over time.
+
+External factors like population distribution, mode-specific costs, and value of time heterogeneity influence these dynamics but remain constant during each simulation run. This allows the model to explore how different scenarios and policies might affect the complex interactions between individual travel choices and system-level transportation performance.
 
 ### 3.2.1 Input data
 To enable realistic simulation of both individual travel decisions and emergent system-level effects, the model integrates multiple empirical data sources that inform agent behavior and validate aggregate outcomes.
