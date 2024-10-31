@@ -226,7 +226,9 @@ This created 72 scenario-policy combinations (8×9), allowing examination of pol
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
 # 5. Results
-TODO: Short introduction with overview of what will be shown.
+The model was run across 144 different scenarios exploring four key uncertainties in AV adoption and impact: cost, perceived value of time, space efficiency (density), and induced demand. This section presents the results in three parts.
+
+First, we examine AV adoption patterns and resulting modal shifts across scenarios (5.1), directly addressing subquestion B about how self-driving cars will be adopted under different uncertainties. Next, we analyze the undesired system effects that emerge in different scenarios (5.2), addressing subquestion C about which urban problems are amplified or reduced. Finally, we evaluate the effectiveness of various policy interventions (5.3), addressing subquestion D about which policies can help mitigate negative impacts while preserving benefits.
 
 Many of the results will be displayed in dimensionally-stacked heatmaps. In each, one metric is displayed for all 144 scenarios. There are two x-axes and two y-axes, one for each of the 4 uncertainties from which the scenarios are derived:
 - Inner (upper) x-axis: The AV Value of Time (VOT) factor, ranging from 1.0 to 0.25 (lower means less valuable).
@@ -237,7 +239,7 @@ Many of the results will be displayed in dimensionally-stacked heatmaps. In each
 Each value (tile) in the heatmap represents the metric value for the corresponding scenario. The structure and order is identical for all heatmaps, allowing for visual comparison of different metrics across the scenarios.
 
 ## 5.1 AV adoption & modal shift
-TODO: Short introduction with link to subquestion B and experimental design
+To understand how autonomous vehicles might be adopted in urban environments and their impact on existing transportation modes, we first analyze the uptake of AVs and resulting changes in mode shares across our scenario space. This will answer subquestion B, under which circumstances AVs are likely to be adopted and how they affect the use of other modes.
 
 ### AV adoption
 Fig 5.1 shows the mode share and mode-distance share of AVs in the 144 scenarios. The mode share represents the percentage of total trips made by AVs, while the mode-distance share represents the percentage of total distance traveled by AVs.
@@ -268,8 +270,6 @@ Looking at the mode shares of the other modalities, we see again those two disti
 It's also remarkable that as AVs get cheaper and more dense, the modal shift from cyclist and transit starts earlier and happens faster than the modal shift from cars.
 
 Finally, the induced demand doesn't seem to matter very much for the mode shares. While in the likely near-future scenarios with expensive AVs the induced demand lowers car and AV share with high induced demand, as AVs get cheaper and adoption increases, the density dictates the mode shares more than the induced demand.
-
-TODO: Summarize answer on subquestion B
 
 ## 5.2 Undesired system effects
 _Answer on subquestion C_
