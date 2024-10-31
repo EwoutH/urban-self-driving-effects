@@ -244,6 +244,7 @@ Fig 5.1 shows the mode share and mode-distance share of AVs in the 144 scenarios
 
 | ![heatmap_mode_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_av.png) | ![heatmap_mode_distance_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_av.png) |
 |-----|-----|
+
 _Fig 5.1: Mode share and mode-distance share of AVs in different scenarios_
 
 In the scenarios to close to current pricing, AVs are only marginally adopted, for between 0.7% and 1.6%. While this is between 25.000 to 60.000 daily trips, it's not significant in the total of 3.5 million daily trips in the area. The density factor plays a small but notable role here, with AV adoption being about half if total travel demand increases by 50%.
@@ -259,6 +260,7 @@ Fig 5.2 shows the mode share of cars, bicycles, and public transit in the 144 sc
 
 | ![heatmap_mode_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_bike.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_transit.png) |
 |-----|-----|-----|
+
 _Fig 5.2: Mode share of cars, bicycles, and public transit in different scenarios_
 
 TODO: Interpretation
@@ -268,8 +270,22 @@ TODO: Summarize answer on subquestion B
 ## 5.2 Undesired system effects
 _Answer on subquestion C_
 
+Network speeds (3x1)
+
+Travel time, distance, perceived costs (3x1)
+
+Something with parking?
+
 ## 5.3 Policy effectiveness
 _Answer on subquestion D_
+
+Mode shares (2x2)
+
+Network speeds (3x1)
+
+Travel time, distance, perceived costs (3x1)
+
+Something with parking?
 
 # 6. Conclusions
 _Objective answers from the results and how they answer the research question_
