@@ -263,7 +263,11 @@ Fig 5.2 shows the mode share of cars, bicycles, and public transit in the 144 sc
 
 _Fig 5.2: Mode share of cars, bicycles, and public transit in different scenarios_
 
-TODO: Interpretation
+Looking at the mode shares of the other modalities, we see again those two distinct futures depending on the density of AVs. If AVs operate inefficiently, bike and transit shares remain high, and car share slightly reduces as AVs get cheaper. However, with high density AVs, bike and transit share drop very steeply while car share remains relatively high. Notably, there even is a spot in which the car share increases, with very high density AVs that are still relatively expensive (a cost factor of 0.5 or 0.25). We will explore this further in 5.2.
+
+It's also remarkable that as AVs get cheaper and more dense, the modal shift from cyclist and transit starts earlier and happens faster than the modal shift from cars.
+
+Finally, the induced demand doesn't seem to matter very much for the mode shares. While in the likely near-future scenarios with expensive AVs the induced demand lowers car and AV share with high induced demand, as AVs get cheaper and adoption increases, the density dictates the mode shares more than the induced demand.
 
 TODO: Summarize answer on subquestion B
 
