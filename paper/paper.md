@@ -226,9 +226,44 @@ This created 72 scenario-policy combinations (8×9), allowing examination of pol
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
 # 5. Results
+TODO: Short introduction with overview of what will be shown.
+
+Many of the results will be displayed in dimensionally-stacked heatmaps. In each, one metric is displayed for all 144 scenarios. There are two x-axes and two y-axes, one for each of the 4 uncertainties from which the scenarios are derived:
+- Inner (upper) x-axis: The AV Value of Time (VOT) factor, ranging from 1.0 to 0.25 (lower means less valuable).
+- Outer (lower) x-axis: The AV Cost Factor, ranging from 1.0 to 0.125 (lower means cheaper).
+- Inner (left) y-axis: Induced Demand factor, ranging from 1.0 to 1.5 (higher means more demand).
+- Outer (right) y-axis: AV Density factor, ranging from 1.5 to 0.333 (lower means less space taken up).
+
+Each value (tile) in the heatmap represents the metric value for the corresponding scenario. The structure and order is identical for all heatmaps, allowing for visual comparison of different metrics across the scenarios.
 
 ## 5.1 AV adoption & modal shift
-_Answer on subquestion B_
+TODO: Short introduction with link to subquestion B and experimental design
+
+### AV adoption
+Fig 5.1 shows the mode share and mode-distance share of AVs in the 144 scenarios. The mode share represents the percentage of total trips made by AVs, while the mode-distance share represents the percentage of total distance traveled by AVs.
+
+| ![heatmap_mode_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_av.png) | ![heatmap_mode_distance_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_av.png) |
+|-----|-----|
+_Fig 5.1: Mode share and mode-distance share of AVs in different scenarios_
+
+In the scenarios to close to current pricing, AVs are only marginally adopted, for between 0.7% and 1.6%. While this is between 25.000 to 60.000 daily trips, it's not significant in the total of 3.5 million daily trips in the area. The density factor plays a small but notable role here, with AV adoption being about half if total travel demand increases by 50%.
+
+While the AV density and passenger's value of time have some effect on the adoption of AVs, reducing the costs is what really drives AV adoption. Halving the costs increases the adoption by more than 5x, floating between 5 and 12 percent. Halving it again leads to another major increase up to 33%, which is also the first time the AV density starts to play a significant role. A density of 0.5 or 0.333 leads to significantly higher adoption, which will be further explorer in section 5.2. 
+
+The AV distance share, which is the share of total distance traveled by AVs, shows very similar patters, being a slightly higher in the high-adoption scenarios.
+
+Finally, with the price being reduced to one-eight (0.125) or the current costs, AVs are cheap enough to be massively adopted. However, this has two pre-requisites: the value of time has to be at most 0.5, and the density has to be at most 0.5. With an density of 1.0 or 1.5 or a value of time of 1.0, the adoption is still significant in the 15 to 35 percent ranges, but won't reach the massive 65%+ adoption that otherwise is reached.
+
+### Modal shift
+Fig 5.2 shows the mode share of cars, bicycles, and public transit in the 144 scenarios, which allows us to see how the adoption of AVs affects the use of other modes.
+
+| ![heatmap_mode_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_bike.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_transit.png) |
+|-----|-----|-----|
+_Fig 5.2: Mode share of cars, bicycles, and public transit in different scenarios_
+
+TODO: Interpretation
+
+TODO: Summarize answer on subquestion B
 
 ## 5.2 Undesired system effects
 _Answer on subquestion C_
