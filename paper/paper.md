@@ -182,12 +182,10 @@ At least include:
 ![journeys_data_default.svg](img%2Fdefault%2Fjourneys_data_default.svg)
 
 ### 3.5.3 Network metrics
-![uxsim_data_default_default.png](img%2Fdefault%2Fuxsim_data_default_default.png)
 ![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
 ![uxsim_heatmaps_default_clean.png](img%2Fdefault%2Fuxsim_heatmaps_default_clean.png)
 
 ### 3.5.4 Parking
-![parked_data_default.png](img%2Fdefault%2Fparked_data_default.png)
 ![parked_heatmaps_default.png](img%2Fdefault%2Fparked_heatmaps_default.png)
 
 # 4. Experimental design
@@ -195,6 +193,8 @@ Two main experiments were conducted to explore the potential impacts of autonomo
 
 ![Conceptual-model-v2.svg](img%2FConceptual-model-v2.svg)
 _Fig 4.1: Conceptual model including scenario uncertainties and policy levers_
+
+TODO: Describe conceptual model
 
 ## 4.1 Scenario analysis
 To answer subquestions B and C, a wide variety of uncertainties were explored. The scenario analysis employed a full-factorial design exploring four key uncertainties:
@@ -276,7 +276,21 @@ _Answer on subquestion C_
 
 Network speeds (3x1)
 
-Travel time, distance, perceived costs (3x1)
+| ![heatmap_mean_car_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_car_speed.png) | ![heatmap_mean_av_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_av_speed.png) | ![heatmap_mean_network_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_network_speed.png) |
+|-----|-----|-----|
+
+Travel time and delay
+
+| ![traffic_heatmap_average_travel_time.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_travel_time.png) | ![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_delay_weighted.png) |
+|-----|-----|
+
+
+
+| ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fexp4%2Fheatmap_mean_perceived_cost.png) | ![heatmap_saved_comf_perceived_cost_per_trip.png](..%2Fimg%2Fexp4%2Fheatmap_saved_comf_perceived_cost_per_trip.png) |
+|-----|-----|
+
+|  |  |
+|-----|-----|
 
 Something with parking?
 
@@ -284,10 +298,17 @@ Something with parking?
 _Answer on subquestion D_
 
 Mode shares (2x2)
+|  |  |
+|-----|-----|
+|  |  |
 
 Network speeds (3x1)
+|  |  |  |
+|-----|-----|-----|
 
-Travel time, distance, perceived costs (3x1)
+Travel time, network distance, perceived costs (3x1)
+|  |  |  |
+|-----|-----|-----|
 
 Something with parking?
 
@@ -1223,6 +1244,19 @@ The collected data allowed for the evaluation of various metrics, including:
 
 These metrics were used to assess the impacts of different AV adoption scenarios and the effectiveness of various policy interventions.
 
+## Appendix E: Additional results
+This section contains some additional results that were not included in the main report, but might be interesting for specific audiences.
+
+### 1. Default behavior
+![uxsim_data_default_default.png](img%2Fdefault%2Fuxsim_data_default_default.png)
+![parked_data_default.png](img%2Fdefault%2Fparked_data_default.png)
+
+### 2. Scenario analysis
+#### 2.1. Full mode and mode distance shares
+
+| ![heatmap_mode_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_bike.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_transit.png) | ![heatmap_mode_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_av.png) |
+|-----|-----|-----|-----|
+| ![heatmap_mode_distance_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_car.png) | ![heatmap_mode_distance_share_bike.png](..%2Fexp4%2Fimg%2Fheatmap_mode_distance_share_bike.png) | ![heatmap_mode_distance_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_transit.png) | ![heatmap_mode_distance_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_av.png) |
 
 # References
 
