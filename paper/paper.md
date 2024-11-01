@@ -293,12 +293,17 @@ Figure 5.4 shows the average delay compared to free-flow speeds, and shows very 
 ![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_delay_weighted.png)
 _Fig 5.4: Average delay (compared to free flow) in different scenarios_
 
-### Distance traveled
-Now we have determined the mode choices travelers make and 
+### Vehicle distance traveled
+Total vehicle distance traveled is useful as a high-level metric because it can act as a proxy for many other metrics, like congestion, emissions, energy use, and wear and tear on the road network. Fig 5.5 shows the total network distance traveled and the average network delay in the 144 scenarios.
 
-| ![heatmap_total_network_distance.png](..%2Fimg%2Fexp4%2Fheatmap_total_network_distance.png)  |
-|-----|----|
+![heatmap_total_network_distance.png](..%2Fimg%2Fexp4%2Fheatmap_total_network_distance.png)
 _Fig 5.5: Total network distance traveled and average network delay in different scenarios_
+
+Interesting, the total network distance traveled only increases slightly with more demand in scenarios with close to current pricing, indicating the network is already close to its maximum capacity. With AVs getting cheaper and adopted, we see the same split as in previous metrics, but in a surprising direction. The total vehicle distance decreased significantly, to under half of the reference scenario, with very cheap AVs and non-dense AVs. While maybe surprising on the surface level, it is consistent with the conceptual model: Slow moving vehicles don't cover a lot of distance, and a city in gridlock doesn't move a lot of vehicles.
+
+With higher densities, cheap AVs and low value of time, the induced demand starts to matter a lot more, scaling practically linearly with the induced demand factor. This suggests that the speeds on the network are sufficient to accommodate all vehicles that want to travel, leading to large distances covered.
+
+Especially the implication of high speeds with high milage could have severe negative effects in a city. Even if only EVs are considered and not the negative externalities of ICE cars, collisions causing injuries, energy usage, noise pollution, road wear and tear, and microplastics from tire wear could all be significantly increased.
 
 ### Travel time and perceived costs
 
