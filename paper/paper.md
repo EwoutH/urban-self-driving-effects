@@ -328,9 +328,12 @@ The results in the lower right corner indicate that the metrics improve somewhat
 Something with parking?
 
 ## 5.3 Policy effectiveness
-_Answer on subquestion D_
+To address subquestion D about which policies can help mitigate negative impacts of AV adoption while preserving benefits, we evaluated the effectiveness of eight representative scenarios under nine different policy combinations as described in [Section 4.2](#42-policy-analysis). This section presents the results of the policy analysis, focusing on the impact of speed limit reduction and congestion pricing policies on mode shares, network performance, and total vehicle kilometers traveled.
+
+Similar heatmaps as in the previous sections are shows, but now with the different scenarios on the y-axis and the different policies on the x-axis. Ideally, a policy would lead to better outcomes than the reference policy of doing nothing.
 
 ### AV adoption and modal shift
+Fig 5.7 shows the mode share of cars, AVs, bicycles, and public transit in the 72 scenario-policy combinations. This allows us to see how the policies affect the adoption of AVs and the use of other modes.
 
 | ![heatmap_mode_share_car.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_av.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_av.png) |
 |-----|-----|
@@ -338,7 +341,12 @@ _Answer on subquestion D_
 
 _Fig 5.7: Mode share of cars, AVs, bicycles, and public transit in different scenarios and policies_
 
+All policies do reduce the AV share, except the speed reduction on its own (even when applied to the whole city, like in policy 5). The comprehensive all out policy, which induces a high €10 tariff on all AV trips within the city and reduces the speed limit by 20 km/h on all roads, reduces AV share the most in all scenarios, bringing it down to about 10% at most. The city-day policy (8), proves the AV share can also be significantly reduced with a lower tariff, and the city-day-tarif policy (7) shows that the speed reduction is not necessary, a city wide tarif dusing the day (6-19h) is reduces AV share on its own.
+
+Looking at the other modalities, the policies mostly dampen the modal shifts from the other modalities to AVs. In some cases, the policies decrease bike and transit use, which is likely caused by reduced congestion and thus more regular car use, but this will be further explored in the next section. None of the policies actually reduce car use, and in some cases even increase it.
+
 ### System effects
+
 #### Network performance
 
 | ![heatmap_mean_car_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_car_speed.png) | ![heatmap_mean_av_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_av_speed.png) |
@@ -346,6 +354,14 @@ _Fig 5.7: Mode share of cars, AVs, bicycles, and public transit in different sce
 | ![heatmap_mean_network_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_network_speed.png) | ![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fsce_pol%2Ftraffic_heatmap_average_delay_weighted.png) |
 
 _Fig 5.8: Average car speed, average AV speed, average network speed, and average delay in different scenarios and policies_
+
+Most policies are surprisingly ineffective in increasing the average car speed, except mainly the all-out (8) and the city-day (4) policies, somewhat. It shows that a city wide tariff combined with a maximum speed reduction can increase car speeds in the moderate-progress and private- and mixed-race-to-the-bottom scenarios (1, 4 and 5). A tariff on its own (7) is less effective, and all other policies don't noticeably help car speeds, showing the small "autoluw" area and tariffs only at rush hours are not very effective.
+
+AV speeds don't share this trend, and get almost universally worse with each policy in each scenario. Only policy 7, with only a tariff, can get AV speeds up in some scenarios, likely because relatively more fast routes are taken, since network speeds don't show significant improvements.
+
+Finally, there is no policy that improves any of the speed metrics in each scenario. Policies that help in heavily congested scenarios, mainly by getting inefficient AVs off the road, do active harm in other scenarios, where high-density AVs get replaced with cars that are less efficient. No strategy is dominant on any metric, let alone on all. There is no silver bullet.
+
+Note that the delay metric is lower with the speed limit reduction, but the average network speed is also lower. This is due to the way delay is measured: it's a ratio of the actual travel time divided by the free-flow travel time. If the free-flow travel time is higher (due to the speed limit reduction), the delay will be lower, even if the actual travel time is higher. It might influence the perception of congestion, since the difference between the actual travel time and the free-flow travel time is smaller, but it doesn't actually reduce congestion.
 
 #### Vehicle distance traveled
 
@@ -355,6 +371,10 @@ _Fig 5.8: Average car speed, average AV speed, average network speed, and averag
 
 _Fig 5.9: Total network distance traveled and average network delay in different scenarios and policies_
 
+Vehicle distance traveled is a very mixed bag. A few more drastic policies, like the city-day (4) and all-out (8) increase the distance traveled on practically in all cases. These were the policies that were effective in increasing network speeds, which shows here.
+
+No policies effectively reduce vehicle distance. It shows that more comprehensive policies are needed that also target other modalities than AVs, which also might need to be more fine-grained, dynamic and/or adaptable if reducing vehicle milage is a goal.
+
 #### Travel time and perceived costs
 
 | ![heatmap_mean_travel_time.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_travel_time.png) | ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_perceived_cost.png) |
@@ -362,6 +382,9 @@ _Fig 5.9: Total network distance traveled and average network delay in different
 
 _Fig 5.10: Average travel time and average perceived costs in different scenarios and policies_
 
+There is no single policy that manages to reduce travel time significantly. It shows just slapping a price and speed reduction on AVs at some time in some area doesn't help in that regard. Only in the moderate and extensive progress scenarios (1 and 2) some of the more aggressive policies seem to reduce travel times slightly, with notably the city-peak pricing policy (3) having a positive effect for the first time.
+
+Perceived costs show a largely the same patterns, but in this case the more comprehensive policies (4 and 7, 8) are able to reduce the perceived costs somewhat in scenarios 1, 2 and 7. In all other scenarios and all other policies generally increase the perceived costs, showing again that there is no silver bullet.
 Something with parking?
 
 # 6. Conclusions
