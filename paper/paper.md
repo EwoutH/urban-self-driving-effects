@@ -388,7 +388,21 @@ Perceived costs show a largely the same patterns, but in this case the more comp
 Something with parking?
 
 ### 5.4 Overview
+The results from the scenario and policy analysis delivers some distinct insights in how autonomous vehicles might be adopted, what the potential undesired effects are, and which policies might help mitigate those effects. The main findings are:
 
+First, AV adoption appears to be primarily driven by cost, with significant adoption only occurring when costs drop below half of current levels. The value of time spent in AVs plays a secondary but important role, particularly in determining whether people switch from cars to AVs. When AVs are very cheap (one-eighth of current costs) and time is perceived as more valuable in them (VOT factor of 0.5 or lower), adoption can reach over 65% of trips. However, this high adoption scenario only materializes if AVs can operate efficiently (density factor of 0.5 or lower).
+
+Second, the density of AVs emerges as a critical factor that creates two distinct futures. With inefficient AVs (density factors of 1.0 or 1.5), increased adoption leads to severe congestion, with average network speeds dropping below 10 km/h in extreme cases. Conversely, with efficient AVs (density factors of 0.333 or 0.5), the system can accommodate high adoption while maintaining or even improving traffic flow. This bifurcation suggests that the success of AVs in urban environments may depend more on their space efficiency than their cost or comfort advantages.
+
+Third, the modal shift patterns reveal that cyclists and transit users are more likely to switch to AVs than car users when AVs become cheaper. This suggests that AVs might compete more directly with sustainable transport modes than with private cars, potentially undermining urban sustainability goals. The effect is particularly pronounced when AVs are both cheap and space-efficient, leading to significant reductions in bicycle and transit mode shares.
+
+Fourth, induced demand plays a complex role. Its effects are most noticeable in scenarios with efficient AVs, where the additional capacity enables the system to accommodate more trips. In scenarios with inefficient AVs, the system is already so congested that induced demand has limited additional impact. This suggests that the relationship between AV adoption and induced demand is non-linear and heavily dependent on AV operating characteristics.
+
+Fifth, policy analysis reveals that most of the policies evaluated are ineffective or even counterproductive across different scenarios. Speed reductions alone (policy 5) show practically no benefit on any metric, failing to improve network performance or encourage sustainable mode choices. The "autoluw" area policies (1 and 2) prove too limited in scope to affect system-wide metrics meaningfully. Even city-wide peak-hour congestion pricing (policy 6) shows minimal positive impact, only marginally reducing AV adoption without improving overall system performance.
+
+More comprehensive policies, like the city-day (4) and all-out (8) interventions, show some ability to influence system behavior but often with significant trade-offs. While they can increase car speeds in scenarios with inefficient AVs (density 1.0-1.5), they simultaneously reduce AV speeds and increase total vehicle distance traveled. In scenarios with efficient AVs (density 0.333-0.5), these same policies can actually harm system performance by discouraging the use of more efficient vehicles. The city-wide tariff policy (7) demonstrates that speed reductions are often unnecessary - pricing alone can achieve similar effects with less disruption to network performance.
+
+Perhaps most tellingly, no policy consistently improves all metrics across different scenarios. Policies that help in heavily congested scenarios with inefficient AVs actively harm performance in scenarios with efficient AVs. Even when policies successfully reduce AV adoption, they often fail to improve - and sometimes worsen - key metrics like average travel time, perceived costs, and network efficiency. This suggests that simple, static policies targeting AVs alone may be insufficient for managing the complex dynamics of future urban transportation systems.
 
 # 6. Discussion
 _What do the results mean, what are the implications, what are the limitations_
