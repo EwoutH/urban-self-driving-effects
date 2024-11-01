@@ -306,10 +306,17 @@ With higher densities, cheap AVs and low value of time, the induced demand start
 Especially the implication of high speeds with high milage could have severe negative effects in a city. Even if only EVs are considered and not the negative externalities of ICE cars, collisions causing injuries, energy usage, noise pollution, road wear and tear, and microplastics from tire wear could all be significantly increased.
 
 ### Travel time and perceived costs
+Finally, it's interesting to look at the average travel time and the perceived costs of the trips, since those are two of the potential benefits of AVs. These are shown in Fig 5.6.
 
 | ![heatmap_mean_travel_time.png](..%2Fimg%2Fexp4%2Fheatmap_mean_travel_time.png) | ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fexp4%2Fheatmap_mean_perceived_cost.png) |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
+_Fig 5.6: Average travel time and average perceived costs in different scenarios_
 
+The mean travel time degrades immediately with induced demand. Without any induced demand, we see average travel times increase relatively soon, with an AV costs of 0.5 already leading to notable decreases, as long as the density is 0.5 or 0.333. With a density of 1.0 or 1.5, the opposite happens, and there isn't a single scenario in which AVs with that density improve average travel times. The huge potential of AVs are reached if the density reaches 0.333, almost slashing the average travel time for all travelers in half. A density of 0.5 is also enough as long as induced demand is low.
+
+One very interesting observation is that the AV Value of Time is really important in that last case, and that deserves some further explanation. If the VoT factor for AVs is 0.5 or lower, we see that the AV travel times massively decrease, but not if the VoT factor is 1.0. Understanding this requires looking back at Fig 5.2, which shows a large modal shift from cars to AVs only occurs with those lower VoTs. So if the AV VoT factor is still 1, a significant shift from bikes and public transit to AVs happens, increasing AV share to around 30%, but most people keep driving their cars, and some people even shift from other modalities to cars. This means the total number of regular cars on the road is not reduced and in a few cases even increases, while adding some AVs to the mix. Even if these AVs have optimal density, it still leads to a net increase in car density and thus an increase in congestion and travel times.
+
+The results in the lower right corner indicate that the metrics improve somewhat again as AVs get cheaper and VoT gets lower, but this isn't the case. For both metrics the results there should be disregarded, since not enough travelers were even able to finish their journey to give a representative picture of these two metrics (data for these metrics could only be collected when a journey was finished, and many travelers simply weren't able to before the simulation ended at midnight).
 
 Something with parking?
 
