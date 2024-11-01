@@ -236,7 +236,7 @@ Many of the results will be displayed in dimensionally-stacked heatmaps. In each
 - Inner (left) y-axis: Induced Demand factor, ranging from 1.0 to 1.5 (higher means more demand).
 - Outer (right) y-axis: AV Density factor, ranging from 1.5 to 0.333 (lower means less space taken up).
 
-Each value (tile) in the heatmap represents the metric value for the corresponding scenario. The structure and order is identical for all heatmaps, allowing for visual comparison of different metrics across the scenarios.
+Each value (tile) in the heatmap represents the metric value for the corresponding scenario. The structure and order is identical for all heatmaps, allowing for visual comparison of different metrics across the scenarios. Generally, outcomes preferred by (most) stakeholders are displayed in green, while undesired outcomes are displayed in red, with the reference scenario (no AVs) being the yellow midpoint. If the preferred direction of a metric is not clear, brown indicates low values and blue indicates high values, with white being the reference scenario.
 
 ## 5.1 AV adoption & modal shift
 To understand how autonomous vehicles might be adopted in urban environments and their impact on existing transportation modes, we first analyze the uptake of AVs and resulting changes in mode shares across our scenario space. This will answer subquestion B, under which circumstances AVs are likely to be adopted and how they affect the use of other modes.
