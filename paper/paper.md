@@ -387,11 +387,14 @@ There is no single policy that manages to reduce travel time significantly. It s
 Perceived costs show a largely the same patterns, but in this case the more comprehensive policies (4 and 7, 8) are able to reduce the perceived costs somewhat in scenarios 1, 2 and 7. In all other scenarios and all other policies generally increase the perceived costs, showing again that there is no silver bullet.
 Something with parking?
 
-# 6. Conclusions
-_Objective answers from the results and how they answer the research question_
+### 5.4 Overview
 
-# 7. Discussion
+
+# 6. Discussion
 _What do the results mean, what are the implications, what are the limitations_
+
+# 7. Conclusions
+_Objective answers from the results and how they answer the research question, considering everything_
 
 # Appendices
 ## Appendix A: Model description
