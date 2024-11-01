@@ -290,7 +290,7 @@ Finally, the average speeds of all vehicles on the network show the same trend, 
 
 Figure 5.4 shows the average delay compared to free-flow speeds, and shows very similar patterns. In the reference scenario, vehicle trips take about 70% more time than when they would be able to travel at free-flow speeds. This increases to 120% and almost 200% with 25% and 50% more demand, respectively. Cheaper AVs don't provide any benefits until they are prices below one eight of the current pricing, and only with a density of at least 0.5. Densities of 1.0 and 1.5 in that case can blow up average delays to over 500%, meaning only one-sixth of the average free-flow speed is achieved.
 
-<div style="text-align: center;">
+<div align="center">
     <img src="../img/exp4/traffic_heatmap_average_delay_weighted.png" width="60%">
 </div>
 
@@ -299,7 +299,7 @@ _Fig 5.4: Average delay (compared to free flow) in different scenarios_
 ### Vehicle distance traveled
 Total vehicle distance traveled is useful as a high-level metric because it can act as a proxy for many other metrics, like congestion, emissions, energy use, and wear and tear on the road network. Fig 5.5 shows the total network distance traveled and the average network delay in the 144 scenarios.
 
-<div style="text-align: center;">
+<div align="center">
     <img src="../img/exp4/heatmap_total_network_distance.png" width="60%">
 </div>
 
@@ -349,8 +349,8 @@ _Fig 5.8: Average car speed, average AV speed, average network speed, and averag
 
 #### Vehicle distance traveled
 
-<div style="text-align: center;">
-    <img src="../img/exp4/heatmap_total_network_distance.png" width="60%">
+<div align="center">
+    <img src="../img/sce_pol/heatmap_total_network_distance.png" width="60%">
 </div>
 
 _Fig 5.9: Total network distance traveled and average network delay in different scenarios and policies_
