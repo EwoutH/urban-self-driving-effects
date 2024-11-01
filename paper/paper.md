@@ -271,26 +271,40 @@ It's also remarkable that as AVs get cheaper and more dense, the modal shift fro
 
 Finally, the induced demand doesn't seem to matter very much for the mode shares. While in the likely near-future scenarios with expensive AVs the induced demand lowers car and AV share with high induced demand, as AVs get cheaper and adoption increases, the density dictates the mode shares more than the induced demand.
 
-## 5.2 Undesired system effects
-_Answer on subquestion C_
+## 5.2 System effects
+With the modal shift and AV adoption patterns established, we now turn to the system-level effects of these changes. This section addresses subquestion C, exploring which undesired urban problems are amplified or reduced by the introduction of self-driving cars.
 
-Network speeds (3x1)
+### Road network performance and congestion
+Fig 5.3 shows the average car speed, average AV speed, and average network speed in the 144 scenarios. These metrics provide insights into the overall efficiency of the road network and the impact of AV adoption on traffic flow.
 
 | ![heatmap_mean_car_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_car_speed.png) | ![heatmap_mean_av_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_av_speed.png) | ![heatmap_mean_network_speed.png](..%2Fimg%2Fexp4%2Fheatmap_mean_network_speed.png) |
 |-----|-----|-----|
 
-Travel time and delay
+_Fig 5.3: Average car speed, average AV speed, and average network speed in different scenarios_
 
-| ![traffic_heatmap_average_travel_time.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_travel_time.png) | ![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_delay_weighted.png) |
-|-----|-----|
+In almost all scenarios, the average car speed is reduced compared to the reference scenario without AVs. While about 25 km/h in the reference scenario, it drops to about 18 km/h with 25% more overall demand and below 15 km/h with 50% more demand, suggesting significant congestion. AVs get cheaper, mean car speeds slow down further, in some cases below 5 km/h. With very cheap AVs we see the a similar split as before: with a density of 1.5 and 1.0 the city comes to a griding halt, while a density of 0.5 boosts the speeds back to the reference scenario, suggesting that AVs add about as much road capacity as they take up. Only with a density of 0.333, the speeds are significantly higher than the reference scenario, suggesting that AVs can significantly increase road capacity.
 
+AV speeds show many of the same traits: Higher induced demand lowers speed, cheaper AVs also lower speed, and the same density split, but with one remarkable difference: with a density of 0.333, average AV speeds are significantly higher than the cars. Especially when AVs are expensive, this suggests that people only use AVs when they are relatively fast, and provide significant time savings over bicycles and public transit. As AVs get cheaper, their average speed drops, suggesting both net congestion and that people are taking AVs also for trips with less time savings. Especially with an AV cost of 0.25, the AV VOT factor has very significant impact on the AV speed, suggesting that people with a low VoT are willing to take AVs even if they are slower than other, more expensive modes (including cars).
 
+Finally, the average speeds of all vehicles on the network show the same trend, with it being notable that network speeds will only increase when AVs are both very cheap and very dense. All other scenarios show a significant decrease in network speed, with the most extreme scenarios showing speeds well below 10 km/h.
 
-| ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fexp4%2Fheatmap_mean_perceived_cost.png) | ![heatmap_saved_comf_perceived_cost_per_trip.png](..%2Fimg%2Fexp4%2Fheatmap_saved_comf_perceived_cost_per_trip.png) |
-|-----|-----|
+Figure 5.4 shows the average delay compared to free-flow speeds, and shows very similar patterns. In the reference scenario, vehicle trips take about 70% more time than when they would be able to travel at free-flow speeds. This increases to 120% and almost 200% with 25% and 50% more demand, respectively. Cheaper AVs don't provide any benefits until they are prices below one eight of the current pricing, and only with a density of at least 0.5. Densities of 1.0 and 1.5 in that case can blow up average delays to over 500%, meaning only one-sixth of the average free-flow speed is achieved.
 
-|  |  |
-|-----|-----|
+![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_delay_weighted.png)
+_Fig 5.4: Average delay (compared to free flow) in different scenarios_
+
+### Distance traveled
+Now we have determined the mode choices travelers make and 
+
+| ![heatmap_total_network_distance.png](..%2Fimg%2Fexp4%2Fheatmap_total_network_distance.png)  |
+|-----|----|
+_Fig 5.5: Total network distance traveled and average network delay in different scenarios_
+
+### Travel time and perceived costs
+
+| ![heatmap_mean_travel_time.png](..%2Fimg%2Fexp4%2Fheatmap_mean_travel_time.png) | ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fexp4%2Fheatmap_mean_perceived_cost.png) |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
+
 
 Something with parking?
 
