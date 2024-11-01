@@ -290,13 +290,19 @@ Finally, the average speeds of all vehicles on the network show the same trend, 
 
 Figure 5.4 shows the average delay compared to free-flow speeds, and shows very similar patterns. In the reference scenario, vehicle trips take about 70% more time than when they would be able to travel at free-flow speeds. This increases to 120% and almost 200% with 25% and 50% more demand, respectively. Cheaper AVs don't provide any benefits until they are prices below one eight of the current pricing, and only with a density of at least 0.5. Densities of 1.0 and 1.5 in that case can blow up average delays to over 500%, meaning only one-sixth of the average free-flow speed is achieved.
 
-![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fexp4%2Ftraffic_heatmap_average_delay_weighted.png)
+<div style="text-align: center;">
+    <img src="../img/exp4/traffic_heatmap_average_delay_weighted.png" width="60%">
+</div>
+
 _Fig 5.4: Average delay (compared to free flow) in different scenarios_
 
 ### Vehicle distance traveled
 Total vehicle distance traveled is useful as a high-level metric because it can act as a proxy for many other metrics, like congestion, emissions, energy use, and wear and tear on the road network. Fig 5.5 shows the total network distance traveled and the average network delay in the 144 scenarios.
 
-![heatmap_total_network_distance.png](..%2Fimg%2Fexp4%2Fheatmap_total_network_distance.png)
+<div style="text-align: center;">
+    <img src="../img/exp4/heatmap_total_network_distance.png" width="60%">
+</div>
+
 _Fig 5.5: Total network distance traveled and average network delay in different scenarios_
 
 Interesting, the total network distance traveled only increases slightly with more demand in scenarios with close to current pricing, indicating the network is already close to its maximum capacity. With AVs getting cheaper and adopted, we see the same split as in previous metrics, but in a surprising direction. The total vehicle distance decreased significantly, to under half of the reference scenario, with very cheap AVs and non-dense AVs. While maybe surprising on the surface level, it is consistent with the conceptual model: Slow moving vehicles don't cover a lot of distance, and a city in gridlock doesn't move a lot of vehicles.
@@ -310,6 +316,7 @@ Finally, it's interesting to look at the average travel time and the perceived c
 
 | ![heatmap_mean_travel_time.png](..%2Fimg%2Fexp4%2Fheatmap_mean_travel_time.png) | ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fexp4%2Fheatmap_mean_perceived_cost.png) |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----|
+
 _Fig 5.6: Average travel time and average perceived costs in different scenarios_
 
 The mean travel time degrades immediately with induced demand. Without any induced demand, we see average travel times increase relatively soon, with an AV costs of 0.5 already leading to notable decreases, as long as the density is 0.5 or 0.333. With a density of 1.0 or 1.5, the opposite happens, and there isn't a single scenario in which AVs with that density improve average travel times. The huge potential of AVs are reached if the density reaches 0.333, almost slashing the average travel time for all travelers in half. A density of 0.5 is also enough as long as induced demand is low.
@@ -323,18 +330,37 @@ Something with parking?
 ## 5.3 Policy effectiveness
 _Answer on subquestion D_
 
-Mode shares (2x2)
-|  |  |
+### AV adoption and modal shift
+
+| ![heatmap_mode_share_car.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_av.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_av.png) |
 |-----|-----|
-|  |  |
+| ![heatmap_mode_share_bike.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](..%2Fimg%2Fsce_pol%2Fheatmap_mode_share_transit.png) |
 
-Network speeds (3x1)
-|  |  |  |
-|-----|-----|-----|
+_Fig 5.7: Mode share of cars, AVs, bicycles, and public transit in different scenarios and policies_
 
-Travel time, network distance, perceived costs (3x1)
-|  |  |  |
-|-----|-----|-----|
+### System effects
+#### Network performance
+
+| ![heatmap_mean_car_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_car_speed.png) | ![heatmap_mean_av_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_av_speed.png) |
+|-----|-----|
+| ![heatmap_mean_network_speed.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_network_speed.png) | ![traffic_heatmap_average_delay_weighted.png](..%2Fimg%2Fsce_pol%2Ftraffic_heatmap_average_delay_weighted.png) |
+
+_Fig 5.8: Average car speed, average AV speed, average network speed, and average delay in different scenarios and policies_
+
+#### Vehicle distance traveled
+
+<div style="text-align: center;">
+    <img src="../img/exp4/heatmap_total_network_distance.png" width="60%">
+</div>
+
+_Fig 5.9: Total network distance traveled and average network delay in different scenarios and policies_
+
+#### Travel time and perceived costs
+
+| ![heatmap_mean_travel_time.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_travel_time.png) | ![heatmap_mean_perceived_cost.png](..%2Fimg%2Fsce_pol%2Fheatmap_mean_perceived_cost.png) |
+|------------------------------------------------------------------------------------|-----|
+
+_Fig 5.10: Average travel time and average perceived costs in different scenarios and policies_
 
 Something with parking?
 
