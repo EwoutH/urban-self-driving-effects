@@ -920,9 +920,9 @@ Several data transformations are performed during initialization, the most notab
 A trade-off was made here between pre-processing data for efficiency and maintaining flexibility for future extensions. While much data was pre-processed to reduce runtime overhead, some of the more destructive processing (like selecting and aggregating) was done on data initialization, to allow for easy modification and extension of the model, without needed to alter data files themselves.
 
 ### 7. Submodels
+Aside from the two main submodels for mode-choice and traffic simulation discussed in section [3.2](#32-key-submodels), the model has several smaller submodels that handle specific aspects of the simulation.
 
 #### 7.1 Trip Generation
-
 Trips are generated for each agent using the following process:
 
 1. For each hour in the simulation period, generate a trip with probability given by `trips_by_hour_chance`.
@@ -931,7 +931,6 @@ Trips are generated for each agent using the following process:
 4. Schedule the trips as events in the simulation.
 
 #### 7.2 Mode Choice
-
 The mode choice model is implemented in the `choice_rational_vot` method of the `Traveler` class. It calculates the perceived cost for each available mode:
 
 ```python
@@ -941,7 +940,7 @@ comf_perceived_cost = perceived_cost * comfort_factor[mode]
 
 The mode with the lowest comfort-adjusted perceived cost is chosen.
 
-### 7.3 Traffic Simulation
+#### 7.3 Traffic Simulation
 The traffic simulation uses [UXsim](https://arxiv.org/abs/2309.17114), a mesoscopic traffic simulator that implements a version of [Newell's simplified car-following model](https://doi.org/10.1016/S0191-2615(00)00044-8). This model represents traffic flow as a kinematic wave, a state between microscopic (individual vehicle) and macroscopic (flow-based) modeling, providing computational efficiency while maintaining key traffic dynamics and the ability to measure traffic and congestion on a link or area level.
 
 The driving behavior of a platoon consisting of $\Delta n$ vehicles in a link is expressed as:
@@ -971,7 +970,6 @@ Parking is modeled by tracking the number of parked vehicles in each MRDH region
 The `parked_per_area` dictionary is updated in real-time, and the `parked_dict` stores the parking situation over time for later analysis.
 
 #### 7.5 Cost Calculation
-
 Travel costs are calculated differently for each mode:
 
 - Car: Distance-based cost using a fixed price per kilometer
@@ -987,7 +985,6 @@ Travel costs are calculated differently for each mode:
   - In practice, the vast majority of trips are under 40 kilometers, and thus priced at the full rate, but this allows to extend the model further. 
 
 #### 7.6 Value of Time
-
 Each agent's Value of Time is calculated as:
 
 ```python
@@ -998,7 +995,6 @@ value_of_time = {mode: default_vot[mode] * vot_factor for mode in modes}
 This creates heterogeneity in how agents value their time, influencing their mode choices. It prevents sharp tipping points in mode choice and allows for more realistic variation in travel preferences. For more details and sources, see the Value of Time data section.
 
 #### 7.7 External Vehicle Load
-
 External vehicle traffic is modeled based on origin-destination matrices:
 
 - Vehicles are added at the start of each hour based on time-of-day probabilities.
@@ -1006,7 +1002,6 @@ External vehicle traffic is modeled based on origin-destination matrices:
 - Origins and destinations are chosen from predefined external and internal areas.
 
 #### 7.8 Scenario & Policy Implementation
-
 The model includes several scenario uncertainties and policy levers that can be adjusted:
 
 ##### Scenario uncertainties
@@ -1024,10 +1019,9 @@ The model includes several scenario uncertainties and policy levers that can be 
    - `policy_speed_reduction`: Probability of reducing speed on a given road.
    - `policy_area`: Defines the area where speed reductions are applied.
 
-These scenario uncertainties and policies levers can be combined and varied into different scenarios and policies to explore their impacts on the transportation system.
+These scenario uncertainties and policies levers can be combined and varied into different scenarios and policies to explore their impacts on the transportation system. The scenarios and policies explored in this research are discussed in [Appendix D](#appendix-d-experimental-setup).
 
 #### 7.9 Journey Management
-
 The `Journey` class encapsulates all information about a single trip:
 
 - It tracks the origin, destination, mode, costs, and timings of each trip.
@@ -1035,7 +1029,6 @@ The `Journey` class encapsulates all information about a single trip:
 - It handles the logic for trip chaining, ensuring that agents return to their original location and maintaining mode consistency (e.g., if an agent leaves with a car, they must return with a car).
 
 #### 7.10 Data Collection and Analysis
-
 The model collects data at multiple levels:
 
 - Agent level: Individual trip details, mode choices, and costs.
