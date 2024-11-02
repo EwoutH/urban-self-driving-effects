@@ -185,8 +185,6 @@ At least include:
 ![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
 ![uxsim_heatmaps_default_clean.png](img%2Fdefault%2Fuxsim_heatmaps_default_clean.png)
 
-### 3.5.4 Parking
-![parked_heatmaps_default.png](img%2Fdefault%2Fparked_heatmaps_default.png)
 
 # 4. Experimental design
 Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
@@ -325,8 +323,6 @@ One very interesting observation is that the AV Value of Time is really importan
 
 The results in the lower right corner indicate that the metrics improve somewhat again as AVs get cheaper and VoT gets lower, but this isn't the case. For both metrics the results there should be disregarded, since not enough travelers were even able to finish their journey to give a representative picture of these two metrics (data for these metrics could only be collected when a journey was finished, and many travelers simply weren't able to before the simulation ended at midnight).
 
-Something with parking?
-
 ## 5.3 Policy effectiveness
 To address subquestion D about which policies can help mitigate negative impacts of AV adoption while preserving benefits, we evaluated the effectiveness of eight representative scenarios under nine different policy combinations as described in [Section 4.2](#42-policy-analysis). This section presents the results of the policy analysis, focusing on the impact of speed limit reduction and congestion pricing policies on mode shares, network performance, and total vehicle kilometers traveled.
 
@@ -385,7 +381,6 @@ _Fig 5.10: Average travel time and average perceived costs in different scenario
 There is no single policy that manages to reduce travel time significantly. It shows just slapping a price and speed reduction on AVs at some time in some area doesn't help in that regard. Only in the moderate and extensive progress scenarios (1 and 2) some of the more aggressive policies seem to reduce travel times slightly, with notably the city-peak pricing policy (3) having a positive effect for the first time.
 
 Perceived costs show a largely the same patterns, but in this case the more comprehensive policies (4 and 7, 8) are able to reduce the perceived costs somewhat in scenarios 1, 2 and 7. In all other scenarios and all other policies generally increase the perceived costs, showing again that there is no silver bullet.
-Something with parking?
 
 ### 5.4 Overview
 The results from the scenario and policy analysis delivers some distinct insights in how autonomous vehicles might be adopted, what the potential undesired effects are, and which policies might help mitigate those effects. The main findings are:
@@ -1341,7 +1336,11 @@ This section contains some additional results that were not included in the main
 
 | ![heatmap_mode_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_car.png) | ![heatmap_mode_share_bike.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_transit.png) | ![heatmap_mode_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_share_av.png) |
 |-----|-----|-----|-----|
-| ![heatmap_mode_distance_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_car.png) | ![heatmap_mode_distance_share_bike.png](..%2Fexp4%2Fimg%2Fheatmap_mode_distance_share_bike.png) | ![heatmap_mode_distance_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_transit.png) | ![heatmap_mode_distance_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_av.png) |
+| ![heatmap_mode_distance_share_car.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_car.png) | ![heatmap_mode_distance_share_bike.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_bike.png) | ![heatmap_mode_distance_share_transit.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_transit.png) | ![heatmap_mode_distance_share_av.png](..%2Fimg%2Fexp4%2Fheatmap_mode_distance_share_av.png) |
+
+### 3. Default behavior
+#### 3.1. Parking occupancy
+![parked_heatmaps_default.png](img%2Fdefault%2Fparked_heatmaps_default.png)
 
 # References
 
