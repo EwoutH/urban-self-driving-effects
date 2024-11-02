@@ -1192,7 +1192,10 @@ Some specific limitations include:
    - Implementing learning behaviors would require longer simulation periods, for which compute budgets where out of scope for this study.
 5. Limited mode options: The model considers only four modes (car, bike, transit, AV), not including options like walking, e-bikes, or shared mobility services.
    - Adding more modes would require additional data and increase the complexity of the mode choice model.
+6. Limited social considerations: The model does not account for social influence on mode choice or household-level decision making.
+   - Social factors like peer effects and household car sharing could significantly impact AV adoption patterns.
 7. No explicit parking behavior: While parking occupancy is tracked, parking availability and search time are not incorporated into mode choice decisions.
+   - This could underestimate the full costs of car-based travel, especially in dense urban areas.
 
 One interesting thing to note is that for most metrics, like congestion, it doesn't matter how the agents make their decisions, as long as they are consistent. The model is about the system-level effects of the decisions, rather than the individual decisions themselves. Of course the feedback loops and stabilizing mechanisms would be different for different decision-making models, leading to different system-level outcomes.
 
