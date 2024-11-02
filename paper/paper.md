@@ -243,15 +243,32 @@ To answer subquestions B and C, a wide variety of uncertainties were explored. T
 This design resulted in 144 unique combinations (4×3×4×3), each representing a possible future scenario. Each scenario was simulated for a full day (19 hours) with consistent base parameters including road network configuration, population distribution, and external traffic patterns.
 
 ## 4.2 Policy analysis
-To answer subquestion D, eight representative scenarios were selected from the scenario analysis results, ranging from "current situation" to "extreme progress" in AV adoption. These scenarios were tested against nine policy combinations varying in:
+To answer subquestion D, eight representative scenarios were selected from the scenario analysis results, ranging from "current situation" to "extreme progress" in AV adoption:
 
-1. Speed Reduction
-   - 20 km/h reduction on selected roads
-   - Coverage: none, autoluw area only, or city-wide
-2. Congestion Pricing
-   - Tariff levels: €0, €5, or €10 per trip
-   - Timing: peak hours only or all-day
-   - Geographic scope: autoluw area or city-wide
+| Scenario | `av_cost_factor` | `av_density` | `induced_demand` |
+|----------|------------------|--------------|------------------|
+| Current situation | 1.0 | 1.5 | 1.0 |
+| Moderate progress | 0.5 | 1.0 | 1.125 |
+| Extensive progress | 0.25 | 0.5 | 1.25 |
+| Extreme progress | 0.125 | 0.333 | 1.5 |
+| Private race to bottom | 0.125 | 1.5 | 1.25 |
+| Mixed race to bottom | 0.125 | 1.0 | 1.25 |
+| Shared race to bottom | 0.125 | 0.5 | 1.25 |
+| Dense progress | 0.25 | 0.333 | 1.125 |
+
+These scenarios were tested against nine policy combinations:
+
+| Policy | Area | Speed Reduction | Tariff (€) | Timing |
+|--------|------|-----------------|------------|---------|
+| No policy | City | None | 0 | - |
+| Autoluw peak | Autoluw | -20 km/h | 5 | Peak |
+| Autoluw day | Autoluw | -20 km/h | 5 | Day |
+| City peak | City | -20 km/h | 5 | Peak |
+| City day | City | -20 km/h | 5 | Day |
+| City speed only | City | -20 km/h | 0 | - |
+| City peak tariff | City | None | 5 | Peak |
+| City day tariff | City | None | 5 | Day |
+| All out | City | -20 km/h | 10 | Day |
 
 This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled.
 
