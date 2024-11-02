@@ -145,14 +145,30 @@ Road characteristics are differentiated by road type, with motorways having lowe
 _Fig 3.3: The road network used in the traffic simulation_
 
 ## 3.3 Model interaction and behavior
-<!-- TODO: Write -->
+The model contains several important interaction patterns and feedback loops that drive its behavior. Three key dynamics emerge as particularly significant: congestion-based stabilization, mode choice reinforcement, and spatial-temporal patterns.
 
-_How do the different components interact with each other, which feedback loops are present, if they are stabilizing or destabilizing, path dependencies, emergent behavior, tipping points, etc._
-- Key model interactions
-- feedback loops
-- Emergent properties
+### Congestion-based stabilization
+The primary stabilizing feedback loop operates through traffic congestion. When agents choose car or AV modes, they contribute to network traffic, which affects travel times through the kinematic wave model. These updated travel times then influence subsequent mode choices through the perceived cost calculation. This creates a negative feedback loop: as more agents choose motorized modes, congestion increases, leading to longer travel times and higher perceived costs, which makes these modes less attractive to subsequent agents. This mechanism helps prevent the system from reaching gridlock, though it can still occur in extreme scenarios (as seen in Section 5.2 with inefficient AVs).
 
-Path dependencies: If agents start by car, they have to return by car.
+### Mode choice reinforcement
+While congestion provides negative feedback, the model also contains positive feedback through trip chaining. Once an agent chooses a car for an outbound trip, they must use it for the return journey, as the vehicle needs to return home. This creates a form of path dependency where initial mode choices constrain future options, potentially amplifying the impact of factors that influence initial choices (like weather or time of day).
+
+### Spatial-temporal dynamics
+The interaction between trip generation and network conditions creates distinct spatial-temporal patterns. While the ODiN-derived trip probabilities generate similar morning and evening peaks, the actual system behavior differs significantly. As shown in Section 3.5.2, the evening peak experiences more severe congestion than the morning peak, despite similar trip generation rates. This emergent behavior arises from the interaction between more dispersed evening destinations (versus concentrated morning commute patterns), accumulation of delay effects throughout the day, and trip chain constraints limiting mode-switching options.
+
+### Tipping point behavior
+The model exhibits notable tipping points related to AV adoption and system performance. These emerge from the interaction between density-dependent congestion (varying by road type), heterogeneous value of time among agents (following a lognormal distribution), and mode-specific comfort factors. These mechanisms interact to create sharp transitions in system behavior. As shown in Section 5.1, when AV costs drop below certain thresholds, the system can rapidly shift from one stable state to another, particularly when AV density factors are favorable. This occurs because the initial adopters (those with high value of time) reduce congestion enough to make AVs attractive to additional users, creating a cascading effect.
+
+### Critical transitions
+The model reveals potential critical transitions in urban mobility patterns, particularly around AV adoption thresholds. Three distinct system states become apparent:
+
+1. **Car-dominated equilibrium**: With expensive AVs, the system maintains a stable mix of modes similar to current patterns.
+2. **Mixed transition state**: As AV costs decrease, the system enters a less stable state with shifting mode shares.
+3. **AV-dominated state**: With very cheap AVs and favorable density factors, the system can tip into a new equilibrium with high AV usage.
+
+These transitions are particularly interesting because they depend on multiple interacting factors. The tipping points are not determined by any single variable but emerge from the interaction between costs, perceived time value, vehicle density, and the underlying feedback loops in the system.
+
+These interaction patterns and emergent behaviors help explain many of the results observed in Sections 5 and 6, particularly the non-linear responses to policy interventions and the existence of distinct future scenarios depending on AV characteristics. The combination of stabilizing feedback through congestion, reinforcing feedback through trip chains, and tipping point dynamics through heterogeneous adoption creates a rich system behavior that can't be predicted from individual components alone.
 
 ## 3.4 Limitations
 The model has important limitations that should be considered when interpreting its results. Three major limitations are highlighted in this section, as well as several minor limitations that may affect specific aspects of the model. The distinction is made by what effect we expect the limitation to have on the results: major limitations are expected to have a significant impact on the model's ability to accurately represent reality, while minor limitations are expected to have a more limited impact, as least in the specific scope and goal of this research.
