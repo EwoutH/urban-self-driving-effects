@@ -155,23 +155,23 @@ _How do the different components interact with each other, which feedback loops 
 Path dependencies: If agents start by car, they have to return by car.
 
 ## 3.4 Limitations
-<!-- TODO: Write -->
-Main limitations:
-1. The model only simulates one or a few days, and does not include long-term effects, such as land use changes, people buying or selling cars or changing their destinations.
-2. The travel demand model is static and does not account for changes in trip timing and destinations based on the availability of AVs (like activity-based models do).
-3. The model does not consider irrational or habitual mode choice, which could influence individual travel decisions in ways not captured by a rational choice framework. Preference is simplified to a single comfort factor.
+The model has important limitations that should be considered when interpreting its results. Three major limitations are highlighted in this section, as well as several minor limitations that may affect specific aspects of the model. The distinction is made by what effect we expect the limitation to have on the results: major limitations are expected to have a significant impact on the model's ability to accurately represent reality, while minor limitations are expected to have a more limited impact, as least in the specific scope and goal of this research.
 
-Mention briefly:
-- no explicit learning mechanisms
-- no explicit agent-to-agent interactions, like social belief system diffusion or car sharing among households
-- no explicit representation of traffic signals, merge priorities or detailed intersection dynamics
-- no weather, seasonal, or incident-based variations in both traffic and mode choice
-- no explicit representation of public transit schedules or route networks
-- transit and bicycle routes are fixed based on a single Thursday morning, not varying by time of day or day of week
-- no other modes than car, bike, AV and public transit, like walking or e-scooters
-- parking not explicitly modeled or included in mode choice
-- External traffic is added using fixed matrices and simple time-of-day factors
-- OD matrices from V-MRDH model are at a relatively coarse level
+[Appendix C: Limitations](#appendix-c-limitations) provides a comprehensive overview of all limitations, including their potential impact on the model.
+
+### Major limitations
+The primary limitation is its temporal scope - the model simulates only a single day and does not capture long-term effects such as land use changes, vehicle ownership decisions, or evolving destination patterns. While this allows for detailed analysis of immediate system responses to AV introduction, it may miss important feedback loops that develop over longer timeframes.
+
+A second key limitation lies in the travel demand model's static nature. Unlike activity-based approaches, the model does not account for how the availability of AVs might fundamentally alter trip timing, destination choices, or activity patterns. Trip generation and distribution are based on current travel patterns, which may not accurately reflect behavior in a future with widespread AV adoption.
+
+The mode choice model represents a third major limitation, implementing a simplified rational choice framework that may not fully capture the complexity of real-world travel decisions. While heterogeneity is introduced through varying values of time, the model does not account for habitual behavior, psychological factors, or complex preferences beyond a single comfort factor per mode. This could lead to more extreme or more gradual modal shifts than might occur in reality.
+
+### Minor limitations
+There are several smaller limitations. Regarding agent behavior and interactions, the model lacks several important behavioral mechanisms. Agents do not learn from or adapt their behavior based on previous experiences, such as experienced travel times or costs. There are no direct agent-to-agent interactions, meaning social influence processes and informal arrangements like household car sharing are not captured. The model also simplifies mode choice to just four options (car, bike, AV, transit), omitting potentially important alternatives like walking or e-scooters. Additionally, while parking occupancy is tracked, parking availability and search time are not dynamically modeled into mode choice decisions, which could underestimate the full costs of car-based travel in dense urban areas.
+
+The representation of transportation infrastructure and networks presents another set of limitations. The traffic simulation does not explicitly model traffic signals, intersection priorities, or detailed merging behaviors, which may affect the accuracy of congestion patterns particularly in dense urban areas. Public transit is represented through fixed travel times rather than explicit schedules and routes, preventing the model from capturing capacity constraints or service frequency effects. Similarly, bicycle and transit routes are based on travel times from a single Thursday morning, not accounting for variations throughout the day or week that might influence mode choice.
+
+External factors that could significantly impact travel behavior are also simplified or omitted. The model does not account for weather conditions, seasonal variations, or incidents that could affect both mode choice and traffic patterns. External traffic entering and leaving the study area is implemented through fixed origin-destination matrices with simple time-of-day factors, not responding dynamically to changing conditions within the model. Furthermore, the underlying origin-destination matrices from the V-MRDH model are at a relatively coarse spatial resolution, potentially missing important local variations in travel patterns, especially for shorter trips.
 
 ## 3.5 Default behavior
 The default behavior of the model represents the current situation in Rotterdam without autonomous vehicles. This scenario serves as a reference point for comparing the effects of AV adoption and policy interventions, and serves as validation for the model's ability to reproduce existing travel patterns.
