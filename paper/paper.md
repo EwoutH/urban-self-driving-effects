@@ -174,17 +174,51 @@ At least include:
 - parking not explicitly modeled or included in mode choice
 
 ## 3.5 Default behavior
+The default behavior of the model represents the current situation in Rotterdam without autonomous vehicles. This scenario serves as a reference point for comparing the effects of AV adoption and policy interventions, and serves as validation for the model's ability to reproduce existing travel patterns.
 
 ### 3.5.1 Mode choice
+Mode choice is the main decision-making process for agents in the model. Figure 3.4 shows the mode distribution of modes throughout the day, showing how agents choose between car, bicycle and public transit without AVs being present.
+
 ![mode_distribution_default.svg](img%2Fdefault%2Fmode_distribution_default.svg)
+_Fig 3.4: Mode distribution of all trips in the default scenario_
+
+The absolute trip distribution shows two clear peaks in travel demand: a sharp morning peak around 8:00 and a broader evening peak between 16:00-18:00, consistent with the input distribution from the ODiN data. During these peak periods, all modes see increased usage, though their relative proportions remain fairly stable.
+
+Looking at  peak hours, suggesting that congestion may be a factor in mode choice, but the effect is relatively minor compared to the overall distribution.
+the normalized mode shares, cycling is consistently the dominant mode, accounting for 55-60% of all trips throughout the day. Car usage represents about 25-35% of trips, showing slight variations during peak hours, while public transit maintains a relatively stable share of 10-15%. Car usage does decrease slightly during the day, and especially during the evening rush hours, and recovers slightly in the evening. The stability of these proportions throughout the day suggests that while the absolute number of trips varies significantly, the relative attractiveness of different modes remains consistent.
 
 ### 3.5.2 Journey metrics
+
+
 ![journeys_data_default.svg](img%2Fdefault%2Fjourneys_data_default.svg)
+_Fig 3.5: Journey metrics for all trips in the default scenario_
+
+The travel time distribution shows the bike to be the dominant mode for most short trips, under 20 minutes. Cars do have a significant share of trips in this region, but also extend further. Transit is almost not used for trips under 10 minutes, which is expected as public transit is generally not suited for very short trips.
+
+In terms of distance, most bicycle trips are concentrated in the 1-5 km range, while car trips show a more gradual distribution extending into the longer distances. Transit journeys have a flatter distribution, suggesting it's chosen more often for longer trips.
+
+Notable is that cars take up the majority of the very short trips, which is an artifact of the model implementation: Bike and public transit goes from 4-digit postal code (PC4) centroid to PC4 centroid, while cars can go from any road node to any road node, which includes the shortest trips. While this skews the data slightly, it does not affect the overall mode shares since it averages out over all travel time and distances.
+
+The cost distribution reflects the model's assumptions about mode costs: bicycle trips incur no monetary costs, car costs show a roughly log-normal distribution, and transit costs display similar pattern. These monetary costs combine with time costs to create the perceived cost distribution, where car journeys show the highest total costs despite often having shorter travel times than transit.
+
+Finally, all metrics follow a similar log-normal distribution, with a long tail of high values. This is consistent with the ODiN data on actual travel patterns and logical since the V-MRDH model is calibrated on ODiN, among others. Also note how the perceived costs distribution is perfectly smooth, which is a nice confirmation that agent's indeed correctly make decisions to minimize their perceived costs, and the comfort-factor doesn't add too much noise besides skewing the distribution in favor of cars and against bicycles.
 
 ### 3.5.3 Network metrics
-![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
-![uxsim_heatmaps_default_clean.png](img%2Fdefault%2Fuxsim_heatmaps_default_clean.png)
+The network-level metrics show how traffic, congestion and delays are distributed throughout the day in the default scenario. Figure 3.6 displays the total traffic volume, average speed, delay factor, and vehicle density across the road network.
 
+![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
+_Fig 3.6: Network metrics for all trips in the default scenario_
+
+The total traffic volume exhibits clear morning and evening peaks, with particularly high volumes in Prins Alexander (10) and Capelle aan den IJssel (31). These areas experience significantly higher traffic volumes than other regions. These extreme values are likely due to a combination of high car ownership rates (see Fig A.x in Appendix A.6 input data), substantial external traffic from surrounding municipalities (see Fig A.x), and ongoing major infrastructure projects around the Terbregseplein interchange and new A16 motorway construction.
+
+![uxsim_heatmaps_default_clean.png](img%2Fdefault%2Fuxsim_heatmaps_default_clean.png)
+_Fig 3.7: Network metrics for all trips in the default scenario (without outlier regions Prins Alexander (10) and Capelle aan den IJssel (31))_
+
+To better observe patterns in other regions, Figure 3.7 excludes these outlier areas. In the inner-city areas, particularly Rotterdam Centrum (1), Noord (3), and Kralingen (4), show moderate but consistent traffic volumes throughout the day. Average speeds in these areas remain relatively low (10-15 km/h) compared to outer regions (20-25 km/h), with the average speed dropping below 10 km/h briefly in the morning peak and for longer periods during the evening peak, with very high vehicle densities, especially in the evening peak.
+
+The delay factor (actual travel time divided by free-flow travel time) shows that in these three inner-city areas, delays are consistently high during the evening peak, with journeys taking up to times the free-flow travel time. This suggests that congestion is a significant issue in these areas, particularly during peak hours. Krimpen aan den IJssel (34) is another notable outlier, which is notoriously limited by the Algera bridge, which is a major bottleneck in the area ([oeververbindingen.nl](https://oeververbindingen.nl/maatregelen/algeracorridor/), [capellebouwtaandestad.nl](https://capellebouwtaandestad.nl/project/maatregelen-algeracorridor/)).
+
+These metrics demonstrate that while the transportation network functions efficiently during most hours, certain areas - particularly the inner city of those limited by natural barriers - experience significant congestion and delays during peak periods. It's great to observe that the model captures complex traffic behavior relatively well, like a short morning peak, extensive evening peak, and specific congestion points.
 
 # 4. Experimental design
 Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
