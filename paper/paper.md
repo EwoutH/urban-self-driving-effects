@@ -1192,6 +1192,7 @@ Some specific limitations include:
    - Implementing learning behaviors would require longer simulation periods, for which compute budgets where out of scope for this study.
 5. Limited mode options: The model considers only four modes (car, bike, transit, AV), not including options like walking, e-bikes, or shared mobility services.
    - Adding more modes would require additional data and increase the complexity of the mode choice model.
+7. No explicit parking behavior: While parking occupancy is tracked, parking availability and search time are not incorporated into mode choice decisions.
 
 One interesting thing to note is that for most metrics, like congestion, it doesn't matter how the agents make their decisions, as long as they are consistent. The model is about the system-level effects of the decisions, rather than the individual decisions themselves. Of course the feedback loops and stabilizing mechanisms would be different for different decision-making models, leading to different system-level outcomes.
 
@@ -1208,9 +1209,14 @@ The traffic model mainly lacks in details on crossings and intersections, which 
    - Freight transport is a relatively small part of urban traffic, but could be included in future versions.
 4. Limited representation of public transit: Transit is modeled simplistically, not capturing details of transit routes, schedules, or capacity constraints.
    - Detailed transit modeling would require integration with a separate transit simulation model.
+   - Peak hour capacity constraints and crowding effects are not considered.
 5. No modeling of active modes infrastructure: The model does not consider the impact of bicycle lanes or pedestrian infrastructure on mode choice and traffic flow.
    - Bicycle and public transport don't face many delays due to congestion, so the impact of infrastructure is limited.
    - It was found that bicycle travel times are remarkable consistent with distance for bicycle trips (see [travel_time_distance_google.ipynb](..%2Ftravel_api%2Ftravel_time_distance_google.ipynb)), so an explicit model was not deemed necessary as long as the lookup tables have enough detail.
+6. Simplified intersection dynamics: The model uses default merge priorities and does not include traffic signal timing or turn lane specifications.
+   - While adequate for system-level analysis, this may affect the accuracy of local congestion patterns.
+7. Homogeneous vehicle characteristics: All vehicles within a mode are assumed to have identical performance characteristics.
+   - In reality, different vehicle types (e.g., electric vs. conventional) could affect traffic flow and mode choice.
 
 ### Data
 Data availability is always a limitation in ABM models, and this model is no exception. Especially validation data for congestion, mode choice and AV pricing was hard to come by. Some specific limitations include:
@@ -1223,6 +1229,10 @@ Data availability is always a limitation in ABM models, and this model is no exc
    - Implementing detailed fare structures for all transit operators would require extensive data collection, which was out of scope.
 4. Limited validation data: The model lacks comprehensive data for validating results, especially for future scenarios involving autonomous vehicles.
    - Detailed validation data for emerging transportation technologies is inherently limited. Behavior was examined to see if it was plausible, but no real-world data was available to compare to.
+5. Static infrastructure data: The road network and transit services are based on a single snapshot, not capturing planned changes or maintenance effects.
+   - While major planned infrastructure (like the new A16) was included, smaller changes could affect local travel patterns.
+6. Limited calibration data: While mode shares could be validated against ODiN data, detailed validation of traffic patterns was constrained by data availability.
+   - Attempts to obtain commercial traffic data for validation were unsuccessful.
 
 ### Other
 The main other limitation is the lack of long-term dynamics and feedback loops. The model is a static scenario analysis, not capturing how the system might evolve over time. This was a conscious choice in the model scope, since this study was primarily about how the urban transportation system might respond to AV adoption and policy interventions, and how people might make different day-to-day decisions based on these changes.
@@ -1237,13 +1247,16 @@ Some specific limitations include:
 4. Limited environmental impact assessment: The model does not directly calculate emissions or other environmental impacts of transportation choices.
    - Adding detailed environmental impact modeling would require additional data on vehicle characteristics and emissions factors. However, the distance traveled by car and AV is available, which is a good proxy for emissions.
 5. No consideration of equity impacts: The model does not explicitly address how changes in the transportation system affect different socioeconomic groups.
-   - Equity analysis would require more detailed socioeconomic data and additional post-processing of model outputs.
+   - Equity analysis would require more detailed sociodemographic data and additional post-processing of model outputs.
 6. Simplified AV implementation: The model treats AVs essentially as cheaper, more comfortable cars, not capturing potential transformative impacts on urban form or travel behavior.
    - The exact impacts of AVs are still uncertain, and more complex representations would require speculative assumptions.
    - Density is used as a proxy for the space an AV takes up on the road and the average number of people in a car. This is a simplification, but a good first-order approximation.
 7. Limited geographic scope: The model focuses on the Rotterdam area, potentially missing broader regional or national-level impacts.
    - Expanding the geographic scope would require significantly more data and computational resources. Other regions could be relatively easily added, population and network data is available for the whole of the Netherlands. OD-matrix data would need to be added if going beyond the MRDH area.
-
+8. Weather and seasonal effects: The model does not account for how weather conditions or seasonal patterns affect mode choice and traffic flow.
+   - This could be particularly relevant for cycling behavior and AV operations.
+9. Time-of-day variations: While trip generation varies by hour, mode characteristics (like transit frequencies) are static throughout the day.
+   - This simplification could affect the accuracy of off-peak travel patterns, especially for transit in weekends, evenings, and nights.
 
 ## Appendix D: Experimental setup
 
