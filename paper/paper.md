@@ -156,22 +156,22 @@ Path dependencies: If agents start by car, they have to return by car.
 
 ## 3.4 Limitations
 <!-- TODO: Write -->
-Two main limitations:
-1. The model does not include long-term effects, such as land use changes, which could significantly impact travel patterns and urban development.
+Main limitations:
+1. The model only simulates one or a few days, and does not include long-term effects, such as land use changes, people buying or selling cars or changing their destinations.
 2. The travel demand model is static and does not account for changes in trip timing and destinations based on the availability of AVs (like activity-based models do).
-3. The model does not consider irrational or habitual mode choice, which could influence individual travel decisions in ways not captured by a rational choice framework.
+3. The model does not consider irrational or habitual mode choice, which could influence individual travel decisions in ways not captured by a rational choice framework. Preference is simplified to a single comfort factor.
 
-At least include:
-- no long term effects, like land use changes
+Mention briefly:
 - no explicit learning mechanisms
-- no changes in the destinations of trips based on the availability of AVs
-- no irrational or behavioral mode choice
 - no explicit agent-to-agent interactions, like social belief system diffusion or car sharing among households
-- no explicit representation of traffic signals or detailed intersection dynamics
+- no explicit representation of traffic signals, merge priorities or detailed intersection dynamics
 - no weather, seasonal, or incident-based variations in both traffic and mode choice
 - no explicit representation of public transit schedules or route networks
+- transit and bicycle routes are fixed based on a single Thursday morning, not varying by time of day or day of week
 - no other modes than car, bike, AV and public transit, like walking or e-scooters
 - parking not explicitly modeled or included in mode choice
+- External traffic is added using fixed matrices and simple time-of-day factors
+- OD matrices from V-MRDH model are at a relatively coarse level
 
 ## 3.5 Default behavior
 The default behavior of the model represents the current situation in Rotterdam without autonomous vehicles. This scenario serves as a reference point for comparing the effects of AV adoption and policy interventions, and serves as validation for the model's ability to reproduce existing travel patterns.
