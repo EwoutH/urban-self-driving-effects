@@ -17,7 +17,7 @@ The introduction of the automobile fundamentally transformed human transportatio
 
 Self-driving cars, also known as autonomous vehicles (AVs), represent a potential paradigm shift in urban transportation. Unlike the gradual evolution of traditional automobiles, AVs promise to radically alter not just how we drive, but also patterns of vehicle ownership and use. The transition from private ownership to a Mobility-as-a-Service (MaaS) model, where self-driving "robotaxis" become the dominant form of motorized road transport, could reshape our cities in profound ways.
 
-Proponents of AVs highlight numerous potential benefits. For individual travelers, the ability to engage in other activities while in transit could significantly alter the perceived cost of travel time. From an urban planning perspective, the promise of solving pervasive parking problems is particularly appealing, as AVs could simply move on to their next passenger instead of occupying valuable urban space. Furthermore, optimized routing and platooning capabilities could increase road network efficiency and potentially improve safety. Research suggests that shared autonomous vehicles could provide the same mobility with just 30% of the current vehicle fleet in cities like Singapore [Duarte & Ratti, 2018].
+Proponents of AVs highlight numerous potential benefits. For individual travelers, the ability to engage in other activities while in transit could significantly alter the perceived cost of travel time. From an urban planning perspective, the promise of solving pervasive parking problems is particularly appealing, as AVs could simply move on to their next passenger instead of occupying valuable urban space. Furthermore, optimized routing and platooning capabilities could increase road network efficiency and potentially improve safety. Research suggests that shared autonomous vehicles could provide the same mobility with just 30% of the current vehicle fleet in cities like Singapore (Duarte & Ratti, 2018).
 
 However, the introduction of AVs also raises important questions and potential concerns. While each individual AV might offer improvements over traditional cars in terms of efficiency and environmental impact, the aggregate effect on urban systems remains uncertain. Historical precedent suggests that improvements in transportation technology often lead to induced demand, resulting in more total distance traveled. This raises a critical question: Will the increased efficiency of self-driving cars outweigh the induced traffic and demand they generate?
 
@@ -587,6 +587,17 @@ These findings contribute to transportation planning in three ways. First, they 
 The research has several implications for urban policy. Cities should prioritize policies that influence AV operating characteristics, particularly space efficiency and shared use. This might involve differentiated road pricing based on vehicle occupancy, dedicated infrastructure access for high-efficiency services, or operational requirements for minimum passenger densities in certain areas. Additionally, the protection of sustainable transport modes may require more comprehensive approaches that integrate AVs into existing mobility systems rather than treating them as competitors to be restricted.
 
 Future research should focus on three key areas. First, developing more sophisticated behavioral models through carefully designed stated preference studies to better understand how different demographic groups might value and use AVs. Second, investigating the determinants of AV space efficiency, including vehicle design, operational strategies, and policy incentives. Third, exploring adaptive policy frameworks that can automatically adjust based on observed system performance.
+
+# References
+Duarte, F., & Ratti, C. (2018). The impact of autonomous vehicles on cities: A review. Transport Reviews, 38(3), 409-428. https://doi.org/10.1080/10630732.2018.1493883
+
+Fagnant, D. J., & Kockelman, K. (2015). Preparing a nation for autonomous vehicles: Opportunities, barriers and policy recommendations. Transportation Research Part A: Policy and Practice, 77, 167-181. https://doi.org/10.1016/j.tra.2015.04.003
+
+Lee, D. B., Jr., & Klein, L. A. (1999). Induced traffic and induced demand. Transportation Research Record, 1659, 9-17. https://doi.org/10.3141/1659-09
+
+Metz, D. (2018). Developing policy for urban autonomous vehicles: Impact on congestion. Urban Science, 2(2), 33. https://doi.org/10.3390/urbansci2020033
+
+Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part A: Policy and Practice, 116, 92-104. https://doi.org/10.1016/j.tra.2018.06.007
 
 # Appendices
 ## Appendix A: Model description
@@ -1541,7 +1552,6 @@ This section contains some additional results that were not included in the main
 #### 3.1. Parking occupancy
 ![parked_heatmaps_default.png](img%2Fdefault%2Fparked_heatmaps_default.png)
 
-# References
 
 [CBS-mobility]: https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4 "CBS data on cars, kilometers driven, and driver's licenses per postcode"
 [CBS-postcode]: https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode "CBS geographical data by postcode"
