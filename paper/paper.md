@@ -36,6 +36,8 @@ Model verification and validation followed a systematic approach combining multi
 
 Data sources include population and vehicle ownership statistics from CBS (Dutch Central Bureau Statistics), road network data from OpenStreetMap, cycling and public transport travel times from Google Maps API, and origin-destination matrices from the V-MRDH transport model. The simulation represents approximately one million residents of Rotterdam, with each agent representing a platoon of 10 actual travelers for computational efficiency. The experimental design utilized full-factorial analysis for exploring uncertainties and a systematic evaluation of policy interventions, as detailed in [Appendix D](#appendix-d-experimental-setup).
 
+The novelty of this approach lies in its integration of multiple modeling scales and data sources. While previous studies have examined either mode choice or traffic simulation aspects of AV adoption, this research combines both within a single modeling framework. This enables analysis of feedback loops between individual travel decisions and system-level performance, capturing emergent behaviors that simpler models might miss.
+
 # 3. Model description
 The model simulates travel behavior in the Rotterdam urban area over the course of one day, focusing on mode choice decisions and their collective impact on the transportation system. It consists of three main components: (1) an agent-based model for traveler decision-making, (2) a mesoscopic traffic simulation for vehicle movements, and (3) a discrete event system for scheduling and coordination, with a lot of data feeding into the model.
 
