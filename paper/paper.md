@@ -8,9 +8,7 @@
 
 **Results:** AV adoption is primarily driven by cost, with significant uptake occurring only when costs fall below 50% of current levels. Space efficiency emerges as the critical factor determining system outcomes: inefficient AVs (density factors ≥1.0) lead to severe congestion, while efficient AVs (density factors ≤0.5) can maintain or improve traffic flow even at high adoption rates. Notably, cyclists and transit users are more likely to switch to AVs than car users, potentially undermining sustainable transport goals. Traditional policy interventions show limited effectiveness, with no single approach consistently improving system performance across different scenarios.
 
-**Conclusions:** The success of AVs in urban environments depends more on their space efficiency than cost or comfort advantages. Traditional policy interventions show limited effectiveness across different scenarios, suggesting the need for adaptive policy frameworks that can respond to emerging adoption patterns. Cities should prioritize policies that influence AV operating characteristics, particularly space efficiency and shared use, while protecting sustainable transport modes.
-
-**Implications:** The findings suggest that cities need to develop proactive, adaptive policy frameworks to manage AV adoption, focusing on space efficiency requirements and integration with existing sustainable mobility options rather than simple restrictions or pricing mechanisms.
+**Implications:** Traditional policy interventions show limited effectiveness across different scenarios, suggesting that cities need to develop proactive, adaptive policy frameworks to manage AV adoption, focusing on space efficiency requirements, shared use and integration with existing sustainable mobility options rather than simple restrictions or pricing mechanisms.
 
 Keywords: autonomous vehicles, urban transportation, agent-based modeling, traffic simulation, mode choice, transportation policy, urban mobility
 
