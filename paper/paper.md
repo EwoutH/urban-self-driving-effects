@@ -467,7 +467,59 @@ More comprehensive policies, like the city-day (4) and all-out (8) interventions
 Perhaps most tellingly, no policy consistently improves all metrics across different scenarios. Policies that help in heavily congested scenarios with inefficient AVs actively harm performance in scenarios with efficient AVs. Even when policies successfully reduce AV adoption, they often fail to improve - and sometimes worsen - key metrics like average travel time, perceived costs, and network efficiency. This suggests that simple, static policies targeting AVs alone may be insufficient for managing the complex dynamics of future urban transportation systems.
 
 # 6. Discussion
-_What do the results mean, what are the implications, what are the limitations_
+After having shown the model results, in the discussion we contextualize these findings within existing research, examines their implications, and identifies areas for future investigation.
+
+## 6.1 Key findings in context
+First, the five key findings presented in 5.4 will be reflected upon and placed in scientific context.
+
+### Cost-driven adoption with critical thresholds
+Our finding that significant AV adoption only occurs when costs drop below 50% of current levels aligns with previous research by Talebian & Mishra (2018), who found that aggressive price reductions (15-20% annually) were necessary for widespread adoption. However, our results reveal a more nuanced relationship between cost and adoption than previously identified. While Talebian & Mishra found a relatively straightforward relationship between price reductions and adoption rates, our results show distinct tipping points where adoption accelerates rapidly, particularly when costs fall below 25% of current levels. While four variable levels is by far not enough to estimate a clear adoption pattern, it might imply an S-curve pattern, which does occur more often in technology adoption (Rogers, 1962).
+
+This non-linear adoption pattern emerges from the interaction between cost reductions and other system factors, particularly AV density. The simulation deliberately separated these factors to understand their individual impacts - in reality, cost reductions might come from the same technological advances that improve operational efficiency. This separation revealed that even dramatic cost reductions alone are insufficient to drive high adoption in urban environments if AVs operate inefficiently.
+
+### The critical role of AV density
+Perhaps our most significant finding is the identification of AV density as the critical factor determining system outcomes. This aligns with but substantially extends previous research. While Fagnant and Kockelman (2015) estimated that cooperative adaptive cruise control could increase lane capacities by 1-80% depending on market penetration, their analysis focused primarily on the positive potential of efficient operations. Our results demonstrate that inefficient AVs can actually reduce system capacity, creating a stark bifurcation in possible futures.
+
+Importantly, our model treated density as an outcome-based metric rather than specifying how it's achieved. A density factor of 0.5 could result from various combinations of:
+- Smaller vehicle sizes
+- More efficient vehicle spacing through faster reaction times
+- Better routing and scheduling to reduce empty trips
+- Network-level optimizations
+- Higher average occupancy through ride-sharing
+
+This approach allows the results to remain relevant regardless of which technological or operational solutions ultimately emerge. The critical threshold identified (density factors below 0.5) provides a clear target for AV developers and policymakers, while remaining agnostic about how this target is achieved.
+
+### Modal shift patterns
+Our observation that cyclists and transit users are more likely than car users to switch to AVs challenges common assumptions about AV adoption patterns. While this aligns with research on current ride-hailing services (Graehler et al., 2019), the magnitude of the shift in our simulations is notably larger. This difference likely stems from two factors:
+1. The model's important role of travel time value, which captures how AVs might make longer trips more acceptable by enabling productive use of travel time.
+2. The explicit modeling of trip chains, which reveals how car ownership creates "lock-in" effects that resist modal shifts
+
+This finding has particularly important implications for cities like Rotterdam with high cycling mode shares. Previous research has often focused on car-to-AV transitions, potentially underestimating the risk to sustainable transport modes.
+
+### System-level effects
+The emergence of distinct futures based on AV density adds important nuance to debates about induced demand. Our results align with Metz's (2018) observation that AVs' impact will largely depend on whether they operate as private or shared vehicles. However, our findings suggest that the critical factor isn't ownership models per se, but rather the resulting space efficiency of operations.
+
+The interaction between induced demand and AV efficiency revealed in our results extends Lee et al.'s (1999) work on equilibrium responses to transportation improvements. While their research suggested 10-20 years for full equilibrium adaptation, our results indicate that the speed and nature of this adaptation may vary dramatically depending on AV operating characteristics. In scenarios with efficient AVs, the system can accommodate significantly more induced demand, while inefficient AV scenarios show rapid degradation of service levels even without additional demand.
+
+### Policy effectiveness
+The limited effectiveness of traditional policy interventions across different scenarios represents a novel finding with important implications. While previous research has focused on optimal policy design for specific AV scenarios, our results suggest that policies optimized for one scenario may be counterproductive in others. This creates a fundamental challenge for policymakers: how to design interventions that remain effective across multiple possible futures.
+
+The finding that smaller-scale interventions (like the "autoluw" area policies) had minimal impact aligns with network theory predictions about the limitations of localized traffic interventions in connected systems. However, the observation that even city-wide interventions showed limited effectiveness in many scenarios suggests deeper challenges in managing AV adoption through traditional policy tools. Do note that the focus of this research was the exploring the adoption patterns and uncertainty space, and it was chosen to limit the policy analysis in scope. There might be other policies that are effective on more metrics among more scenarios.
+
+## 6.2 Policy implications
+The complex dynamics revealed by this research pose significant challenges for policymakers, requiring a fundamental rethinking of traditional transportation policy approaches. The results suggest several key areas where policy intervention is critical, but also reveal why conventional approaches may be insufficient.
+
+The primacy of space efficiency in determining system outcomes suggests that this should be the central focus of AV regulation. While previous policy discussions have emphasized safety, liability, and data privacy (Fagnant & Kockelman, 2015), our results indicate that space efficiency requirements may be equally important for urban environments. Cities should establish clear performance metrics for AV operations that focus on their space consumption per passenger, rather than treating all AVs as equivalent. This might involve differentiated road pricing based on vehicle occupancy, dedicated infrastructure access for high-efficiency services, or operational requirements for minimum passenger densities in certain areas.
+
+However, the implementation of such policies faces several challenges. First, space efficiency is an emergent property of multiple factors, including vehicle size, operational patterns, and passenger occupancy. Policy frameworks need to focus on outcomes rather than prescribing specific technological solutions, allowing innovation while ensuring system-level benefits. Second, the measurement and enforcement of such requirements requires new monitoring capabilities and regulatory frameworks. Third, policies need to account for the transition period where conventional and autonomous vehicles share the road network.
+
+The vulnerability of sustainable transport modes to AV competition represents another crucial policy challenge. Traditional approaches to protecting public transit and cycling have focused on infrastructure provision and operational priority. While these remain important, our results suggest they may be insufficient in the face of cheap, comfortable AVs. Cities need more comprehensive approaches that integrate AVs into a sustainable mobility ecosystem rather than treating them as competitors to be restricted. This might involve designing AV services specifically to complement rather than replace existing sustainable modes, using them to solve first/last mile challenges or serve areas with poor transit coverage.
+
+The stark differences between scenarios with different AV characteristics necessitate adaptive policy frameworks. Static regulations designed for current conditions may become either too restrictive or too permissive as AV technology evolves. Instead, cities need dynamic policy frameworks that can adjust automatically based on observed system performance. This represents a significant departure from traditional transportation policy, which typically changes slowly and reactively. The development of such adaptive frameworks requires not just new policy tools, but also new institutional capabilities for monitoring and responding to changing conditions.
+
+The limited effectiveness of localized interventions revealed in our simulations suggests the need for coordinated policy approaches across different spatial scales. While cities may be tempted to implement restrictions in specific problematic areas, our results indicate that such approaches may simply shift problems elsewhere in the network. System-level policies that address both supply and demand aspects of AV operations are likely to be more effective. This might involve coordinated pricing schemes across entire urban regions, integrated planning of AV services with public transit networks, and consistent regulations across jurisdictional boundaries.
+
+Perhaps most importantly, cities need to plan carefully for the transition period. The potential for rapid shifts in travel patterns once certain thresholds are crossed (in cost, comfort, or efficiency) means that cities cannot wait to observe problems before responding. Proactive planning should include clear triggers for policy interventions based on monitored metrics, strategies for protecting vulnerable users during the transition, and mechanisms for adjusting existing infrastructure and services as travel patterns change.
 
 # 7. Conclusions
 _Objective answers from the results and how they answer the research question, considering everything_
