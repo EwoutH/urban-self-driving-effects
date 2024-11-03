@@ -1,7 +1,20 @@
-_Very WIP version of a possible paper_
+
+# Abstract
+**Background:** The introduction of autonomous vehicles (AVs) represents a potential paradigm shift in urban transportation, but their system-level impacts remain uncertain. While AVs promise benefits like reduced parking demand and improved safety, questions persist about their effects on congestion, mode choice, and overall urban mobility patterns.
+
+**Objective:** This research investigates how the introduction of self-driving cars will affect urban transportation systems, focusing on which undesired effects might emerge and what policies could effectively mitigate them while preserving benefits.
+
+**Methods:** An agent-based model combined with mesoscopic traffic simulation was developed to simulate AV adoption in Rotterdam. The model integrates empirical data on travel patterns, road networks, and mode choice behavior. A full-factorial analysis explored 144 scenarios examining four key uncertainties: AV costs, perceived value of time, space efficiency, and induced demand. Additionally, 72 policy combinations were tested to evaluate intervention effectiveness.
+
+**Results:** AV adoption is primarily driven by cost, with significant uptake occurring only when costs fall below 50% of current levels. Space efficiency emerges as the critical factor determining system outcomes: inefficient AVs (density factors ≥1.0) lead to severe congestion, while efficient AVs (density factors ≤0.5) can maintain or improve traffic flow even at high adoption rates. Notably, cyclists and transit users are more likely to switch to AVs than car users, potentially undermining sustainable transport goals. Traditional policy interventions show limited effectiveness, with no single approach consistently improving system performance across different scenarios.
+
+**Conclusions:** The success of AVs in urban environments depends more on their space efficiency than cost or comfort advantages. Traditional policy interventions show limited effectiveness across different scenarios, suggesting the need for adaptive policy frameworks that can respond to emerging adoption patterns. Cities should prioritize policies that influence AV operating characteristics, particularly space efficiency and shared use, while protecting sustainable transport modes.
+
+**Implications:** The findings suggest that cities need to develop proactive, adaptive policy frameworks to manage AV adoption, focusing on space efficiency requirements and integration with existing sustainable mobility options rather than simple restrictions or pricing mechanisms.
+
+Keywords: autonomous vehicles, urban transportation, agent-based modeling, traffic simulation, mode choice, transportation policy, urban mobility
 
 # 1. Introduction
-
 The introduction of the automobile fundamentally transformed human transportation and urban development in the 20th century. While providing unprecedented mobility and economic opportunities, the widespread adoption of cars has also led to significant challenges in urban environments. These include traffic congestion, parking scarcity, air and noise pollution, and safety concerns for pedestrians and cyclists. As we progress into the 21st century, a new technological revolution is on the horizon: self-driving cars.
 
 Self-driving cars, also known as autonomous vehicles (AVs), represent a potential paradigm shift in urban transportation. Unlike the gradual evolution of traditional automobiles, AVs promise to radically alter not just how we drive, but also patterns of vehicle ownership and use. The transition from private ownership to a Mobility-as-a-Service (MaaS) model, where self-driving "robotaxis" become the dominant form of motorized road transport, could reshape our cities in profound ways.
