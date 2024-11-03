@@ -589,6 +589,8 @@ The research has several implications for urban policy. Cities should prioritize
 Future research should focus on three key areas. First, developing more sophisticated behavioral models through carefully designed stated preference studies to better understand how different demographic groups might value and use AVs. Second, investigating the determinants of AV space efficiency, including vehicle design, operational strategies, and policy incentives. Third, exploring adaptive policy frameworks that can automatically adjust based on observed system performance.
 
 # References
+Ben-Akiva, M. E., & Lerman, S. R. (1985). Discrete choice analysis: theory and application to travel demand (Vol. 9). MIT press.
+
 Centraal Bureau voor de Statistiek. (2023a). Auto's, kilometers en rijbewijzen per pc4 [Cars, kilometers and driver's licenses per postcode]. https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4
 
 Centraal Bureau voor de Statistiek. (2023b). Gegevens per postcode [Data by postcode]. https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode
@@ -598,6 +600,10 @@ Centraal Bureau voor de Statistiek. (2023c). Statistische gegevens per vierkant 
 Centraal Bureau voor de Statistiek. (2023d). Voertuigen naar brandstofsoort en postcode 2023 [Vehicles by fuel type and postcode 2023]. https://www.cbs.nl/nl-nl/maatwerk/2023/24/voertuigen-naar-brandstofsoort-en-postcode-2023
 
 Centraal Bureau voor de Statistiek. (2024). Onderweg in Nederland (ODiN) 2023: Onderzoeksbeschrijving [Traveling in the Netherlands 2023: Research description]. https://www.cbs.nl/nl-nl/longread/rapportages/2024/onderweg-in-nederland--odin---2023-onderzoeksbeschrijving
+
+Cervero, R. (2002). Induced travel demand: Research design, empirical evidence, and normative policies. Journal of Planning Literature, 17(1), 3-20.
+
+Downs, A. (1962). The law of peak-hour expressway congestion. Traffic Quarterly, 16(3).
 
 Duarte, F., & Ratti, C. (2018). The impact of autonomous vehicles on cities: A review. Transport Reviews, 38(3), 409-428. https://doi.org/10.1080/10630732.2018.1493883
 
@@ -611,21 +617,29 @@ Kennisinstituut voor Mobiliteitsbeleid. (2023). Nieuwe waarderingskengetallen vo
 
 Lee, D. B., Jr., & Klein, L. A. (1999). Induced traffic and induced demand. Transportation Research Record, 1659, 9-17. https://doi.org/10.3141/1659-09
 
-Metz, D. (2018). Developing policy for urban autonomous vehicles: Impact on congestion. Urban Science, 2(2), 33. https://doi.org/10.3390/urbansci2020033
+McNally, M. G. (2007). The four step model. https://escholarship.org/uc/item/6091s9tg
 
 Metropolitaan Verkeer- en Vervoermodel MRDH. (2024). MRDH Verkeersmodel (V-MRDH). https://www.mrdh.nl/verkeersmodel
+
+Metz, D. (2018). Developing policy for urban autonomous vehicles: Impact on congestion. Urban Science, 2(2), 33. https://doi.org/10.3390/urbansci2020033
 
 Nederlands Instituut voor Budgetvoorlichting. (2024). Autokosten [Car costs]. https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
 
 Nederlandse Spoorwegen. (2024). NS API Portal. https://apiportal.ns.nl/
 
+Newell, G. (2002). A simplified car-following theory: a lower order model. Transportation Research Part B Methodological, 36(3), 195–205. https://doi.org/10.1016/s0191-2615(00)00044-8
+
 OpenStreetMap Foundation. (2024). About OpenStreetMap. https://www.openstreetmap.org/about
 
 Project Mesa Team. (2024). Mesa: Agent-based modeling in Python 3+ [Computer software]. GitHub. https://github.com/projectmesa/mesa
 
+Small, K. A. (2012). Valuation of travel time. Economics of transportation, 1(1-2), 2-14.
+
 Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part A: Policy and Practice, 116, 92-104. https://doi.org/10.1016/j.tra.2018.06.007
 
 Trein Onderweg. (2024). Wat kost de trein [Train costs]. https://www.treinonderweg.nl/wat-kost-de-trein.html
+
+Wardrop, J. G. (1952). Road paper. some theoretical aspects of road traffic research. Proceedings of the institution of civil engineers, 1(3), 325-362.
 
 # Appendices
 ## Appendix A: Model description
