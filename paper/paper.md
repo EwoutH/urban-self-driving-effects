@@ -1,5 +1,5 @@
 <div align="center">
-<h1>AVs don't replace cars: they replace buses and bikes</h1>
+<h1>Autonomous vehicles don't replace cars: they replace buses and bikes</h1>
 <h3>How autonomous vehicle density determines urban mobility patterns: A mesoscopic simulation study revealing unexpected modal shifts and policy implications in Rotterdam</h3>
 </div>
 
