@@ -1,0 +1,3 @@
+theme: jekyll-theme-minimal  # Or another theme of your choice
+include:
+  - paper  # Include the 'paper' directory so GitHub Pages processes it
