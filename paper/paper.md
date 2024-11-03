@@ -244,7 +244,7 @@ Two main experiments were conducted to explore the potential impacts of autonomo
 ![Conceptual-model-v2.svg](img%2FConceptual-model-v2.svg)
 _Fig 4.1: Conceptual model including scenario uncertainties and policy levers_
 
-TODO: Describe conceptual model
+Figure 4.1 shows how the scenario and policy variables will influence the system. The scenario variables will influence the number of AV cars generated, the frequency with which travelers plan trips, the AV costs and the travelers value of time when using an AV. The policy variables will influence the AV price and the maximum allowed speeds.
 
 ## 4.1 Scenario analysis
 To answer subquestions B and C, a wide variety of uncertainties were explored. The scenario analysis employed a full-factorial design exploring four key uncertainties:
