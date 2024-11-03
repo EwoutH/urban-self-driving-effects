@@ -1005,7 +1005,7 @@ _Fig A.4: Distribution of travel times between the 15.500 centroid-pairs for cyc
 
 Fig A.5 shows a scatter plot of travel times versus bird's-eye distances for both modes. It shows cycling having a clear maximum speed and relatively linear relationship between time and distance, while public transit has a lesser correlation, with a lot of variation in travel times for similar distances, and now clear minimum or maximum speeds.
 
-![travel_time_distance_scatter.png](img%2Ftravel_time_distance_scatter.png)
+![travel_time_distance_scatter.png](img%2Fdata%2Ftravel_time_distance_scatter.png)
 _Fig A.5: Scatter plot of travel times versus distances between the 15.500 centroid-pairs for cycling and public transit._
 
 The full analysis is available in the [`travel_api/travel_time_distance_google.ipynb`](../travel_api/travel_time_distance_google.ipynb) notebook.
