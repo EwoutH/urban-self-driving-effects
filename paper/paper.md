@@ -16,12 +16,12 @@ This thesis aims to address these uncertainties by developing an agent-based mod
 
 *Which undesired urban problems will the introduction of self-driving cars cause, considering the modal shift and induced demand, and what policies can effectively mitigate undesired impacts?*
 
-To answer this overarching question, we will explore several key sub-questions:
+To answer this overarching question, we explore several key sub-questions:
 
-1. How can a traffic and mode choice model represent the system that shows the tradeoffs and potentially undesired effects of self-driving cars?
-2. How will self-driving cars be adopted under different future uncertainties?
-3. Which potential undesired system effects are amplified and which are reduced by the introduction of self-driving cars?
-4. Which potential policies are most effective in minimizing which undesired system effects while maintaining benefits under different uncertainties?
+- **A.** How can a traffic and mode choice model represent the system that shows the tradeoffs and potentially undesired effects of self-driving cars?
+- **B.** How will self-driving cars be adopted under different future uncertainties?
+- **C.** Which potential undesired system effects are amplified and which are reduced by the introduction of self-driving cars?
+- **D.** Which potential policies are most effective in minimizing which undesired system effects while maintaining benefits under different uncertainties?
 
 By addressing these questions, this research aims to provide valuable insights for urban planners, policymakers, and transportation engineers as they prepare for the advent of self-driving cars. Understanding the potential system-wide effects of AVs is crucial for developing proactive strategies to maximize their benefits while mitigating unintended negative consequences in our urban environments.
 
@@ -41,6 +41,8 @@ The novelty of this approach lies in its integration of multiple modeling scales
 # 3. Model description
 The model simulates travel behavior in the Rotterdam urban area over the course of one day, focusing on mode choice decisions and their collective impact on the transportation system. It consists of three main components: (1) an agent-based model for traveler decision-making, (2) a mesoscopic traffic simulation for vehicle movements, and (3) a discrete event system for scheduling and coordination, with a lot of data feeding into the model.
 
+This section shows how such a system can be represented, answering subquestion A.
+
 ## 3.1 Spatial and temporal structure and scope
 The model is designed to simulate a medium-sized city over the course of a day. The city of Rotterdam (and immediate surroundings) was selected due to its fitting size, exising traffic and congestion problems and good alternatives in bicycle and public transport, with an extensive bus, tram and metro network being available. The research area consists of 125 four-digit postal code areas nested within 21 larger traffic analysis zones. The road network, derived from OpenStreetMap, comprises 1,575 nodes and 3,328 edges, including all roads from tertiary level upward. Simulations typically run from 05:00 to 24:00 with 5-minute time steps, capturing a full day of urban mobility patterns.
 
@@ -50,7 +52,7 @@ _Fig 3.1: The main study area, divided into 21 MRDH regions and 125 postal code 
 While these parameters were used in the model, most source data is available for the whole Netherlands. Scripts to generate the OpenStreetMap data are available. The only data limiting the spatial scope are the OD matrices from the V-MRDH model, which cover the whole Netherlands, but only have sufficient resolution in the MRDH region. The model could also be ran for multiple days, with trip probability data being available for every day of the week.
 
 ## 3.2 Key submodels
-The model consists of two main submodels: the agent mode-choice model and the traffic simulation model. These submodels interact through agent decisions, which influence traffic flow and congestion patterns, which in turn affect mode choices of future agents. These submodels are fed various input data, which can be seen as a third submodel. The conceptual model in Fig. 3.2 illustrates the key variables and interactions between submodels.
+The model consists of two main submodels: the agent mode-choice model and the traffic simulation model. These submodels interact through agent decisions, which influence traffic flow and congestion patterns, which in turn affect mode choices of future agents. Various input data are entered into the submodels, which can be seen as a third submodel in itself. The conceptual model in Fig. 3.2 illustrates the key variables and interactions between submodels.
 
 ![Conceptual-model-v2-no-exp.svg](img%2FConceptual-model-v2-no-exp.svg)
 _Fig 3.2: Conceptual model displaying the submodels, variables and their interactions_
@@ -101,7 +103,7 @@ Section 6 of Appendix A provides more details on the input data sources, process
 ### 3.2.2 Agent behavior
 Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time (drawn from a lognormal distribution). Each agent generates a set of trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
 
-The model implements an agent-based version of the traditional four-step transportation demand model (McNally, 2007), adapting it for individual-level mode choice decision making while maintaining validated travel patterns. The first two steps (trip generation and distribution) are based on empirical data, while the latter two steps (mode choice and route assignment) are modeled dynamically through agent behavior and traffic simulation. The four steps are implemented as follows:
+The model implements an agent-based version of the traditional four-step transportation demand model (McNally, 2007), adapting it for individual-level mode choice decision making while maintaining validated travel patterns. The first two steps (trip generation and distribution) are externally modelled based on empirical data, while the latter two steps (mode choice and route assignment) are modeled internally through agent behavior and traffic simulation. The four steps are implemented as follows:
 
 Firstly, trip generation relies on hourly probabilities derived from ODiN 2023 data, with agents generating trips through `generate_trip_times()`.
 
@@ -510,7 +512,7 @@ The relationship between AV density and vehicle kilometers traveled (VKT) reveal
 ### Policy effectiveness
 The limited effectiveness of traditional policy interventions across different scenarios represents a novel finding with important implications. While previous research has focused on optimal policy design for specific AV scenarios, our results suggest that policies optimized for one scenario may be counterproductive in others. This creates a fundamental challenge for policymakers: how to design interventions that remain effective across multiple possible futures.
 
-The finding that smaller-scale interventions (like the "autoluw" area policies) had minimal impact aligns with network theory predictions about the limitations of localized traffic interventions in connected systems. However, the observation that even city-wide interventions showed limited effectiveness in many scenarios suggests deeper challenges in managing AV adoption through traditional policy tools. Do note that the focus of this research was the exploring the adoption patterns and uncertainty space, and it was chosen to limit the policy analysis in scope. There might be other policies that are effective on more metrics among more scenarios.
+The finding that smaller-scale interventions (like the "autoluw" area policies) had minimal impact aligns with network theory predictions about the limitations of localized traffic interventions in connected systems. However, the observation that even city-wide interventions showed limited effectiveness in many scenarios suggests deeper challenges in managing AV adoption through traditional policy tools. It should be noted that the focus of this research was to explore the adoption patterns and uncertainty space, and was chosen to limit the policy analysis in scope. There might be other policies that are effective on more metrics among more scenarios.
 
 ## 6.2 Policy implications
 The complex dynamics revealed by this research pose significant challenges for policymakers, requiring a fundamental rethinking of traditional transportation policy approaches. The results suggest several key areas where policy intervention is critical, but also reveal why conventional approaches may be insufficient.
@@ -544,7 +546,7 @@ The most significant data limitation was the lack of time-varying travel times f
 ### Broader research directions
 Beyond improving the current model, this study points to several crucial areas requiring broader investigation. Perhaps most fundamental is the need to understand the long-term dynamics of AV adoption and its impacts on urban form. While our model focused on transportation system effects, the potential for AVs to reshape land use patterns could be equally significant. The relationship between transportation and land use has historically been bidirectional - new transportation technologies enable new development patterns, which in turn influence travel demand. Understanding these feedback loops in the context of AVs requires integrating transportation models with land use and economic models over longer time horizons. Either find a few orders of magnitude in computational efficiency, or prepare your supercomputer.
 
-The limitations of static policies revealed in our results suggests an urgent need for research into adaptive policy frameworks. Traditional transportation policies often change slowly and reactively, but our findings indicate that AV adoption could create rapid shifts in travel patterns once certain thresholds are crossed. Future research should explore how cities can develop policies that automatically adjust based on observed conditions - for example, dynamic pricing schemes that respond to both congestion levels and AV adoption rates. This requires not just technical solutions but also investigation of the legal and institutional frameworks needed to implement such adaptive approaches.
+The limitations of static policies revealed in our results suggest an urgent need for research into adaptive policy frameworks. Traditional transportation policies often change slowly and reactively, but our findings indicate that AV adoption could create rapid shifts in travel patterns once certain thresholds are crossed. Future research should explore how cities can develop policies that automatically adjust based on observed conditions - for example, dynamic pricing schemes that respond to both congestion levels and AV adoption rates. This requires not just technical solutions but also investigation of the legal and institutional frameworks needed to implement such adaptive approaches.
 
 The stark differences we observed between scenarios with different AV operating characteristics highlights the need for research into the determinants of AV space efficiency. While our model treated density as an outcome-based metric, understanding how to achieve higher density through vehicle design, operational strategies, and policy incentives is crucial. This might involve detailed studies of AV behavior in mixed traffic, optimization of fleet operations, and analysis of the trade-offs between individual vehicle performance and system-level efficiency.
 
