@@ -22,7 +22,7 @@ Full paper: [`paper/paper.md`](paper/paper.md)
   - [`data.py`](model/data.py) - Data loading and preprocessing ([documentation](paper/paper.md#6-input-data))
   - [`traffic.py`](model/traffic.py) - Traffic simulation integration using [UXsim](https://arxiv.org/abs/2309.17114)
   - [`run_model.py`](model/run_model.py) - Experiment execution scripts ([experimental setup](paper/paper.md#4-experimental-design))
-  - [`scenarios_policies.py`](model/scenarios_policies.py) - Scenarios and policies used ([appendix D](paper/paper.md#appendix-d-experimental-setup)
+  - [`scenarios_policies.py`](model/scenarios_policies.py) - Scenarios and policies used ([appendix D](paper/paper.md#appendix-d-experimental-setup))
 
 ### Data
 - `data/` - Input data files ([full documentation](paper/paper.md#6-input-data))
