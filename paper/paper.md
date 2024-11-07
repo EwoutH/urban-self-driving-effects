@@ -261,6 +261,52 @@ The delay factor (actual travel time divided by free-flow travel time) shows tha
 
 These metrics demonstrate that while the transportation network functions efficiently during most hours, certain areas - particularly the inner city of those limited by natural barriers - experience significant congestion and delays during peak periods. It's great to observe that the model captures complex traffic behavior relatively well, like a short morning peak, extensive evening peak, and specific congestion points.
 
+## 3.6 Validation
+The validation of complex agent-based models requires evaluating multiple aspects of model behavior against empirical data and theoretical expectations. Rather than seeking absolute accuracy, validation focuses on determining whether the model can meaningfully address its intended research questions. This section examines the model's validity through four key aspects: mode choice distribution, travel patterns, network behavior, and systematic validation procedures, building on the behavior observed in sections 3.3 and 3.5. For each aspect, we compare model behavior against available empirical data, identify limitations, and assess implications for the model's ability to examine AV adoption effects. The validation results suggest the model captures key urban mobility dynamics adequately for exploring system-level changes, while specific numerical predictions should be interpreted with appropriate caution.
+
+### 3.6.1 Mode choice validation
+The model's default behavior was validated against ODiN 2023 data for the Rotterdam area. In the inner city (Noord, Kralingen, Rotterdam Centrum, Feyenoord, Delfshaven), the model produces mode shares of 11.3% car, 82.3% bicycle, and 6.5% transit, compared to empirical values of 13.4%, 69.9%, and 16.7% respectively. For the broader study area, the model shows 25.4% car, 65.1% bicycle, and 9.5% transit usage, versus empirical values of 37.7%, 49.0%, and 13.3%.
+
+While the model shows some deviation from empirical data, particularly overestimating bicycle usage and underestimating car use, these differences are consistent with the model's focus on short to medium-term effects. The model doesn't capture certain car-favoring factors like weather, cargo requirements, and multi-stop trips, which likely explains the lower car mode share. However, the relative order of mode preferences and general patterns align with observed behavior, suggesting sufficient validity for examining modal shifts.
+
+### 3.6.2 Travel pattern validation
+Temporal travel patterns show strong alignment with empirical data, particularly in capturing peak hour characteristics. The model reproduces the sharp morning peak (8:00-9:00) and broader evening peak (16:00-18:00) observed in ODiN data, both in terms of timing and relative magnitude. This validation is particularly important as these temporal patterns drive the emergence of congestion and system-level effects.
+
+Trip distance distributions follow expected log-normal patterns, with bicycles dominating shorter trips (1-5 km) and motorized modes becoming more prevalent at longer distances, consistent with ODiN data. The distance distributions for each mode also align with the V-MRDH model's origin-destination patterns, providing additional confidence in the spatial distribution of trips.
+
+The journey duration distributions show plausible relationships between modes, with bicycles being most competitive for trips under 20 minutes and transit becoming more prevalent for longer journeys. While direct validation of travel times against measured data was not possible, the relative differences between modes and the overall patterns align with expectations from urban transportation theory and observed behavior in similar cities.
+
+### 3.6.3 Network behavior validation
+The traffic simulation component demonstrates plausible behavior in several key aspects. Known congestion points, such as the Algera bridge bottleneck in Krimpen aan den IJssel and the Terbregseplein interchange, show appropriate congestion patterns. The model captures expected phenomena like longer delays during evening peaks compared to morning peaks, and higher congestion in dense urban areas versus peripheral regions.
+
+Network speeds in the default scenario average 25 km/h, decreasing to 10-15 km/h in congested inner-city areas during peak hours, which aligns with typical urban traffic patterns. While precise validation against measured traffic data was not possible due to data availability constraints (commercial entities not willing to share data), these patterns are consistent with general urban traffic behavior and sufficient for examining relative changes under different scenarios.
+
+### 3.6.4 Systematic validation approach
+Throughout model development, validation was integrated into the development process through:
+1. Continuous integration testing to verify model consistency
+2. Git version control with detailed validation notes in commit messages
+3. Systematic comparison of key metrics against empirical data
+4. Step-by-step validation of new features before integration
+5. Regular peer and supervisor review of model behavior
+
+### 3.6.5 Validation limitations
+Several validation limitations should be noted. First, the model lacks detailed validation of intersection-level traffic dynamics due to computational constraints and data availability. Second, the validity of AV-related behavioral assumptions cannot be directly verified due to the emerging nature of the technology. Third, the model's prediction of induced demand effects relies on theoretical relationships rather than empirical validation.
+
+Despite these limitations, the model demonstrates sufficient validity in its core components - mode choice, travel patterns, and network behavior - to meaningfully examine the research questions about system-level effects of AV adoption. The validation results suggest the model can provide valuable insights about relative changes and general patterns, while specific numerical predictions should be interpreted with appropriate caution.
+
+### 3.6.6 Suitability for research questions
+The model's components can be evaluated against the requirements for answering each research question:
+
+For subquestion A (how to represent tradeoffs and effects), the model combines validated mode choice behavior with traffic simulation at appropriate scales. While not perfect, the validated mode shares and travel patterns indicate the model captures important aspects of urban mobility decisions, and the network behavior shows plausible congestion and feedback effects. The modular design enables exploration of different effects by modifying individual components.
+
+For subquestion B (AV adoption under uncertainties), the model provides a validated representation of current travel behavior as a baseline, with explicit parameterization of key AV characteristics (cost, value of time, density). While AV-specific behavior cannot be validated due to its future nature, the model's representation of existing mode choice mechanisms offers a reasonable foundation for exploring potential responses to this new option. The heterogeneous value of time implementation helps capture varying adoption patterns, though actual adoption behavior may differ.
+
+For subquestion C (system effects), the model's network behavior shows key expected characteristics. The reproduction of known congestion patterns, peak hour dynamics, and area-specific traffic flows suggests the model can represent relevant system-level effects. The geographic (125 postal codes) and temporal (5-minute) resolution allows examination of both local and system-wide impacts, though some local effects may be oversimplified.
+
+For subquestion D (policy effectiveness), the model combines plausible travel behavior with network responses, enabling evaluation of policy interventions. The representation of different urban areas and travel patterns allows assessment of spatially and temporally targeted policies. However, the model necessarily simplifies policy implementation details and may not capture all behavioral responses to interventions.
+
+In summary, while the model has clear limitations, its components align with key aspects needed to explore the research questions. Like in most simulation studies exploring human behavior and uncertainties, focus on relative changes rather than absolute predictions should be the focus, making the model a useful, if imperfect, tool for examining potential impacts of autonomous vehicles on urban transportation systems.
+
 # 4. Experimental design
 Two main experiments were conducted to explore the potential impacts of autonomous vehicles and evaluate policy interventions: a scenario analysis investigating uncertainties in AV adoption and its effects, to answer subquestion B (looking at mode shares) and C (looking at high-level KPIs), and a policy analysis testing interventions across selected scenarios, to answer subquestion D.
 
