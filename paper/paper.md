@@ -392,13 +392,18 @@ This created 72 scenario-policy combinations (8×9), allowing examination of pol
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
 # 5. Results
-The model was run across 144 scenarios exploring four key uncertainties in AV adoption: cost, perceived value of time, space efficiency (density), and induced demand. Additionally, 72 policy combinations were tested to evaluate potential interventions. This section presents the results in three parts: AV adoption patterns and modal shifts (5.1), system-level effects including congestion and vehicle kilometers traveled (5.2), and the effectiveness of various policy interventions (5.3). These analyses directly address our research questions about how AVs will be adopted (subquestion B), which urban problems are amplified or reduced (subquestion C), and which policies can effectively manage their introduction (subquestion D).
+This section presents the findings from two major experiments: a full-factorial analysis exploring 144 scenarios of AV adoption, and a focused policy analysis testing 72 combinations of scenarios and interventions. The results are organized in three parts that directly address our research subquestions.
 
+First, Section 5.1 examines AV adoption patterns and modal shifts across different scenarios, answering subquestion B about how self-driving cars will be adopted under different uncertainties. Section 5.2 analyzes the system-level effects including congestion, network performance, and total vehicle kilometers traveled, addressing subquestion C about which urban problems are amplified or reduced by AVs. Both are based on the scenario analysis as described in section 4.1, but looking at different outcome metrics.
+
+Finally, Section 5.3 evaluates the effectiveness of various policy interventions across different scenarios, answering subquestion D about which policies can effectively mitigate negative impacts while preserving benefits. This section is based on the policy analysis as described in section 4.2.
+
+### Interpreting the results
 Many of the results will be displayed in dimensionally-stacked heatmaps. In each, one metric is displayed for all 144 scenarios. There are two x-axes and two y-axes, one for each of the 4 uncertainties from which the scenarios are derived:
 - Inner (upper) x-axis: The AV Value of Time (VOT) factor, ranging from 1.0 to 0.25 (lower means less valuable).
 - Outer (lower) x-axis: The AV Cost Factor, ranging from 1.0 to 0.125 (lower means cheaper).
 - Inner (left) y-axis: Induced Demand factor, ranging from 1.0 to 1.5 (higher means more demand).
-- Outer (right) y-axis: AV Density factor, ranging from 1.5 to 0.333 (lower means less space taken up).
+- Outer (right) y-axis: AV Density factor, ranging from 1.5 to 0.333 (lower means less space per person kilometer taken up).
 
 Each value (tile) in the heatmap represents the metric value for the corresponding scenario. The structure and order is identical for all heatmaps, allowing for visual comparison of different metrics across the scenarios. Generally, outcomes preferred by (most) stakeholders are displayed in green, while undesired outcomes are displayed in red, with the reference scenario (no AVs) being the yellow midpoint. If the preferred direction of a metric is not clear, brown indicates low values and blue indicates high values, with white being the reference scenario.
 
