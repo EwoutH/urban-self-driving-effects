@@ -330,7 +330,9 @@ _Fig 4.1: Conceptual model including scenario uncertainties and policy levers_
 Figure 4.1 shows how the scenario and policy variables will influence the system. The scenario variables will influence the number of AV cars generated, the frequency with which travelers plan trips, the AV costs and the travelers value of time when using an AV. The policy variables will influence the AV price and the maximum allowed speeds.
 
 ## 4.1 Scenario analysis
-To answer subquestions B and C, a wide variety of uncertainties were explored. The scenario analysis employed a full-factorial design exploring four key uncertainties:
+To answer subquestions B and C, a systematic exploration of key uncertainties was needed. A full-factorial design was chosen over alternatives like Monte Carlo or Latin Hypercube sampling for several reasons. First, factorial designs enable systematic exploration of interactions between variables while maintaining interpretability - each scenario represents a clear combination of parameter values that can be directly compared to others. Second, the logarithmic spacing of certain variables (particularly costs) allows exploration of non-linear effects that might be missed with uniform sampling. Third, the relatively small number of levels per variable (3-4) made a full factorial computationally feasible while still capturing the variations of interest. Future research may expand on this by either exploring interesting areas in this space in higher resolution (to find thresholds) or outside it (to explore extreme value scenarios).
+
+The scenario analysis explored four key uncertainties:
 
 1. AV Cost Factor (4 levels: 1.0, 0.5, 0.25, 0.125)
    - Relative cost of using AVs compared to current Waymo prices
@@ -340,6 +342,14 @@ To answer subquestions B and C, a wide variety of uncertainties were explored. T
    - Space efficiency of AVs relative to conventional vehicles
 4. Induced Demand (3 levels: 1.0, 1.25, 1.5)
    - Potential increase in overall travel demand
+
+The AV cost factor spans from current prices to one-eighth of current costs, with values decreasing by a factor of two at each step. This logarithmic spacing reflects the expectation that cost differences matter more at lower price points, where they might trigger significant changes in adoption patterns. The current prices are based on Waymo's pricing in Los Angeles as of September 2024, providing a real-world baseline for comparison.
+
+The value of time factor explores how users might perceive time spent in AVs differently from conventional vehicles. A factor of 1.0 represents equivalent time value to current cars, while lower values (0.5 and 0.25) represent scenarios where time in AVs is perceived as less costly, due to the ability to work, rest, or engage in other activities.
+
+AV density represents how efficiently autonomous vehicles might utilize road space, measured as the relative space required per person transported compared to current vehicles. Values above 1.0 indicate less efficient operation (due to increased safety margins or lower occupancy), while values below 1.0 represent improved efficiency. This efficiency could be achieved through various mechanisms: higher occupancy from better ride-matching, reduced following distances through platooning or faster reaction times, smaller vehicles optimized for urban trips, or combinations thereof. For instance, a density factor of 0.5 might represent either doubled average occupancy, halved following distances, or a mix of improvements. The range spans from 1.5 (cautious operation, increased empty trips) to 0.333 (high road efficiency, multi-person occupancy and/or few empty trips). By treating density as an outcome-based metric rather than specifying implementation details, the model remains relevant regardless of which solutions are used and will emerge.
+
+Induced demand factors were chosen based on historical precedent from major transportation improvements, ranging from no increase (1.0) to a 50% increase (1.5) in trip generation. This range captures both conservative and aggressive estimates of how improved mobility might stimulate additional travel, and simultaneously how demand might grow in general due to external factors.
 
 This design resulted in 144 unique combinations (4×3×4×3), each representing a possible future scenario. Each scenario was simulated for a full day (19 hours) with consistent base parameters including road network configuration, population distribution, and external traffic patterns.
 
@@ -357,6 +367,8 @@ To answer subquestion D, eight representative scenarios were selected from the s
 | Shared race to bottom | 0.125 | 0.5 | 1.25 |
 | Dense progress | 0.25 | 0.333 | 1.125 |
 
+These scenarios were chosen to span the range of plausible futures identified in the scenario analysis, with particular attention to cases that showed interesting or concerning system-level effects. The selection includes both optimistic scenarios where technological progress leads to efficient, affordable AVs, and more problematic scenarios where cheap but inefficient AVs could create new urban challenges.
+
 These scenarios were tested against nine policy combinations:
 
 | Policy | Area | Speed Reduction | Tariff (€) | Timing |
@@ -371,7 +383,11 @@ These scenarios were tested against nine policy combinations:
 | City day tariff | City | None | 5 | Day |
 | All out | City | -20 km/h | 10 | Day |
 
-This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled.
+The policy combinations were designed to test both the individual and combined effects of two main intervention types: speed reductions and congestion pricing. Speed reductions of 20 km/h represent a significant but feasible change in urban speed limits, in line what cities as Amsterdam are doing by lowering speed limits from 50 km/h to 30 km/h. The pricing levels (€5 and €10) were chosen to be substantial enough to influence behavior while remaining within ranges seen in existing congestion pricing schemes, in line with congestion pricing in cities as New York, which \$15 in peak hours and \$3.75 off-peak.
+
+Geographic targeting was included through two spatial scales: the "autoluw" area representing Rotterdam's central low-traffic zone (affecting about 13% of the population), and city-wide implementation covering all 125 postal code areas. Temporal variations were explored through peak-hour (7:00-9:00 and 16:00-18:00) versus all-day (6:00-19:00) implementation, the current definitions used in The Netherlands for peak hours and daytime.
+
+This created 72 scenario-policy combinations (8×9), allowing examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled, enabling analysis of both intended and unintended policy effects.
 
 Both experiments used the same base model configuration, differing only in the manipulated variables. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
