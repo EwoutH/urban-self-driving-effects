@@ -398,6 +398,14 @@ First, Section 5.1 examines AV adoption patterns and modal shifts across differe
 
 Finally, Section 5.3 evaluates the effectiveness of various policy interventions across different scenarios, answering subquestion D about which policies can effectively mitigate negative impacts while preserving benefits. This section is based on the policy analysis as described in section 4.2.
 
+| Section                        | Subquestion | Experiment        | Metrics                                                                           |
+|--------------------------------|-------------|-------------------|-----------------------------------------------------------------------------------|
+| 5.1: AV adoption & modal shift | B           | Scenario analysis | AV mode share, mode-distance share, modal shift patterns                          |
+| 5.2: System effects            | C           | Scenario analysis | Network performance, congestion levels, vehicle kilometers traveled, travel times |
+| 5.3: Policy effectiveness      | D           | Policy analysis   | Mode shares, network performance, system-wide metrics                             |
+
+_Tables 5.1: Overview of which section answers which subquestion by which experiment examining which metrics_
+
 ### Interpreting the results
 Many of the results will be displayed in dimensionally-stacked heatmaps. In each, one metric is displayed for all 144 scenarios. There are two x-axes and two y-axes, one for each of the 4 uncertainties from which the scenarios are derived:
 - Inner (upper) x-axis: The AV Value of Time (VOT) factor, ranging from 1.0 to 0.25 (lower means less valuable).
