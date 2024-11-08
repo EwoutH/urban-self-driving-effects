@@ -367,6 +367,8 @@ To answer subquestion D, eight representative scenarios were selected from the s
 | Shared race to bottom | 0.125 | 0.5 | 1.25 |
 | Dense progress | 0.25 | 0.333 | 1.125 |
 
+_Table 4.1: Overview of selected scenarios for policy analysis_
+
 These scenarios were chosen to span the range of plausible futures identified in the scenario analysis, with particular attention to cases that showed interesting or concerning system-level effects. The selection includes both optimistic scenarios where technological progress leads to efficient, affordable AVs, and more problematic scenarios where cheap but inefficient AVs could create new urban challenges.
 
 These scenarios were tested against nine policy combinations:
@@ -382,6 +384,8 @@ These scenarios were tested against nine policy combinations:
 | City peak tariff | City | None | 5 | Peak |
 | City day tariff | City | None | 5 | Day |
 | All out | City | -20 km/h | 10 | Day |
+
+_Table 4.2: Overview of policy combinations for policy analysis_
 
 The policy combinations were designed to test both the individual and combined effects of two main intervention types: speed reductions and congestion pricing. Speed reductions of 20 km/h represent a significant but feasible change in urban speed limits, in line what cities as Amsterdam are doing by lowering speed limits from 50 km/h to 30 km/h. The pricing levels (€5 and €10) were chosen to be substantial enough to influence behavior while remaining within ranges seen in existing congestion pricing schemes, in line with congestion pricing in cities as New York, which \$15 in peak hours and \$3.75 off-peak.
 
@@ -404,7 +408,7 @@ Finally, Section 5.3 evaluates the effectiveness of various policy interventions
 | 5.2: System effects            | C           | Scenario analysis | Network performance, congestion levels, vehicle kilometers traveled, travel times |
 | 5.3: Policy effectiveness      | D           | Policy analysis   | Mode shares, network performance, system-wide metrics                             |
 
-_Tables 5.1: Overview of which section answers which subquestion by which experiment examining which metrics_
+_Table 5.1: Overview of which section answers which subquestion by which experiment examining which metrics_
 
 ### Interpreting the results
 Many of the results will be displayed in dimensionally-stacked heatmaps. In each, one metric is displayed for all 144 scenarios. There are two x-axes and two y-axes, one for each of the 4 uncertainties from which the scenarios are derived:
