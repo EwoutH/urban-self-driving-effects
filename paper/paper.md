@@ -45,12 +45,12 @@ This study aims to fill this gap by developing an agent-based model that combine
 
 This approach allows us to address our primary research question:
 
-*Which undesired urban problems will the introduction of self-driving cars cause, considering the modal shift and induced demand, and what policies can effectively mitigate undesired impacts?*
+*Which undesired urban problems might the introduction of self-driving cars cause, considering the modal shift and induced demand, and what policies can effectively mitigate undesired impacts?*
 
 To answer this overarching question, we explore several key sub-questions:
 
 - **A.** How can a traffic and mode choice model represent the system that shows the tradeoffs and potentially undesired effects of self-driving cars?
-- **B.** How will self-driving cars be adopted under different future uncertainties?
+- **B.** How could self-driving cars be adopted under different future uncertainties?
 - **C.** Which potential undesired system effects are amplified and which are reduced by the introduction of self-driving cars?
 - **D.** Which potential policies are most effective in minimizing which undesired system effects while maintaining benefits under different uncertainties?
 
