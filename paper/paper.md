@@ -1,6 +1,6 @@
 <div align="center">
-<h1>Autonomous vehicles don't replace cars: they replace buses and bikes</h1>
-<h3>How autonomous vehicle density determines urban mobility patterns: A mesoscopic simulation study revealing unexpected modal shifts and policy implications in Rotterdam</h3>
+<h1>When do autonomous vehicles solve or exacerbate different urban mobility problems?</h1>
+<h3>A simulation study exploring modal shifts and system-level impacts in dense urban environments</h3>
 </div>
 
 # Abstract
