@@ -1,6 +1,8 @@
 This repository contains the code and data for a thesis project examining the systemic effects of autonomous vehicles on urban mobility patterns, with a case study focusing on Rotterdam.
 
-Full paper: [`paper/paper.md`](paper/paper.md)
+**Full paper**
+- Markdown: [`paper/paper.md`](paper/paper.md)
+- Official PDF: [repository.tudelft.nl](https://repository.tudelft.nl/record/uuid:eacc600e-4a9a-44c8-885b-7cb7d69fb939)
 
 ## Abstract
 
