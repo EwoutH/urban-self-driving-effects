@@ -17,46 +17,35 @@
 Keywords: autonomous vehicles, urban mobility, agent-based modeling, traffic simulation, mode choice, transportation policy, modal shift, induced demand
 
 # 1. Introduction
-The introduction of the automobile fundamentally transformed human transportation and urban development in the 20th century. While providing unprecedented mobility and economic opportunities, the widespread adoption of cars has also led to significant challenges in urban environments. These include traffic congestion, parking scarcity, air and noise pollution, and safety concerns for pedestrians and cyclists. As we progress into the 21st century, a new technological revolution is on the horizon: self-driving cars.
+The emergence of autonomous vehicles represents a fundamental challenge for transportation systems modeling. While previous technologies like ride-hailing services have demonstrated how new mobility options can reshape travel patterns, AVs introduce unprecedented complexity due to their potential to simultaneously affect mode choice, network capacity, and travel behavior. Recent research has highlighted the importance of understanding these interdependencies - Liu et al. (2022) demonstrated how AV fleet efficiency can significantly impact vehicle miles traveled and parking demand, while Wang et al. (2024) showed that modal shifts from AVs could fundamentally alter network equilibrium patterns. However, as Fakhrmoosavi et al. (2022) note, the uncertainty in key parameters like value of time reduction, induced travel demand, and operational efficiency creates significant challenges for predicting system-level impacts.
 
-Self-driving cars, also known as autonomous vehicles (AVs), represent a potential paradigm shift in urban transportation. Unlike the gradual evolution of traditional automobiles, AVs promise to radically alter not just how we drive, but also patterns of vehicle ownership and use. The transition from private ownership to a Mobility-as-a-Service (MaaS) model, where self-driving "robotaxis" become the dominant form of motorized road transport, could reshape our cities in profound ways.
+## 1.1 Technical challenges in modeling AV impacts
+Three key technical challenges have limited previous attempts to model AV adoption and its systemic effects. First, modal shift modeling typically relies on stated preference surveys or simplified utility functions that may not capture how AVs' unique characteristics influence mode choice decisions. Recent work by Narayanan et al. (2022) has shown that integrating dynamic user equilibrium approaches with operational models can better represent these complex choice dynamics. Second, traffic simulation models generally treat AVs as either standard vehicles or ideally efficient ones, without capturing how varying levels of operational efficiency might create distinct system dynamics. Yan et al. (2020) demonstrated that fleet performance can vary significantly based on trip densities and operational constraints, suggesting the need for more sophisticated representation of AV operations. Third, the feedback between adoption patterns and network performance creates complex nonlinear effects that are difficult to capture with traditional equilibrium-based approaches.
 
-Proponents of AVs highlight numerous potential benefits. For individual travelers, the ability to engage in other activities while in transit could significantly alter the perceived cost of travel time. From an urban planning perspective, the promise of solving pervasive parking problems is particularly appealing, as AVs could simply move on to their next passenger instead of occupying valuable urban space. Furthermore, optimized routing and platooning capabilities could increase road network efficiency and potentially improve safety. Fagnant & Kockelman (2015) suggest that AVs could reduce crashes by up to 90% through elimination of human error, while also improving fuel efficiency and reducing congestion through smoother traffic flow. Meanwhile, research from Duarte & Ratti (2018) suggests that shared autonomous vehicles could provide the same mobility with just 30% of the current vehicle fleet in cities like Singapore.
+Recent research has attempted to address these challenges individually. Wang et al. (2024) developed multimodal traffic assignment models considering heterogeneous demand patterns, but without capturing temporal dynamics. Fakhrmoosavi et al. (2022) proposed a stochastic framework for assessing network-level impacts but focused primarily on connected vehicle technologies. While these approaches have advanced our understanding of specific aspects, they have not fully integrated the multiple feedback loops between individual decisions and system performance.
 
-However, the introduction of AVs also raises important questions and potential concerns. While each individual AV might offer improvements over traditional cars in terms of efficiency and environmental impact, the aggregate effect on urban systems remains uncertain. Historical precedent suggests that improvements in transportation technology often lead to induced demand, resulting in increases in total distance traveled.
+## 1.2 Methodological Gaps
+A key limitation of existing approaches is their inability to simultaneously model individual behavior and network effects while capturing the temporal dynamics of technology adoption. Agent-based models can represent heterogeneous decision-making but traditionally struggle with network-scale traffic dynamics. Conversely, traffic simulation models excel at network analysis but typically use simplified behavioral assumptions. While some studies have attempted to combine these approaches (e.g., Narayanan et al., 2022), they have generally relied on static assignment methods that miss important temporal effects.
 
-As Lee et al. (1999) explain, it's crucial to distinguish between induced traffic and induced demand when considering transportation improvements. Induced traffic refers to short-run changes in travel patterns - movements along an existing demand curve as travelers respond to reduced travel costs. Induced demand, on the other hand, represents long-run structural changes that shift the entire demand curve, such as land use changes or economic development spurred by improved accessibility. AVs could generate both: immediate behavioral changes through lower perceived travel costs and longer-term systemic changes by enabling new travel patterns.
+Additionally, while recent work has made progress in understanding specific aspects of AV impacts - such as Liu et al.'s (2022) analysis of fleet efficiency or Yan et al.'s (2020) investigation of operational constraints - these studies have typically focused on either adoption prediction or impact assessment, without adequately capturing how these processes influence each other. Studies examining adoption patterns often assume fixed network conditions, while those modeling network impacts typically use predetermined adoption scenarios.
 
-Recent research has begun to explore these system-level impacts, but significant gaps remain in our understanding. Talebian & Mishra (2018) developed sophisticated models predicting AV adoption based on diffusion of innovations theory, incorporating social networks and peer effects. However, their work focused primarily on individual adoption decisions rather than collective urban impacts, and didn't account for the complex interactions between adoption patterns and transportation system performance. 
+## 1.3 Research contribution
+This paper addresses these methodological gaps by developing an integrated simulation framework that combines:
+1.	A behaviorally-rich agent-based model capturing heterogeneous mode choice decisions
+2.	A mesoscopic traffic simulation representing network-level dynamics
+3.	A discrete event system enabling analysis of temporal feedback effects
 
-Fagnant & Kockelman (2015) provided a comprehensive review of opportunities and barriers for AV implementation, estimating potential societal benefits of $2,000 to $4,000 per vehicle annually. However, their analysis relied heavily on expert opinion and theoretical arguments rather than simulation of actual urban systems. The dynamic effects of AV adoption on travel behavior and urban mobility patterns remained largely unexplored.
+Building on Fakhrmoosavi et al.'s (2022) approach to handling parameter uncertainty, we systematically explore how different AV characteristics might influence system outcomes. Our framework extends Narayanan et al.'s (2022) integration of transport modeling approaches while adding explicit consideration of operational efficiency thresholds identified by Yan et al. (2020).
 
-Metz (2018) specifically investigated congestion impacts, highlighting how the self-regulating nature of urban traffic means that congestion benefits might be temporary as improved mobility attracts previously suppressed trips. However, this work focused mainly on conceptual arguments rather than quantitative analysis, and didn't explore how different AV operating characteristics might influence these dynamics.
+## 1.4 Research objectives
+The study addresses four specific technical objectives:
+1.	Develop a validated model architecture integrating individual behavior and network dynamics
+2.	Identify critical thresholds in AV operating characteristics that create distinct system behaviors
+3.	Quantify how different AV characteristics influence competition with existing modes
+4.	Evaluate the effectiveness of various intervention strategies across different adoption scenarios
 
-Perhaps most concerningly, emerging evidence suggests that AVs might compete more directly with sustainable transport modes than with private cars. In their analysis of recent transit ridership declines, Graehler et al. (2019) found that the introduction of ride-hailing services was associated with a 1.7% decrease in bus ridership per year and a 1.3% decrease in heavy rail ridership. This suggests that new mobility technologies may primarily attract users away from public transit rather than reducing private car use - a pattern that could be even more pronounced with cheaper, more convenient autonomous vehicles.
-
-What's missing from current research is an integrated analysis that connects individual adoption decisions with system-level transportation impacts while accounting for the spatial and temporal dynamics of urban mobility. Previous studies have either focused on adoption patterns without detailed transportation modeling (Talebian & Mishra, 2018), analyzed potential impacts without modeling adoption mechanisms (Fagnant & Kockelman, 2015), or explored specific effects like congestion without capturing the full range of system interactions (Metz, 2018).
-
-This study aims to fill this gap by developing an agent-based model that combines detailed transportation simulation with dynamic adoption behavior. By modeling individual travel decisions, their collective impact on system performance, and the resulting feedback on future decisions, we can better understand how the introduction of AVs might reshape urban mobility patterns. Our approach is novel in three key ways:
-
-1. It integrates mode choice decisions with mesoscopic traffic simulation, allowing us to capture both immediate behavioral responses and resulting system-level effects
-2. It explicitly models competition between AVs and sustainable transport modes like cycling and public transit, addressing concerns raised by empirical studies of similar mobility innovations
-3. It explores how different AV operating characteristics (like space efficiency and perceived time value) might create distinct future scenarios, enabling more nuanced policy analysis
-
-This approach allows us to address our primary research question:
-
-*Which undesired urban problems might the introduction of self-driving cars cause, considering the modal shift and induced demand, and what policies can effectively mitigate undesired impacts?*
-
-To answer this overarching question, we explore several key sub-questions:
-
-- **A.** How can a traffic and mode choice model represent the system that shows the tradeoffs and potentially undesired effects of self-driving cars?
-- **B.** How could self-driving cars be adopted under different future uncertainties?
-- **C.** Which potential undesired system effects are amplified and which are reduced by the introduction of self-driving cars?
-- **D.** Which potential policies are most effective in minimizing which undesired system effects while maintaining benefits under different uncertainties?
-
-By addressing these questions, this research aims to provide insights for urban planners, policymakers, and transportation engineers as they prepare for the advent of self-driving cars. Understanding the potential system-wide effects of AVs is crucial for developing proactive strategies to maximize their benefits while mitigating unintended negative consequences in our urban environments.
-
-The remainder of this thesis is structured as follows: Section 2 describes the methodological approach, including the rationale for combining agent-based modeling with mesoscopic traffic simulation. Section 3 presents the model design and validation, demonstrating how the system can be represented to explore AV adoption effects. Section 4 details the experimental design used to investigate different scenarios and policy interventions. Section 5 presents the results of these experiments, examining AV adoption patterns, system-level effects, and policy effectiveness. Finally, Section 6 discusses the implications of these findings for urban transportation planning and policy, while Section 7 concludes with key insights and recommendations for future research. Supporting material is provided in five appendices: Appendix A provides a complete model description following the ODD protocol, Appendix B lists key modeling assumptions, Appendix C discusses model limitations, Appendix D details the experimental setup, and Appendix E shows some additional results not included in the main text.
+## 1.5 Paper organization
+The remainder of this paper is organized as follows: Section 2 describes the methodological approach, including the rationale for combining agent-based modeling with mesoscopic traffic simulation. Section 3 presents the model design and validation. Section 4 details the experimental design used to investigate different scenarios and interventions. Section 5 presents results examining adoption patterns, network effects, and intervention effectiveness. Section 6 discusses implications for transportation system modeling and planning, while Section 7 concludes with key insights and future research directions.
 
 # 2. Methods
 This study employs agent-based modeling (ABM) combined with mesoscopic traffic simulation to investigate the system-level effects of autonomous vehicle adoption in urban environments. Agent-based modeling was chosen over alternatives like pure equation-based approaches or aggregated flow models because it allows explicit representation of heterogeneous decision-making and captures emergent system behavior from individual choices. This is particularly important for studying AV adoption, where individual-level factors like value of time preferences and car ownership interact with system-level effects like congestion to create complex feedback loops. Alternative methods like system dynamics could capture some feedback mechanisms but would miss the spatial granularity and heterogeneity essential for understanding urban mobility patterns.
@@ -731,21 +720,31 @@ Duarte, F., & Ratti, C. (2018). The impact of autonomous vehicles on cities: A r
 
 Fagnant, D. J., & Kockelman, K. (2015). Preparing a nation for autonomous vehicles: Opportunities, barriers and policy recommendations. Transportation Research Part A: Policy and Practice, 77, 167-181. https://doi.org/10.1016/j.tra.2015.04.003
 
+Fakhrmoosavi, F., Kamjoo, E., Kavianipour, M., Zockaie, A., Talebpour, A., & Mittal, A. (2022). A stochastic framework using Bayesian optimization algorithm to assess the network-level societal impacts of connected and autonomous vehicles. Transportation Research Part C: Emerging Technologies, 139, 103663. https://doi.org/10.1016/j.trc.2022.103663
+
 Gemeente Rotterdam. (2024). Verkeerscirculatieplan [Traffic circulation plan]. https://www.rotterdam.nl/verkeerscirculatieplan
 
 Google Developers. (2024). Distance Matrix API. https://developers.google.com/maps/documentation/distance-matrix/overview
 
 Graehler Jr, M., Mucci, R. A., & Erhardt, G. D. (2019). *Understanding the recent transit ridership decline in major US cities: Service cuts or emerging modes?* Paper presented at the Transportation Research Board 98th Annual Meeting, Washington, DC, United States, January 13-17. Transportation Research Board. https://trid.trb.org/View/1572517
 
+Graehler Jr, M., Mucci, R. A., & Erhardt, G. D. (2019). Understanding the recent transit ridership decline in major US cities: Service cuts or emerging modes? Paper presented at the Transportation Research Board 98th Annual Meeting, Washington, DC. https://trid.trb.org/View/1572517
+
 Kennisinstituut voor Mobiliteitsbeleid. (2023). Nieuwe waarderingskengetallen voor reistijd, betrouwbaarheid en comfort [New valuation indicators for travel time, reliability and comfort]. https://www.kimnet.nl/publicaties/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort
 
+Law, A. M. (2014). Simulation modeling and analysis (5th ed.). McGraw-Hill.
+
 Lee, D. B., Jr., & Klein, L. A. (1999). Induced traffic and induced demand. Transportation Research Record, 1659, 9-17. https://doi.org/10.3141/1659-09
+
+Liu, Z., Li, R., & Dai, J. (2022). Effects and feasibility of shared mobility with shared autonomous vehicles: An investigation based on data-driven modeling approach. Transportation Research Part A: Policy and Practice, 156, 206-226. https://doi.org/10.1016/j.tra.2022.01.001
 
 McNally, M. G. (2007). The four step model. https://escholarship.org/uc/item/6091s9tg
 
 Metropolitaan Verkeer- en Vervoermodel MRDH. (2024). MRDH Verkeersmodel (V-MRDH). https://www.mrdh.nl/verkeersmodel
 
 Metz, D. (2018). Developing policy for urban autonomous vehicles: Impact on congestion. Urban Science, 2(2), 33. https://doi.org/10.3390/urbansci2020033
+
+Narayanan, S., Chaniotakis, E., & Antoniou, C. (2022). Modelling reservation-based shared autonomous vehicle services: A dynamic user equilibrium approach. Transportation Research Part C: Emerging Technologies, 140, 103651. https://doi.org/10.1016/j.trc.2022.103651
 
 Nederlands Instituut voor Budgetvoorlichting. (2024). Autokosten [Car costs]. https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
 
@@ -761,9 +760,15 @@ Small, K. A. (2012). Valuation of travel time. Economics of transportation, 1(1-
 
 Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part A: Policy and Practice, 116, 92-104. https://doi.org/10.1016/j.tra.2018.06.007
 
+Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part C: Emerging Technologies, 95, 363-380. https://doi.org/10.1016/j.trc.2018.06.005
+
 Trein Onderweg. (2024). Wat kost de trein [Train costs]. https://www.treinonderweg.nl/wat-kost-de-trein.html
 
+Wang, T., Jian, S., Zhou, C., Jia, B., & Long, J. (2024). Multimodal traffic assignment considering heterogeneous demand and modular operation of shared autonomous vehicles. Transportation Research Part C: Emerging Technologies, 169, 104881. https://doi.org/10.1016/j.trc.2024.104881
+
 Wardrop, J. G. (1952). Road paper. some theoretical aspects of road traffic research. Proceedings of the institution of civil engineers, 1(3), 325-362.
+
+Yan, H., Kockelman, K. M., & Gurumurthy, K. M. (2020). Shared autonomous vehicle fleet performance: Impacts of trip densities and parking limitations. Transportation Research Part D: Transport and Environment, 89, 102577. https://doi.org/10.1016/j.trd.2020.102577
 
 # Appendices
 ## Appendix A: Model description
