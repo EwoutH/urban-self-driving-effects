@@ -48,94 +48,157 @@ The study addresses four specific technical objectives:
 The remainder of this paper is organized as follows: Section 2 describes the methodological approach, including the rationale for combining agent-based modeling with mesoscopic traffic simulation. Section 3 presents the model design and validation. Section 4 details the experimental design used to investigate different scenarios and interventions. Section 5 presents results examining adoption patterns, network effects, and intervention effectiveness. Section 6 discusses implications for transportation system modeling and planning, while Section 7 concludes with key insights and future research directions.
 
 # 2. Methods
-This study employs agent-based modeling (ABM) combined with mesoscopic traffic simulation to investigate the system-level effects of autonomous vehicle adoption in urban environments. We developed an integrated simulation framework combining agent-based modeling for individual travel decisions with mesoscopic traffic simulation for network dynamics, enabling analysis of feedback loops between adoption patterns and system performance. This hybrid approach was chosen over alternatives like pure equation-based approaches or aggregated flow models because it allows explicit representation of heterogeneous decision-making while capturing emergent system behavior from individual choices at the scale required for city-wide analysis.
+This study employs agent-based modeling (ABM) combined with mesoscopic traffic simulation to investigate the system-level effects of autonomous vehicle adoption in urban environments. We developed an integrated simulation framework combining agent-based modeling for individual travel decisions with mesoscopic traffic simulation for network dynamics, enabling analysis of feedback loops between adoption patterns and system performance. This hybrid approach was chosen over alternatives like pure equation-based approaches or aggregated flow models because it allows explicit representation of heterogeneous decision-making while capturing emergent system behavior from individual choices at the scale required for city-wide analysis. Alternative methods like system dynamics could capture some feedback mechanisms but would miss the spatial granularity and heterogeneity essential for understanding urban mobility patterns.
 
 ## 2.1 Modeling framework
-The modeling approach consists of three interconnected layers that address different aspects of the research questions. The first layer contains dynamic processes - the daily movements of travelers choosing transport modes and navigating through traffic, with continuous feedback between individual decisions and network conditions. The second layer includes experimental variables representing key uncertainties about autonomous vehicles (cost, perceived time value, space efficiency, and induced demand) and potential policy interventions, which remain constant during each simulation but are systematically varied between simulations. The third layer provides validated baseline data including population distribution, road networks, and travel patterns, which remains constant across all scenarios to ensure meaningful comparisons.
+The modeling approach consists of three interconnected layers that address different aspects of the research questions. The first layer contains dynamic processes - the daily movements of travelers choosing transport modes and navigating through traffic, with continuous feedback between individual decisions and network conditions. The second layer includes experimental variables representing key uncertainties about autonomous vehicles (cost, perceived time value, space efficiency, and induced demand) and potential policy interventions, which remain constant during each simulation but are systematically varied between simulations to explore different future scenarios. The third layer provides validated baseline data including population distribution, road networks, and travel patterns, which remains constant across all scenarios to ensure meaningful comparisons between different policy and technology scenarios.
 
 ![Conceptual-model-v2-no-exp.svg](img%2FConceptual-model-v2-no-exp.svg)
 _Fig 3.2: Conceptual model displaying the submodels, variables and their interactions_
 
-The model builds upon the traditional four-step transportation demand model (McNally, 2007) but implements it within an agent-based, discrete-event framework. Trip generation and distribution are derived from empirical data, while mode choice and route assignment are modeled dynamically through agent behavior and traffic simulation. This approach enables investigation of how travelers might respond to new mobility options while maintaining grounding in validated travel patterns.
+The model builds upon the traditional four-step transportation demand model (McNally, 2007) but implements it within an agent-based, discrete-event framework. The first two steps - trip generation and trip distribution - are derived from empirical data to ground the model in validated travel patterns. Trip generation rates come from the Dutch National Travel Survey (ODiN 2023), while trip distribution uses origin-destination matrices from the V-MRDH transport model. The latter two steps - mode choice and route assignment - are modeled dynamically through agent behavior and traffic simulation, enabling investigation of how travelers might respond to new mobility options while maintaining computational tractability.
 
-For mode choice, we employed a rational utility-maximization approach based on perceived costs rather than more complex choice models due to the lack of stated preference data for AVs and our focus on system-level effects rather than precise individual predictions. The mesoscopic traffic simulation approach was selected as a middle ground between microscopic and macroscopic models, providing sufficient detail to capture congestion effects and travel time variations while remaining computationally tractable for large-scale scenario analysis.
+For mode choice, we employed a rational utility-maximization approach based on perceived costs (including both monetary costs and time weighted by individual value of time) rather than more complex choice models. This choice was driven by three key considerations: the lack of stated preference data for AVs made calibrating more complex choice models speculative, the research focus on system-level effects meant that capturing broad behavioral patterns was more important than precise individual choices, and the value of time framework provides a clear mechanism for exploring how AVs might change travel behavior through reduced perceived time costs. While this approach simplifies some aspects of real-world decision making, it captures the essential trade-offs between time, cost, and comfort that drive mode choice.
+
+The mesoscopic traffic simulation approach was selected as a middle ground between microscopic and macroscopic models. While microscopic simulation could provide more detailed vehicle interactions, it would be computationally prohibitive at the city scale needed for this research. Conversely, macroscopic models would miss important dynamics like intersection delays and route choice that affect system performance. The mesoscopic approach provides sufficient detail to capture congestion effects and travel time variations while remaining computationally tractable for the large number of scenarios explored in this study.
 
 ## 2.2 Study area and data
-Rotterdam, Netherlands was selected as representative of medium-sized European cities with diverse transport options and current mobility challenges. The study area encompasses approximately one million residents across 125 four-digit postal code areas, providing sufficient granularity to capture heterogeneity in population densities, car availability, and travel patterns while creating 15,500 possible origin-destination pairs. Simulations run from 05:00 to 24:00 with 5-minute time steps to capture both peak and off-peak travel patterns.
+Rotterdam, Netherlands was selected as representative of medium-sized European cities with diverse transport options and current mobility challenges. The study area encompasses approximately one million residents across 125 four-digit postal code (PC4) areas, which roughly correspond to neighborhoods. This resolution provides sufficient granularity to capture heterogeneity in population densities, car availability, and travel patterns while creating 15,500 possible origin-destination pairs for trips. These postal code areas are nested within 21 larger traffic analysis zones from the V-MRDH transport model, allowing for integration with regional travel demand data and validation against existing mobility patterns.
+
+Rotterdam was chosen for several specific reasons beyond representativeness. Its size makes it large enough to exhibit complex urban mobility patterns while remaining computationally manageable. It currently faces typical urban transportation challenges including congestion, parking scarcity, and competing demands for limited road space. The city offers a diverse transportation ecosystem with well-developed alternatives to car travel, including extensive public transit (buses, trams, and metro) and significant cycling infrastructure, making it ideal for studying modal shifts. Additionally, it has relatively high car usage for a major Dutch city, enabling potential modal shifts from all modes.
 
 ![rotterdam_mrdh65_pc4_areas.svg](img%2Frotterdam_mrdh65_pc4_areas.svg)
 _Fig 3.1: The main study area, divided into 21 MRDH regions and 125 postal code areas_
 
-The road network, derived from OpenStreetMap, comprises 1,575 nodes and 3,328 edges including all roads from tertiary level upward. This network structure balances detail and computational efficiency while including planned infrastructure improvements to ensure relevance for near-future scenarios.
+Simulations run from 05:00 to 24:00 with 5-minute time steps to capture both peak and off-peak travel patterns, covering all significant periods of travel activity. The excluded overnight period accounts for less than 1% of daily trips according to ODiN data. The model uses discrete event simulation to activate agents with high temporal precision, with individual agents initiating trips at any point in continuous time based on ODiN-derived hourly probabilities distributed uniformly within each hour.
+
+The road network, derived from OpenStreetMap (September 2024), comprises 1,575 nodes and 3,328 edges including all roads from tertiary level upward. This network structure balances detail and computational efficiency - major and minor arterials are included to accurately model traffic flow, while local streets are omitted as their impact on system-level dynamics is minimal. The network includes planned infrastructure improvements like the new A16 motorway and Blankenburg tunnel to ensure relevance for near-future scenarios.
 
 ![merged_network.svg](img%2Fmerged_network.svg)
 _Fig 3.3: The road network used in the traffic simulation_
 
-Key data sources include population and vehicle ownership statistics from CBS (2023), origin-destination matrices from the V-MRDH transport model for spatial trip distribution, temporal trip patterns from the Dutch National Travel Survey (ODiN 2023), and travel times for non-car modes from Google Maps API. Value of time parameters were derived from KiM (2023): €10.42/hour for cars, €10.39/hour for bicycles, €7.12/hour for public transit, with AV values scaled using adjustable factors explored in scenarios.
+### Data sources and processing
+Multiple data sources were integrated to enable realistic simulation of both individual travel decisions and emergent system-level effects. Population distribution and vehicle ownership data from CBS (2023) were used at the PC4 level, with car ownership varying significantly by area (19-65%, averaging 31.5%). The simulation represents approximately one million residents with each agent representing a platoon of 10 actual travelers for computational efficiency.
 
-Travel costs were set at €0.268/km for cars based on variable costs, distance-based pricing for public transit (€0.169/km base rate), zero marginal cost for bicycles, and AV pricing based on Waymo's September 2024 rates (€3.79 base fare plus €1.41/km and €0.40/min). Individual heterogeneity was introduced through agent-specific value of time factors drawn from a lognormal distribution (mean 1.0, standard deviation 0.5, capped at 4.0).
+Origin-destination matrices from the V-MRDH transport model provide spatial trip distribution for different time periods (morning peak, evening peak, and off-peak). These matrices were processed to create probability distributions for trip destinations given each origin based on all transportation modes combined, allowing mode choice to be modeled internally as an agent decision rather than using mode-specific matrices.
+
+Travel times and costs for non-car modes were collected using the Google Maps Distance Matrix API for all 15,500 possible origin-destination pairs, captured on a typical Thursday morning (September 17, 2024, 08:00). For cars, travel times are calculated dynamically by the traffic simulation based on network conditions. Travel costs were derived from multiple sources: variable car costs of €0.268/km based on Nibud data, distance-based public transit pricing following NS tariff structure (€0.169/km base rate), zero marginal cost for bicycles, and AV pricing based on Waymo's September 2024 rates in Los Angeles (€3.79 base fare plus €1.41/km and €0.40/min).
+
+Value of time parameters were derived from KiM (2023): €10.42/hour for cars, €10.39/hour for bicycles, €7.12/hour for public transit, with AV values scaled using adjustable factors explored in scenarios. Individual heterogeneity was introduced through agent-specific value of time factors drawn from a lognormal distribution (mean 1.0, standard deviation 0.5, capped at 4.0), for heterogeneous time valuations with a reasonable upper bound.
 
 ## 2.3 Model components
-The model implements individual mode choice decisions within a dynamic traffic environment, capturing both immediate responses to network conditions and longer-term adoption patterns. Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, and value of time. Each agent generates trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices from the V-MRDH model.
+The model implements individual mode choice decisions within a dynamic traffic environment, capturing both immediate responses to network conditions and longer-term adoption patterns. The process begins with input data feeding into both agent behavior and traffic simulation, creating information flows and feedback loops between individual travel decisions and system-level traffic dynamics.
 
 ### Agent behavior
-Mode choice is implemented through a rational choice model where agents minimize comfort-adjusted perceived costs. The perceived cost $C_{p,m}$ for a trip using mode $m$ is calculated as:
+Agents represent individual travelers with heterogeneous characteristics including home location, car ownership, possession of driver's license, and value of time. Each agent generates trips based on empirically-derived hourly probabilities, with destinations chosen according to origin-destination matrices that vary by time period to capture different travel patterns throughout the day.
+
+Mode choice is implemented through a rational choice model where agents choose between available modes (conventional car, autonomous vehicle, bicycle, public transit) based on minimizing comfort-adjusted perceived costs. The perceived cost $C_{p,m}$ for a trip using mode $m$ is calculated as:
 
 $$C_{p,m} = (C_{m,m} + T_m \cdot V_m) \cdot \alpha_m$$
 
-where $C_{m,m}$ is the monetary cost, $T_m$ is the travel time, $V_m$ is the individual value of time, and $\alpha_m$ is the comfort factor for mode $m$. Agents choose between conventional cars, autonomous vehicles, bicycles, and public transit based on availability and perceived costs. Trip chains are implemented as simple two-leg journeys with mode availability constrained by previous choices.
+where $C_{m,m}$ is the monetary cost for mode $m$, $T_m$ is the travel time for mode $m$, $V_m$ is the individual value of time for mode $m$, and $\alpha_m$ is the comfort factor for mode $m$. The comfort factor allows representation of mode-specific preferences beyond time and cost considerations.
+
+Mode availability is constrained by individual characteristics (car ownership, driver's license possession) and previous trip choices. Trip chains are implemented as simple two-leg journeys (outbound and return), with mode availability constrained by previous choices - for example, if departing by car, the return trip must also be by car as the vehicle needs to return home.
 
 ### Traffic simulation
-The traffic simulation uses UXsim, a mesoscopic simulator implementing Newell's simplified car-following model. Vehicle behavior is expressed as:
+The traffic simulation component uses UXsim, a mesoscopic traffic simulator that implements Newell's simplified car-following model. This model represents traffic flow as a kinematic wave, balancing computational efficiency with sufficient detail to model traffic dynamics and measure congestion at both link and network levels.
+
+When agents choose car or AV as their travel mode, they are added to the traffic simulation as vehicles. For computational efficiency, vehicles are grouped into platoons of 10 vehicles, approximating the behavior of the actual 991,575 residents with approximately 100,000 agents. Each vehicle's driving behavior on a link is expressed as:
 
 $$X(t + \Delta t, n) = \min\{X(t, n) + u\Delta t, X(t + \Delta t - \tau \Delta n, n - \Delta n) - \delta\Delta n\}$$
 
-where $X(t, n)$ denotes the position of vehicle platoon $n$ at time $t$, $u$ denotes free-flow speed, and $\delta$ denotes jam spacing. Vehicles are grouped into platoons of 10 for computational efficiency, representing the 991,575 residents with approximately 100,000 agents.
+where $X(t, n)$ denotes the position of platoon $n$ at time $t$, $\Delta t$ denotes the simulation time step width, $u$ denotes free-flow speed of the link, and $\delta$ denotes jam spacing of the link. This equation represents vehicles traveling at free-flow speed when unconstrained, while maintaining safe following distances when in congestion.
 
-Route choice employs Dynamic User Equilibrium with the attractiveness $B^{z,i}_o$ of link $o$ updated as:
+Traffic behavior at intersections is handled by the incremental node model, which resolves conflicts between competing flows by processing vehicles sequentially based on predefined merge priorities. Since OpenStreetMap data lacked explicit intersection information, merge priorities were set to default values, giving each incoming lane equal priority. Road characteristics are differentiated by road type, with motorways having lower jam densities (0.14 vehicles/meter/lane) than local streets (0.20 vehicles/meter/lane).
+
+Route choice employs a Dynamic User Equilibrium (DUO) model with stochasticity and delay. The attractiveness $B^{z,i}_o$ of link $o$ for vehicles with destination $z$ at time step $i$ is updated as:
 
 $$B^{z,i}_o = (1 - \lambda)B^{z,i-\Delta i_B}_o + \lambda b^{z,i}_o$$
 
-where $\lambda$ is a weight parameter and $b^{z,i}_o$ indicates whether link $o$ is on the shortest path to destination $z$. This allows vehicles to gradually adapt routes based on evolving traffic conditions.
+where $\lambda$ is a weight parameter and $b^{z,i}_o$ indicates whether link $o$ is on the shortest path to destination $z$. This formulation allows vehicles to gradually adapt their routes based on evolving traffic conditions, rather than instantly responding to changes in travel times.
+
+The model creates feedback loops where traffic conditions influence mode choices: when agents choose conventional cars or AVs, their trips feed into the mesoscopic traffic simulation as vehicle demand. The traffic simulation then calculates network conditions including congestion, delays, and travel times, which feed back into agents' future mode choices through updated travel times. For non-motorized modes and public transit, travel times remain fixed based on Google Maps API data, as these modes are assumed to be largely unaffected by car traffic congestion.
 
 ## 2.4 Model validation
-The model reproduces key characteristics of current Rotterdam travel patterns while revealing limitations that inform result interpretation. Default behavior was validated against ODiN 2023 data, showing mode shares of 25.4% car, 65.1% bicycle, and 9.5% transit for the study area compared to empirical values of 37.7%, 49.0%, and 13.3% respectively. While the model overestimates bicycle usage and underestimates car use, this is consistent with its focus on short to medium-term effects and omission of certain car-favoring factors like weather and cargo requirements.
+The model reproduces key characteristics of current Rotterdam travel patterns while revealing limitations that inform result interpretation. Model verification and validation followed a systematic approach combining multiple techniques including continuous integration testing, version control with detailed validation notes, and systematic comparison against empirical data.
 
-Temporal travel patterns strongly align with empirical data, reproducing sharp morning peaks (8:00-9:00) and broader evening peaks (16:00-18:00). The traffic simulation demonstrates plausible behavior including known congestion points and expected phenomena like longer evening delays compared to morning peaks. Network speeds average 25 km/h in the default scenario, decreasing to 10-15 km/h in congested areas during peak hours, consistent with typical urban traffic patterns.
+Default behavior was validated against ODiN 2023 data for the Rotterdam area. In the inner city areas (Noord, Kralingen, Rotterdam Centrum, Feyenoord, Delfshaven), the model produces mode shares of 11.3% car, 82.3% bicycle, and 6.5% transit, compared to empirical values of 13.4%, 69.9%, and 16.7% respectively. For the broader study area, the model shows 25.4% car, 65.1% bicycle, and 9.5% transit usage, versus empirical values of 37.7%, 49.0%, and 13.3%.
 
-![mode_distribution_default.svg](img%2Fdefault%2Fmode_distribution_default.svg)
-_Fig 3.4: Mode share during the day in the default scenario_
+While the model shows deviation from empirical data, particularly overestimating bicycle usage and underestimating car use, these differences are consistent with the model's focus on short to medium-term effects. The model doesn't capture certain car-favoring factors like weather, cargo requirements, and multi-stop trips, which likely explains the lower car mode share. However, the relative order of mode preferences and general patterns align with observed behavior, suggesting sufficient validity for examining modal shifts.
 
 ![journeys_data_default.svg](img%2Fdefault%2Fjourneys_data_default.svg)
 _Fig 3.5: Distributions of trip travel time, costs and perceived costs by mode in the default scenario_
 
+Temporal travel patterns show strong alignment with empirical data, particularly in capturing peak hour characteristics. The model reproduces the sharp morning peak (8:00-9:00) and broader evening peak (16:00-18:00) observed in ODiN data, both in terms of timing and relative magnitude. Trip distance distributions follow expected log-normal patterns, with bicycles dominating shorter trips (1-5 km) and motorized modes becoming more prevalent at longer distances.
+
+![mode_distribution_default.svg](img%2Fdefault%2Fmode_distribution_default.svg)
+_Fig 3.4: Mode share during the day in the default scenario_
+
+The traffic simulation demonstrates plausible behavior in several key aspects. Known congestion points, such as the Algera bridge bottleneck in Krimpen aan den IJssel and the Terbregseplein interchange, show appropriate congestion patterns. The model captures expected phenomena like longer delays during evening peaks compared to morning peaks, and higher congestion in dense urban areas versus peripheral regions. Network speeds average 25 km/h in the default scenario, decreasing to 10-15 km/h in congested inner-city areas during peak hours, which aligns with typical urban traffic patterns.
+
 ![uxsim_heatmaps_default.png](img%2Fdefault%2Fuxsim_heatmaps_default.png)
 _Fig 3.6: Network performance metrics by geographic area during the day in the default scenario_
 
-Key validation limitations include the inability to validate AV-specific behavioral assumptions due to the emerging nature of the technology, static trip generation and distribution patterns that may not reflect AV-induced changes, and simplified intersection modeling. Despite these limitations, the model demonstrates sufficient validity in core components to meaningfully examine system-level effects of AV adoption.
+### Validation limitations
+Several validation limitations should be noted that inform result interpretation. The model lacks detailed validation of intersection-level traffic dynamics due to computational constraints and data availability. The validity of AV-related behavioral assumptions cannot be directly verified due to the emerging nature of the technology - the model necessarily relies on theoretical relationships and assumptions about how people might respond to AVs based on current mode choice patterns. The model's prediction of induced demand effects relies on theoretical relationships rather than empirical validation, as historical data on transportation improvements of this magnitude are limited.
+
+Additionally, the model simplifies several aspects of real-world travel behavior. Agents do not learn from or adapt based on previous experiences, and there are no direct agent-to-agent interactions. The mode choice model implements a simplified rational choice framework that may not fully capture habitual behavior, psychological factors, or complex preferences beyond the comfort factor. Despite these limitations, the model demonstrates sufficient validity in its core components to meaningfully examine system-level effects of AV adoption.
 
 ## 2.5 Experimental design
-We explored 144 scenarios varying four key AV uncertainties, then tested policy interventions across eight representative scenarios. The scenario analysis employed a full-factorial design to systematically explore interactions between key uncertainties while maintaining interpretability of results.
+We explored 144 scenarios varying four key AV uncertainties, then tested policy interventions across eight representative scenarios. The experimental design employed two main analyses: a comprehensive scenario analysis investigating uncertainties in AV adoption and system effects, and a focused policy analysis testing interventions across selected scenarios.
 
 ![Conceptual-model-v2.svg](img%2FConceptual-model-v2.svg)
 _Fig 4.1: Conceptual model including scenario uncertainties and policy levers_
 
 ### Scenario analysis
-Four key uncertainties were examined:
+The scenario analysis employed a full-factorial design to systematically explore interactions between key uncertainties while maintaining interpretability of results. This approach was chosen over alternatives like Monte Carlo or Latin Hypercube sampling because factorial designs enable systematic exploration of interactions between variables while maintaining interpretability - each scenario represents a clear combination of parameter values that can be directly compared to others. The logarithmic spacing of certain variables allows exploration of non-linear effects that might be missed with uniform sampling.
 
-1. **AV Cost Factor** (4 levels: 1.0, 0.5, 0.25, 0.125): Relative cost compared to current Waymo pricing, with logarithmic spacing reflecting expectation that cost differences matter more at lower price points.
-2. **AV Value of Time Factor** (3 levels: 1.0, 0.5, 0.25): Perceived value of time spent in AVs versus conventional vehicles, where lower values represent scenarios where AV time is perceived as less costly due to ability to work or rest.
-3. **AV Density Factor** (4 levels: 1.5, 1.0, 0.5, 0.333): Space efficiency relative to conventional vehicles, representing the space required per person transported. Values below 1.0 indicate improved efficiency through mechanisms like higher occupancy, reduced following distances, or smaller vehicles.
-4. **Induced Demand** (3 levels: 1.0, 1.25, 1.5): Potential increase in overall travel demand ranging from no increase to 50% increase based on historical precedent from major transportation improvements.
+Four key uncertainties were examined based on literature review and stakeholder consultation as the factors most likely to influence adoption patterns or cause interesting system-level effects:
 
-This design created 144 unique combinations (4×3×4×3), each representing a possible future scenario simulated for a full day with consistent base parameters.
+1. **AV Cost Factor** (4 levels: 1.0, 0.5, 0.25, 0.125): Relative cost compared to current Waymo pricing in Los Angeles as of September 2024. The logarithmic spacing reflects the expectation that cost differences matter more at lower price points, where they might trigger significant changes in adoption patterns. The range spans from current prices to one-eighth of current costs.
+2. **AV Value of Time Factor** (3 levels: 1.0, 0.5, 0.25): Perceived value of time spent in AVs versus conventional vehicles. A factor of 1.0 represents equivalent time value to current cars, while lower values represent scenarios where time in AVs is perceived as less costly due to the ability to work, rest, or engage in other activities during travel.
+3. **AV Density Factor** (4 levels: 1.5, 1.0, 0.5, 0.333): Space efficiency of AVs relative to conventional vehicles, measured as the space required per person transported. Values above 1.0 indicate less efficient operation due to increased safety margins or lower occupancy, while values below 1.0 represent improved efficiency. This efficiency could be achieved through various mechanisms: higher occupancy from better ride-matching, reduced following distances through platooning or faster reaction times, smaller vehicles optimized for urban trips, or combinations thereof. By treating density as an outcome-based metric rather than specifying implementation details, the model remains relevant regardless of which technological solutions emerge.
+4. **Induced Demand** (3 levels: 1.0, 1.25, 1.5): Potential increase in overall travel demand based on historical precedent from major transportation improvements. The range captures both conservative estimates (no increase) and aggressive estimates (50% increase) of how improved mobility might stimulate additional travel demand, accounting for both demand growth from improved AV services and external factors.
+
+This design created 144 unique combinations (4×3×4×3), each representing a possible future scenario simulated for a full day (19 hours) while base parameters like the road network configuration, population distribution and external traffic patterns were kept constant.
 
 ### Policy analysis
-Eight representative scenarios were selected spanning from "current situation" to "extreme progress" in AV adoption, chosen to represent the range of plausible futures identified in the scenario analysis. These scenarios were tested against nine policy combinations examining both individual and combined effects of speed reductions (-20 km/h) and congestion pricing (€5-10). 
+Eight representative scenarios were selected from the scenario analysis results to span the range of plausible futures identified, with particular attention to cases that showed interesting or concerning system-level effects. The scenarios range from "current situation" to "extreme progress" in AV adoption, including both optimistic scenarios where technological progress leads to efficient, affordable AVs, and more problematic scenarios where cheap but inefficient AVs could create new urban challenges.
 
-Geographic targeting included the "autoluw" area representing Rotterdam's central low-traffic zone versus city-wide implementation. Temporal variations explored peak-hour (7:00-9:00 and 16:00-18:00) versus all-day (6:00-19:00) implementation. This created 72 scenario-policy combinations (8×9), enabling analysis of policy effectiveness under different future conditions while evaluating both intended and unintended effects.
+The selected scenarios include current situation (av_cost_factor: 1.0, av_density: 1.5, induced_demand: 1.0), moderate progress (0.5, 1.0, 1.125), extensive progress (0.25, 0.5, 1.25), extreme progress (0.125, 0.333, 1.5), and several "race to bottom" scenarios exploring different density outcomes with very cheap AVs. These scenarios were tested against nine policy combinations examining both individual and combined effects of two main intervention types: speed reductions and congestion pricing.
 
-Results were collected on journey details, traffic conditions, and parking occupancy, enabling comprehensive analysis of system-level effects including mode shares, network performance, and total vehicle kilometers traveled.
+| Scenario | `av_cost_factor` | `av_density` | `induced_demand` |
+|----------|------------------|--------------|------------------|
+| Current situation | 1.0 | 1.5 | 1.0 |
+| Moderate progress | 0.5 | 1.0 | 1.125 |
+| Extensive progress | 0.25 | 0.5 | 1.25 |
+| Extreme progress | 0.125 | 0.333 | 1.5 |
+| Private race to bottom | 0.125 | 1.5 | 1.25 |
+| Mixed race to bottom | 0.125 | 1.0 | 1.25 |
+| Shared race to bottom | 0.125 | 0.5 | 1.25 |
+| Dense progress | 0.25 | 0.333 | 1.125 |
+
+_Table 4.1: Overview of selected scenarios for policy analysis_
+
+The policy combinations were designed to test both spatial and temporal variations in intervention strategies. Speed reductions of 20 km/h represent significant but feasible changes in urban speed limits, consistent with policies being implemented in cities like Amsterdam. Pricing levels (€5 and €10) were chosen to be substantial enough to influence behavior while remaining within ranges seen in existing congestion pricing schemes.
+
+Geographic targeting included two spatial scales: the "autoluw" area representing Rotterdam's central low-traffic zone (affecting about 13% of the population), and city-wide implementation covering all 125 postal code areas. Temporal variations explored peak-hour (7:00-9:00 and 16:00-18:00) versus all-day (6:00-19:00) implementation, using current Dutch definitions for peak hours and daytime periods.
+
+| Policy | Area | Speed Reduction | Tariff (€) | Timing |
+|--------|------|-----------------|------------|---------|
+| No policy | City | None | 0 | - |
+| Autoluw peak | Autoluw | -20 km/h | 5 | Peak |
+| Autoluw day | Autoluw | -20 km/h | 5 | Day |
+| City peak | City | -20 km/h | 5 | Peak |
+| City day | City | -20 km/h | 5 | Day |
+| City speed only | City | -20 km/h | 0 | - |
+| City peak tariff | City | None | 5 | Peak |
+| City day tariff | City | None | 5 | Day |
+| All out | City | -20 km/h | 10 | Day |
+
+_Table 4.2: Overview of policy combinations for policy analysis_
+
+This created 72 scenario-policy combinations (8×9), enabling examination of policy effectiveness under different future conditions. Each combination was evaluated using multiple metrics including mode shares, network performance, and total vehicle kilometers traveled, allowing analysis of both intended and unintended policy effects. Results were collected on journey details (origin, destination, mode, costs), traffic conditions (speed, density, flow), and parking occupancy, enabling comprehensive analysis of system-level effects.
 
 # 5. Results
 This section presents the findings from two major experiments: a full-factorial analysis exploring 144 scenarios of AV adoption, and a focused policy analysis testing 72 combinations of scenarios and interventions. The results are organized in three parts that directly address our research subquestions.
