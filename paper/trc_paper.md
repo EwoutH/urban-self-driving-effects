@@ -207,41 +207,89 @@ _Table 2.2: Policy combinations tested._
 
 This created 72 scenario-policy combinations (8 × 9). Each was evaluated using multiple metrics: mode shares, network speeds, delay ratios, total vehicle kilometers traveled, average travel times, and perceived costs, enabling analysis of both intended and unintended policy effects. Speed reductions were implemented by reducing the free-flow speed on all links within the policy area by 20 km/h (minimum 20 km/h), while congestion pricing was applied as a flat surcharge on AV trips with origin or destination within the policy area during the specified hours.
 
-# 5. Results
-This section presents findings from two complementary experiments: a full-factorial analysis exploring 144 scenarios varying AV cost, perceived time value, space efficiency, and induced demand; and a focused policy analysis testing nine intervention strategies across eight representative scenarios. The results directly address our research questions about AV adoption patterns, system-level impacts, and policy effectiveness.
+# 3. Results
+This section presents findings from two complementary experiments: a full-factorial scenario analysis (144 scenarios) and a focused policy analysis (72 scenario-policy combinations). Section 3.1 examines AV adoption patterns and modal competition across the scenario space. Section 3.2 analyzes the resulting system-level effects on network performance, vehicle kilometers traveled, and travel times. Section 3.3 evaluates policy intervention effectiveness across representative scenarios. Section 3.4 synthesizes the key findings.
 
-Many results are displayed in dimensionally-stacked heatmaps where each tile represents one scenario. The structure uses four axes: inner x-axis shows AV value of time factor (1.0 to 0.25, lower means less valuable), outer x-axis shows AV cost factor (1.0 to 0.125, lower means cheaper), inner y-axis shows induced demand factor (1.0 to 1.5, higher means more demand), and outer y-axis shows AV density factor (1.5 to 0.333, lower means less space per person-kilometer). Generally, green indicates preferred outcomes, red indicates undesired outcomes, with yellow representing the reference scenario without AVs.
+Results are displayed in dimensionally-stacked heatmaps where each tile represents one scenario. The axes are arranged as follows: inner x-axis shows AV value of time factor (1.0 to 0.25), outer x-axis shows AV cost factor (1.0 to 0.125), inner y-axis shows induced demand factor (1.0 to 1.5), and outer y-axis shows AV density factor (1.5 to 0.333). Green generally indicates outcomes preferred by stakeholders, red indicates undesired outcomes, and yellow marks the reference scenario without AVs. Where the preferred direction is ambiguous, a brown-to-blue scale is used with white as the reference.
 
-## 5.1 Critical thresholds in AV adoption and modal dynamics
-AV adoption exhibits non-linear patterns governed primarily by cost and space efficiency, with a critical density threshold of 0.5 determining whether adoption improves or degrades system performance. Figure 5.1 reveals that at current pricing levels (cost factor 1.0), AV adoption remains marginal at 0.7-1.6% of trips regardless of other characteristics. Cost reductions drive adoption far more strongly than comfort improvements: halving costs increases adoption by more than 5x to 5-12%, while halving again reaches 15-33%. However, massive adoption above 65% only materializes when three conditions align: costs drop to one-eighth of current levels, perceived time value decreases (factor ≤0.5), and critically, space efficiency improves substantially (density ≤0.5).
+## 3.1 AV adoption and modal competition
+Figure 3.1 shows AV mode share and the mode shares of conventional cars, bicycles, and public transit across all 144 scenarios.
 
 | ![heatmap_mode_share_av.png](img/exp4/heatmap_mode_share_av.png) | ![heatmap_mode_share_car.png](img/exp4/heatmap_mode_share_car.png) |
 |-----|-----|
 | ![heatmap_mode_share_bike.png](img/exp4/heatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](img/exp4/heatmap_mode_share_transit.png) |
-_Figure 5.1: Mode share of AVs, cars, bicycles, and public transit across 144 scenarios_
 
-The density threshold creates two distinctly different patterns in modal competition. With inefficient AVs (density factors 1.0-1.5), bicycle and transit shares remain high as cheap AVs primarily replace car trips. However, with efficient AVs (density ≤0.5), cycling and transit shares plummet while car shares remain stable or even increase in certain scenarios. This asymmetry reveals that AVs compete more directly with sustainable modes than with private cars, which has significant implications for urban sustainability. The modal shift from cyclists and transit users begins earlier and accelerates faster than shifts from car users, particularly when AVs become both cheap (cost factor ≤0.25) and comfortable (time value factor ≤0.5).
+_Figure 3.1: Mode share of AVs, cars, bicycles, and public transit across 144 scenarios. Reference values without AVs: 29.8% car, 58.4% bicycle, 11.8% transit._
 
-Notably, induced demand shows minimal influence on mode shares compared to density effects. While higher induced demand slightly reduces AV adoption in near-term scenarios with expensive AVs, density becomes the dominant factor as costs decrease. The interaction between these variables suggests that space efficiency fundamentally determines whether additional mobility demand can be accommodated or whether it triggers system degradation.
+### Cost as the primary adoption driver
+AV adoption is primarily driven by cost reductions rather than comfort or time perception improvements. At current pricing (cost factor 1.0), adoption remains marginal at 0.7–2.5% of trips regardless of other parameters. Halving costs increases adoption by roughly 5× to 4–12%, while a further halving to a cost factor of 0.25 produces another substantial increase, reaching up to 35% depending on density and value of time. At one-eighth of current costs (factor 0.125), adoption ranges widely from 7% to 84%, with density and value of time determining where within this range each scenario falls.
 
-## 5.2 System-level performance implications
-Network performance diverges dramatically above and below the density threshold, creating two distinct futures: efficient high-density AVs that maintain mobility despite increased demand, versus inefficient operations that trigger system collapse. Figure 5.2 demonstrates this split across multiple performance metrics. Average network speeds in the reference scenario (25 km/h) drop substantially with increased induced demand (18 km/h at 1.25x, 15 km/h at 1.5x demand) when AVs remain expensive. As AVs become cheaper, network speeds decline further in scenarios with inefficient operations (density ≥1.0), reaching below 5 km/h in extreme cases, representing near-complete gridlock.
+The value of time factor plays a secondary but important role, particularly in determining whether car users switch to AVs. At a cost factor of 0.125, reducing the VoT factor from 1.0 to 0.25 roughly doubles AV adoption in many scenarios, but only when density is also favorable. With inefficient AVs (density ≥ 1.0), low VoT alone cannot push adoption above approximately 24%. Finally, it's notable that the first halving of value-of-time has a larger effect than the second one, and high-AV adoption can be reached with one halvation in value of time.
+
+### The density threshold in modal competition
+The most striking pattern in Figure 3.1 is not in AV adoption itself but in how AVs compete with other modes, which differs qualitatively above and below a density factor of approximately 0.5.
+
+With efficient AVs (density ≤ 0.5), adoption draws heavily from cycling and transit. Bicycle mode share, 58.4% in the reference scenario, drops below 10% in the most favorable AV scenarios (cost 0.125, density 0.333, VoT 0.25). Transit share follows a similar trajectory, falling from 11.8% to under 1%. Meanwhile, car share also declines substantially in these scenarios – reaching below 10% – as both cars and sustainable modes lose riders to AVs. The net effect is an AV-dominated system where the primary losers are cyclists and transit users.
+
+With inefficient AVs (density ≥ 1.0), a fundamentally different dynamic emerges. As AVs become cheaper, cycling and transit shares erode more gradually, but car share declines steeply – falling to 1–3% in extreme cases at density 1.5 with cost factor 0.125. This occurs because inefficient AVs generate severe congestion (detailed in Section 3.2), which penalizes all road-based modes. Since car travel times increase while bicycle and transit times remain fixed in the model, congestion shifts travelers away from cars toward non-road modes. Transit share actually *increases* above the reference value in several of these scenarios, reaching 15–16% – a consequence of congestion making car travel less attractive relative to transit.
+
+### Asymmetric competition with sustainable modes
+Across both density regimes, a consistent asymmetry is visible: the modal shift from cycling and transit to AVs begins at higher cost levels and proceeds faster than the shift from cars. At a cost factor of 0.5 with density 0.333, cycling share has already fallen by approximately 10 percentage points while car share remains near the reference value. This asymmetry arises from the structural cost advantages AVs hold over cycling – weather independence, productive travel time, comfort – versus the smaller perceived differential with car travel, where similar comfort is offset by AV pricing.
+
+This pattern has an important implication: there exists a range of AV cost levels (roughly 0.5–0.25) where AVs are cheap enough to attract cyclists and transit users but not yet cheap enough to displace significant car use. In this transitional range, AVs add vehicles to the network without removing many, because the riders they attract were previously not contributing to road traffic.
+
+Induced demand shows minimal influence on mode shares compared to cost and density effects. While higher demand slightly reduces AV adoption in near-term scenarios (where the network is already congested), density becomes the dominant factor as costs decrease. The interaction between induced demand and system performance is explored further in Section 3.2.
+
+## 3.2 System-level effects
+The adoption patterns described above produce markedly different system-level outcomes depending on AV density. This section examines network performance, vehicle kilometers traveled, and travel times across the 144 scenarios.
+
+### Network speed and congestion
+Figure 3.2 shows average network speed and average delay (ratio of actual to free-flow travel time) across scenarios. The reference scenario without AVs produces an average network speed of 25.1 km/h and an average delay of 70.6% above free-flow times.
 
 | ![heatmap_mean_network_speed.png](img/exp4/heatmap_mean_network_speed.png) | ![traffic_heatmap_average_delay_weighted.png](img/exp4/traffic_heatmap_average_delay_weighted.png) |
 |-----|-----|
-_Figure 5.2: Average network speed and delay (compared to free-flow) across scenarios_
 
-However, the density threshold of 0.5 marks a critical transition point. Below this threshold, even with very cheap AVs and high adoption, network speeds recover to reference levels or better. With density factors of 0.333, speeds significantly exceed baseline performance, suggesting AVs can actually increase effective network capacity. This pattern holds across induced demand levels—efficient AVs can accommodate substantial demand growth while inefficient ones cannot handle even baseline demand once adoption reaches critical mass.
+_Figure 3.2: Average network speed (km/h) and average delay relative to free-flow travel time across 144 scenarios. Reference: 25.1 km/h, 70.6% delay._
 
-The delay metric reinforces this finding: vehicles experience 70% longer travel times than free-flow in the reference scenario, increasing to 120-200% with higher demand. Inefficient, cheap AVs (cost factor 0.125, density ≥1.0) explode delays beyond 500%—meaning vehicles achieve only one-sixth of free-flow speeds. Meanwhile, efficient AVs (density ≤0.5) maintain or reduce delays even with increased adoption and induced demand.
+Even without AV adoption, induced demand alone substantially degrades performance: at 1.25× demand, average speeds drop to approximately 18 km/h; at 1.5× demand, to approximately 15 km/h. Cheaper AVs compound this degradation in all scenarios where density exceeds 0.5, as additional vehicles enter an already strained network.
 
-| ![heatmap_total_network_distance.png](img/exp4/heatmap_total_network_distance.png) | ![heatmap_mean_travel_time.png](img/exp4/heatmap_mean_travel_time.png) |
-|-----|-----|
-_Figure 5.3: Total network distance traveled and average travel time across scenarios_
+The density threshold identified in Section 3.1 produces a sharp bifurcation in network outcomes. With density factors of 1.0 and 1.5, cheaper AVs systematically reduce network speeds. At cost factor 0.125 with density 1.0, speeds fall to 11–12 km/h; with density 1.5, they reach 7–12 km/h – representing near-gridlock conditions where vehicles move at roughly one-third of current average speeds. Delays in these scenarios exceed 300–450% of free-flow times, meaning trips take four to five times longer than uncongested travel would allow.
 
-Vehicle kilometers traveled (VKT) reveals a paradoxical relationship with system performance. In scenarios with inefficient AVs, total VKT decreases dramatically—sometimes to less than half the reference scenario—as severe congestion prevents vehicles from covering distance. Conversely, efficient AVs enable substantially higher VKT, scaling almost linearly with induced demand when density factors reach 0.333-0.5 and costs drop sufficiently. This creates a concerning dynamic: scenarios that successfully improve mobility also generate significantly more vehicle travel, with implications for energy consumption, infrastructure wear, tire particle emissions, and noise pollution that persist regardless of vehicle electrification.
+Below the threshold, the pattern reverses. At density 0.5, network speeds remain near reference levels (18–31 km/h) even with substantial AV adoption, suggesting that AVs at this efficiency contribute roughly as much capacity as they consume. At density 0.333, speeds increase substantially above the reference, reaching 33–38 km/h in the most favorable scenarios – a 30–50% improvement over current conditions. This occurs because highly efficient AVs effectively increase network capacity: each AV trip displaces approximately three conventional vehicle-equivalents worth of road space while serving the same number of travelers.
 
-Average travel times show similar threshold behavior. Without induced demand, travel times begin improving once AV costs reach 0.5 and density drops to 0.5 or lower. However, inefficient AVs (density ≥1.0) worsen travel times in every scenario, with no exceptions. The most dramatic improvements—nearly halving average travel times—occur only with highly efficient AVs (density 0.333) that are both cheap and comfortable. Critically, the AV value of time factor becomes important at this threshold: even with optimal density and low costs, if time value remains at 1.0, insufficient modal shift from cars to AVs occurs, and the additional AV traffic actually increases congestion despite high efficiency.
+The interaction between density and other parameters is notably asymmetric. Above the threshold, neither cost reductions nor VoT improvements can compensate for inefficient space use – no scenario with density ≥ 1.0 achieves reference-level network speeds regardless of other parameter values. Below the threshold, however, cheaper and more comfortable AVs generally improve network performance by attracting riders away from less space-efficient conventional cars.
+
+### Vehicle kilometers traveled
+Figure 3.3 shows total network vehicle distance, measured in thousands of vehicle-kilometers, where each AV trip contributes distance weighted by its density factor. The reference scenario produces 644 thousand vkm.
+
+<div align="center">
+    <img src="img/exp4/heatmap_total_network_distance.png" width="60%">
+</div>
+
+_Figure 3.3: Total network vehicle distance (thousands of vkm) across 144 scenarios. Reference: 644 thousand vkm._
+
+VKT exhibits a counterintuitive relationship with system performance. In scenarios with inefficient AVs (density ≥ 1.0) and low costs, total VKT *decreases* – sometimes dramatically, falling below 300 thousand vkm in the most congested scenarios. This is not because fewer trips are attempted but because gridlocked vehicles physically cannot cover distance: slow-moving traffic produces less VKT per unit time regardless of demand. This paradoxical outcome means that the worst-performing scenarios in terms of mobility also show the lowest VKT, while the metric might normally be interpreted as indicating reduced environmental impact.
+
+Conversely, efficient AVs (density ≤ 0.5) enable substantially higher VKT. With density 0.333 and cost factor 0.25, VKT reaches 1,100–1,300 thousand vkm – roughly double the reference – and scales nearly linearly with induced demand at this efficiency level. The freed network capacity accommodates all additional travel demand, resulting in more vehicles traveling faster over longer distances. With density 0.5, VKT increases are more moderate but still substantial, reaching 900–1,500 thousand vkm depending on cost and induced demand.
+
+This creates a fundamental tension: the scenarios that most successfully improve mobility also generate the most vehicle travel. Even assuming full electrification, the associated increases in tire particulate emissions, road infrastructure wear, noise, and collision exposure scale with VKT rather than with emissions. The source of density improvement matters here – if efficiency gains come primarily from higher vehicle occupancy, per-capita VKT would decrease, but if they come from technical optimizations (smaller vehicles, reduced following distances), total VKT increases proportionally with the freed capacity.
+
+### Travel times
+Figure 3.4 shows mean travel time across all completed trips (all modes) in each scenario. The reference value is 940 seconds (approximately 15.7 minutes).
+
+<div align="center">
+    <img src="img/exp4/heatmap_mean_travel_time.png" width="60%">
+</div>
+
+_Figure 3.4: Mean travel time in seconds across all completed trips. Reference: 940 seconds._
+
+Average travel times mirror the network speed patterns but reveal an additional interaction with value of time. With density ≥ 1.0, travel times increase in nearly every scenario, reaching 1,100–1,350 seconds (18–22 minutes) with cheap, inefficient AVs – an increase of 17–43% over the reference. No combination of cost reduction or VoT improvement can offset this degradation when AVs operate inefficiently.
+
+With density 0.333, travel times decrease substantially, reaching 489–556 seconds (8–9 minutes) in the most favorable scenarios – a reduction of roughly 40–48% compared to the reference. However, this improvement only materializes when VoT is sufficiently low (factor ≤ 0.5) to trigger substantial modal shift from cars to AVs. At VoT factor 1.0 with density 0.333, travel times still improve but more modestly (814–1,116 seconds), because insufficient car-to-AV switching means conventional vehicles continue to consume road space while AVs add to traffic. This demonstrates that even highly efficient AVs can only improve system performance if they attract enough riders away from conventional cars – density enables improvement, but behavioral shift is required to realize it.
+
+With density 0.5, the picture is mixed: travel times improve modestly when induced demand is low (1.0) and costs are sufficiently reduced, but degrade when induced demand reaches 1.25 or higher. This positions density 0.5 as a knife-edge where the system can tip in either direction depending on demand conditions.
+
+In scenarios with density ≥ 1.0 at cost factor 0.125, some travel time values (particularly with low VoT) should be interpreted with caution: severe congestion prevented a portion of trips from completing within the simulation duration (05:00–24:00), meaning the reported averages reflect only completed trips and may understate actual experienced travel times in those scenarios.
 
 ## 5.3 Policy intervention effectiveness across scenarios
 Traditional policy interventions show limited effectiveness and often counterproductive outcomes, with no single strategy proving robust across different AV deployment scenarios. Figure 5.4 presents mode shares under nine policy combinations ranging from localized interventions (autoluw area restrictions) to comprehensive city-wide measures (combined speed reductions and congestion pricing). All pricing-based policies reduce AV adoption compared to no intervention, while speed reductions alone (policy 5) show virtually no effect on mode shares or any other metric.
