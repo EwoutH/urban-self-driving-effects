@@ -4,15 +4,15 @@
 </div>
 
 # Abstract
-**Background:** The introduction of autonomous vehicles (AVs) could fundamentally transform urban transportation, but their system-level effects on cities remain poorly understood. Previous research has focused primarily on individual adoption decisions or specific impacts like congestion, without capturing the complex interactions between adoption patterns, modal shifts, and transportation system performance.
+**Background:** Autonomous vehicles (AVs) could fundamentally transform urban transportation, but their system-level effects remain poorly understood. Most simulation studies omit competition with sustainable transport modes, assume fixed operational efficiency, and optimize policies for single scenarios, leaving critical interactions between AV characteristics and system performance unexplored.
 
-**Goal:** This study investigates how autonomous vehicles might affect urban mobility problems, considering both modal shifts and induced demand, and examines which policies could effectively mitigate potential negative impacts while preserving benefits.
+**Goal:** This study investigates how the interaction between AV cost, perceived travel time value, space efficiency, and induced demand produces different urban mobility outcomes, and tests whether commonly recommended policies remain effective across these futures.
 
-**Methods:** An agent-based model combined with mesoscopic traffic simulation was developed to simulate travel behavior in Rotterdam, Netherlands. The model explores 144 scenarios varying AV costs, perceived time value, space efficiency, and induced demand. Eight representative scenarios were then tested against nine policy combinations.
+**Methods:** An integrated agent-based and mesoscopic traffic simulation framework was developed for Rotterdam, Netherlands, combining heterogeneous mode choice decisions with dynamic network feedback. A full-factorial analysis explored 144 scenarios varying AV cost, perceived time value, space efficiency, and induced demand, and nine policy combinations were tested across eight representative futures.
 
-**Results:** AV adoption patterns depend more strongly on space efficiency than cost or comfort advantages. A critical threshold around a density factor of 0.5 emerged - below this threshold, high AV adoption can maintain system performance, while above it, increased adoption degrades network performance. AVs compete more directly with sustainable transport modes than with private cars. Traditional policy interventions showed limited effectiveness across different scenarios.
+**Results:** Space efficiency emerges as a threshold variable: below a density factor of approximately 0.5 relative to conventional vehicles, high AV adoption maintains system performance; above it, adoption degrades the network regardless of cost or comfort. AVs compete more directly with cycling and transit than with private cars, with sustainable mode users switching earlier and faster. No tested policy – including congestion pricing, speed reductions, and spatial restrictions – proved effective across all scenarios; interventions beneficial with inefficient AVs often proved counterproductive with efficient ones.
 
-**Conclusions:** Autonomous vehicles may represent neither an inherent solution nor an inevitable problem for urban mobility. Their impact appears likely to depend on the interaction between their operating characteristics, adoption patterns, and policy frameworks. Results suggest that cities should focus on ensuring space-efficient AV operations rather than just regulating costs or access.
+**Conclusions:** AV impacts on urban mobility appear to depend fundamentally on space efficiency rather than cost alone. Static policy interventions may be insufficient for managing a transition whose outcomes remain highly uncertain, suggesting the need for adaptive frameworks robust to multiple futures.
 
 Keywords: autonomous vehicles, urban mobility, agent-based modeling, traffic simulation, mode choice, transportation policy, modal shift, induced demand
 
