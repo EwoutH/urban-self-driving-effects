@@ -364,51 +364,53 @@ The scenario-dependent policy results do not imply that effective interventions 
 These conclusions are bounded by the model's simplifications, including the deterministic mode choice, single-day scope, exogenous induced demand, and a narrow policy space, which favor identification of system dynamics over precise quantitative prediction. Validating these dynamics through behaviorally richer models, longer time horizons, and empirical data from early deployments remains an important next step.
 
 # References
+Ahn, K., Rakha, H. A., & Wang, J. (2025). The Rebound Effect of Autonomous Vehicles on Vehicle Miles Traveled: A Synthesis of Drivers, Impacts, and Policy Implications. Sustainability, 17(22). https://doi.org/10.3390/su172210089
+
+Bastarianto, F. F., Hancock, T. O., Choudhury, C. F., & Manley, E. (2023). Agent-based models in urban transportation: Review, challenges, and opportunities. European Transport Research Review, 15(1), 19. https://doi.org/10.1186/s12544-023-00590-5
+
 Ben-Akiva, M. E., & Lerman, S. R. (1985). Discrete choice analysis: theory and application to travel demand (Vol. 9). MIT press.
 
-Centraal Bureau voor de Statistiek. (2023a). Auto's, kilometers en rijbewijzen per pc4 [Cars, kilometers and driver's licenses per postcode]. https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4
+Centraal Bureau voor de Statistiek. (2023a). Auto's, kilometers en rijbewijzen per pc4. https://www.cbs.nl/nl-nl/maatwerk/2023/35/auto-s-kilometers-en-rijbewijzen-per-pc4
 
-Centraal Bureau voor de Statistiek. (2023b). Gegevens per postcode [Data by postcode]. https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode
+Centraal Bureau voor de Statistiek. (2023b). Gegevens per postcode. https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode
 
-Centraal Bureau voor de Statistiek. (2023c). Statistische gegevens per vierkant en postcode 2022-2021-2020-2019 [Statistical data by grid and postcode 2019-2022]. https://www.cbs.nl/nl-nl/longread/diversen/2023/statistische-gegevens-per-vierkant-en-postcode-2022-2021-2020-2019/bijlagen
+Centraal Bureau voor de Statistiek. (2023c). Statistische gegevens per vierkant en postcode 2022-2021-2020-2019. https://www.cbs.nl/nl-nl/longread/diversen/2023/statistische-gegevens-per-vierkant-en-postcode-2022-2021-2020-2019/bijlagen
 
-Centraal Bureau voor de Statistiek. (2023d). Voertuigen naar brandstofsoort en postcode 2023 [Vehicles by fuel type and postcode 2023]. https://www.cbs.nl/nl-nl/maatwerk/2023/24/voertuigen-naar-brandstofsoort-en-postcode-2023
+Centraal Bureau voor de Statistiek. (2023d). Voertuigen naar brandstofsoort en postcode 2023. https://www.cbs.nl/nl-nl/maatwerk/2023/24/voertuigen-naar-brandstofsoort-en-postcode-2023
 
-Centraal Bureau voor de Statistiek. (2024). Onderweg in Nederland (ODiN) 2023: Onderzoeksbeschrijving [Traveling in the Netherlands 2023: Research description]. https://www.cbs.nl/nl-nl/longread/rapportages/2024/onderweg-in-nederland--odin---2023-onderzoeksbeschrijving
+Centraal Bureau voor de Statistiek. (2024). Onderweg in Nederland (ODiN) 2023: Onderzoeksbeschrijving. https://www.cbs.nl/nl-nl/longread/rapportages/2024/onderweg-in-nederland--odin---2023-onderzoeksbeschrijving
 
 Cervero, R. (2002). Induced travel demand: Research design, empirical evidence, and normative policies. Journal of Planning Literature, 17(1), 3-20.
 
-Downs, A. (1962). The law of peak-hour expressway congestion. Traffic Quarterly, 16(3).
-
-Duarte, F., & Ratti, C. (2018). The impact of autonomous vehicles on cities: A review. Transport Reviews, 38(3), 409-428. https://doi.org/10.1080/10630732.2018.1493883
+Dai, J., Li, R., & Liu, Z. (2024). Potential effects of automated driving on vehicle travel demand: A comparison of three case cities. Journal of Traffic and Transportation Engineering (English Edition), 11(2), 348-361. https://doi.org/10.1016/j.jtte.2022.03.003
 
 Fagnant, D. J., & Kockelman, K. (2015). Preparing a nation for autonomous vehicles: Opportunities, barriers and policy recommendations. Transportation Research Part A: Policy and Practice, 77, 167-181. https://doi.org/10.1016/j.tra.2015.04.003
 
 Fakhrmoosavi, F., Kamjoo, E., Kavianipour, M., Zockaie, A., Talebpour, A., & Mittal, A. (2022). A stochastic framework using Bayesian optimization algorithm to assess the network-level societal impacts of connected and autonomous vehicles. Transportation Research Part C: Emerging Technologies, 139, 103663. https://doi.org/10.1016/j.trc.2022.103663
 
-Gemeente Rotterdam. (2024). Verkeerscirculatieplan [Traffic circulation plan]. https://www.rotterdam.nl/verkeerscirculatieplan
+Graehler Jr, M., Mucci, R. A., & Erhardt, G. D. (2019). Understanding the Recent Transit Ridership Decline in Major US Cities: Service Cuts or Emerging Modes? (Nos. 19-04931). Transportation Research Board 98th Annual Meeting. https://trid.trb.org/View/1572517
 
-Google Developers. (2024). Distance Matrix API. https://developers.google.com/maps/documentation/distance-matrix/overview
+Grimm, V., et al. (2020). The ODD protocol for describing individual-based and agent-based models: A second update to improve clarity, replication, and structural realism. Journal of Artificial Societies and Social Simulation, 23(2), 7.
 
-Graehler Jr, M., Mucci, R. A., & Erhardt, G. D. (2019). *Understanding the recent transit ridership decline in major US cities: Service cuts or emerging modes?* Paper presented at the Transportation Research Board 98th Annual Meeting, Washington, DC, United States, January 13-17. Transportation Research Board. https://trid.trb.org/View/1572517
+Hardaway, K., & Cai, H. (2026). Reviewing autonomous vehicle simulation literature: Policy insights for transportation. Transport Reviews, 46(1), 1-27. https://doi.org/10.1080/01441647.2025.2545224
 
-Kennisinstituut voor Mobiliteitsbeleid. (2023). Nieuwe waarderingskengetallen voor reistijd, betrouwbaarheid en comfort [New valuation indicators for travel time, reliability and comfort]. https://www.kimnet.nl/publicaties/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort
+Hörl, S., Becker, F., & Axhausen, K. W. (2021). Simulation of price, customer behaviour and system impact for a cost-covering automated taxi system in Zurich. Transportation Research Part C: Emerging Technologies, 123, 102974. https://doi.org/10.1016/j.trc.2021.102974
+
+Kennisinstituut voor Mobiliteitsbeleid. (2023). Nieuwe waarderingskengetallen voor reistijd, betrouwbaarheid en comfort. https://www.kimnet.nl/publicaties/publicaties/2023/12/04/nieuwe-waarderingskengetallen-voor-reistijd-betrouwbaarheid-en-comfort
 
 Law, A. M. (2014). Simulation modeling and analysis (5th ed.). McGraw-Hill.
 
-Lee, D. B., Jr., & Klein, L. A. (1999). Induced traffic and induced demand. Transportation Research Record, 1659, 9-17. https://doi.org/10.3141/1659-09
+Li, J., Zhou, H., Snelder, M., Arem, B. van, & Gao, J. (2025). An Activity-and Agent-based Co-Simulation Framework for the Metropolitan Rotterdam The Hague Region. Procedia Computer Science, 257, 959-965. https://doi.org/10.1016/j.procs.2025.03.123
 
 Liu, Z., Li, R., & Dai, J. (2022). Effects and feasibility of shared mobility with shared autonomous vehicles: An investigation based on data-driven modeling approach. Transportation Research Part A: Policy and Practice, 156, 206-226. https://doi.org/10.1016/j.tra.2022.01.001
 
 McNally, M. G. (2007). The four step model. https://escholarship.org/uc/item/6091s9tg
 
-Metropolitaan Verkeer- en Vervoermodel MRDH. (2024). MRDH Verkeersmodel (V-MRDH). https://www.mrdh.nl/verkeersmodel
-
-Metz, D. (2018). Developing policy for urban autonomous vehicles: Impact on congestion. Urban Science, 2(2), 33. https://doi.org/10.3390/urbansci2020033
+Metz, D. (2018). Developing Policy for Urban Autonomous Vehicles: Impact on Congestion. Urban Science, 2(2). https://doi.org/10.3390/urbansci2020033
 
 Narayanan, S., Chaniotakis, E., & Antoniou, C. (2022). Modelling reservation-based shared autonomous vehicle services: A dynamic user equilibrium approach. Transportation Research Part C: Emerging Technologies, 140, 103651. https://doi.org/10.1016/j.trc.2022.103651
 
-Nederlands Instituut voor Budgetvoorlichting. (2024). Autokosten [Car costs]. https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
+Nederlands Instituut voor Budgetvoorlichting. (2024). Autokosten. https://www.nibud.nl/onderwerpen/uitgaven/autokosten/
 
 Nederlandse Spoorwegen. (2024). NS API Portal. https://apiportal.ns.nl/
 
@@ -416,20 +418,14 @@ Newell, G. (2002). A simplified car-following theory: a lower order model. Trans
 
 OpenStreetMap Foundation. (2024). About OpenStreetMap. https://www.openstreetmap.org/about
 
-Ter Hoeven, E., Kwakkel, J., Hess, V., Pike, T., Wang, B., Rht, N., & Kazil, J. (2025). Mesa 3: Agent-based modeling with Python in 2025. The Journal of Open Source Software, 10(107), 7668. https://doi.org/10.21105/joss.07668
+Seo, T. (2025). UXsim: Lightweight mesoscopic traffic flow simulator in pure Python. Journal of Open Source Software, 10(106), 7617. https://doi.org/10.21105/joss.07617
 
-Seo, T. (2025). UXsim: lightweight mesoscopic traffic flow simulator in pure Python. The Journal of Open Source Software, 10(106), 7617. https://doi.org/10.21105/joss.07617
+Tampère, C. M., Corthout, R., Cattrysse, D., & Immers, L. H. (2011). A generic class of first order node models for dynamic macroscopic simulation of traffic networks. Transportation Research Part B: Methodological, 45(1), 289-309.
 
-Small, K. A. (2012). Valuation of travel time. Economics of transportation, 1(1-2), 2-14.
+Tang, W., Yu, W., Feng, C., & Mei, Z. (2024). Assessment of future parking systems with autonomous vehicles through agent-based simulation: A case study of Hangzhou, China. Sustainable Cities and Society, 100, 105016. https://doi.org/10.1016/j.scs.2023.105016
 
-Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part A: Policy and Practice, 116, 92-104. https://doi.org/10.1016/j.tra.2018.06.007
-
-Talebian, A., & Mishra, S. (2018). Predicting the adoption of connected autonomous vehicles: A new approach based on the theory of diffusion of innovations. Transportation Research Part C: Emerging Technologies, 95, 363-380. https://doi.org/10.1016/j.trc.2018.06.005
-
-Trein Onderweg. (2024). Wat kost de trein [Train costs]. https://www.treinonderweg.nl/wat-kost-de-trein.html
+Ter Hoeven, E., Kwakkel, J., Hess, V., Pike, T., Wang, B., Rht, & Kazil, J. (2025). Mesa 3: Agent-based modeling with Python in 2025. Journal of Open Source Software, 10(107), 7668. https://doi.org/10.21105/joss.07668
 
 Wang, T., Jian, S., Zhou, C., Jia, B., & Long, J. (2024). Multimodal traffic assignment considering heterogeneous demand and modular operation of shared autonomous vehicles. Transportation Research Part C: Emerging Technologies, 169, 104881. https://doi.org/10.1016/j.trc.2024.104881
-
-Wardrop, J. G. (1952). Road paper. some theoretical aspects of road traffic research. Proceedings of the institution of civil engineers, 1(3), 325-362.
 
 Yan, H., Kockelman, K. M., & Gurumurthy, K. M. (2020). Shared autonomous vehicle fleet performance: Impacts of trip densities and parking limitations. Transportation Research Part D: Transport and Environment, 89, 102577. https://doi.org/10.1016/j.trd.2020.102577
