@@ -1,6 +1,6 @@
 <div align="center">
-<h1>When do autonomous vehicles solve or exacerbate different urban mobility problems?</h1>
-<h3>A simulation study exploring modal shifts and system-level impacts in dense urban environments</h3>
+<h1>When do autonomous vehicles solve or exacerbate urban mobility problems?</h1>
+<h3>A simulation study of modal shifts and system-level impacts</h3>
 </div>
 
 # Abstract
