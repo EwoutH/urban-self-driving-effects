@@ -291,26 +291,70 @@ With density 0.5, the picture is mixed: travel times improve modestly when induc
 
 In scenarios with density ≥ 1.0 at cost factor 0.125, some travel time values (particularly with low VoT) should be interpreted with caution: severe congestion prevented a portion of trips from completing within the simulation duration (05:00–24:00), meaning the reported averages reflect only completed trips and may understate actual experienced travel times in those scenarios.
 
-## 5.3 Policy intervention effectiveness across scenarios
-Traditional policy interventions show limited effectiveness and often counterproductive outcomes, with no single strategy proving robust across different AV deployment scenarios. Figure 5.4 presents mode shares under nine policy combinations ranging from localized interventions (autoluw area restrictions) to comprehensive city-wide measures (combined speed reductions and congestion pricing). All pricing-based policies reduce AV adoption compared to no intervention, while speed reductions alone (policy 5) show virtually no effect on mode shares or any other metric.
+## 3.3 Policy intervention effectiveness
+To assess whether commonly recommended interventions can manage the dynamics identified in Sections 3.1–3.2, nine policy combinations were tested across eight representative scenarios spanning the range of plausible futures (see Tables 2.1 and 2.2). The scenarios include cases with efficient AVs (extreme progress, shared race to bottom, dense progress), inefficient AVs (private and mixed race to bottom), and intermediate cases (moderate and extensive progress). All policy scenarios use a VoT factor of 0.5.
+
+### Effects on mode shares
+Figure 3.5 shows mode shares across the 72 scenario-policy combinations.
 
 | ![heatmap_mode_share_car.png](img/sce_pol/heatmap_mode_share_car.png) | ![heatmap_mode_share_av.png](img/sce_pol/heatmap_mode_share_av.png) |
 |-----|-----|
 | ![heatmap_mode_share_bike.png](img/sce_pol/heatmap_mode_share_bike.png) | ![heatmap_mode_share_transit.png](img/sce_pol/heatmap_mode_share_transit.png) |
-_Figure 5.4: Mode shares across eight scenarios and nine policy interventions_
 
-The most aggressive intervention—city-wide €10 congestion pricing with 20 km/h speed reductions applied throughout the day (policy 8)—reduces AV share most consistently, bringing adoption below 10% even in high-adoption scenarios. However, this policy fails to shift travelers toward sustainable modes; instead, it primarily dampens modal shifts that would have occurred, occasionally even increasing car usage. The city-wide day tariff (policy 7) achieves similar AV adoption reductions without speed limits, demonstrating that pricing alone drives behavioral change more effectively than speed restrictions.
+_Figure 3.5: Mode shares across eight scenarios and nine policy interventions. Reference values without AVs: 28.9% car, 57.5% bicycle, 11.4% transit, 2.1% AV._
 
-Localized interventions (policies 1-2) targeting Rotterdam's autoluw area—affecting only 13% of the population—show negligible impact on system-wide metrics. Even city-wide peak-hour interventions (policies 3, 6) prove insufficient, suggesting that temporal and spatial limitations fundamentally constrain policy effectiveness in networked transportation systems.
+All pricing-based policies reduce AV adoption, with effectiveness scaling by tariff level, temporal scope, and spatial coverage. The most aggressive intervention – the all-out policy combining a €10 city-wide tariff with 20 km/h speed reductions throughout the day – suppresses AV share most consistently, bringing it below 12% even in scenarios where unmanaged adoption exceeds 70% (extreme progress, shared race to bottom). The city-wide daytime tariff alone (policy 7, €5 without speed reductions) achieves comparable reductions, demonstrating that pricing drives the behavioral response: the city-day tariff policy reduces AV share to 15–16% in high-adoption scenarios, while city-wide speed reductions alone (policy 5) leave AV share virtually unchanged from the no-policy baseline.
+
+Localized interventions prove inadequate at the system level. The autoluw-area policies (1, 2), covering approximately 13% of the population, reduce AV share by only 1–8 percentage points even in high-adoption scenarios. City-wide peak-hour interventions (policies 3, 6) perform somewhat better but still leave substantial AV adoption in the most affected scenarios, as travelers shift AV trips to off-peak hours or routes outside the restricted area.
+
+However, reducing AV adoption does not translate into recovering sustainable mode shares. Across all scenarios, no policy restores bicycle or transit usage to reference levels. In the extreme and shared race to bottom scenarios, the all-out policy increases bicycle share from 11–15% to 52–55% – a substantial recovery but still well below the 57.5% reference. More critically, the policies that most effectively reduce AV share tend to increase car use rather than cycling or transit use. In the private and mixed race to bottom scenarios (density ≥ 1.0), policies that suppress AVs push car share from 1.6–2.1% up to 22–24% under the all-out policy – travelers displaced from AVs switch predominantly to cars rather than sustainable modes. The transit share in these congested scenarios, already elevated above reference due to congestion effects (14–16%), decreases toward reference levels as policies reduce congestion, removing the congestion-driven incentive to use transit.
+
+### Effects on network performance
+Figure 3.6 shows network speed and total vehicle distance across scenario-policy combinations.
 
 | ![heatmap_mean_network_speed.png](img/sce_pol/heatmap_mean_network_speed.png) | ![heatmap_total_network_distance.png](img/sce_pol/heatmap_total_network_distance.png) |
 |-----|-----|
-_Figure 5.5: Network speed and total vehicle distance across scenarios and policies_
 
-Network performance metrics reveal why traditional policies struggle. Figure 5.5 shows that policies effective at reducing AV adoption in congested scenarios (with inefficient AVs) often harm performance in scenarios with efficient AVs. The city-day (4) and all-out (8) policies can increase car speeds in scenarios with density factors of 1.0-1.5 by suppressing inefficient AV adoption, but the same policies reduce speeds when applied to scenarios with efficient AVs (density ≤0.5), as they discourage use of the more space-efficient vehicles. This scenario-dependence means optimizing policy for one future may be counterproductive in another.
+_Figure 3.6: Average network speed (km/h) and total vehicle distance (thousands of vkm) across scenarios and policies. Reference: 23.4 km/h, 678 thousand vkm._
 
-Perhaps most tellingly, policies that successfully reduce AV adoption rarely improve—and sometimes worsen—travel times or perceived costs. No policy consistently benefits all metrics across scenarios. The speed reduction component of combined policies actually registers as reducing "delay" in the technical sense (ratio of actual to free-flow time) because it lowers free-flow speeds, but this represents a measurement artifact rather than genuine improvement. The fundamental challenge is that static, mode-specific interventions cannot adapt to the complex, scenario-dependent dynamics of AV integration into existing transportation systems.
+Policy effectiveness on network performance is highly scenario-dependent, and no intervention consistently improves performance across all futures. In scenarios with inefficient AVs (private and mixed race to bottom, with no-policy speeds of 11.1 and 11.7 km/h respectively), the all-out policy increases speeds to 14.3 and 15.9 km/h – a meaningful improvement but still well below the 23.4 km/h reference. The city-day policy (4) achieves similar gains in these scenarios. The mechanism is straightforward: suppressing inefficient AV adoption removes excess vehicles from the network.
 
+In scenarios with efficient AVs, the same policies produce the opposite effect. The extreme progress scenario achieves 32.3 km/h without intervention – substantially above the reference. Applying the all-out policy reduces this to 16.6 km/h, a 49% degradation that leaves network performance *worse* than the reference scenario. This occurs because the policy suppresses space-efficient AVs, and the travelers who switch back to conventional cars consume more road space per trip. The shared race to bottom scenario (density 0.5) shows the same pattern: no-policy speed of 26.1 km/h degrades to 18.7 km/h under the all-out policy.
+
+The dense progress scenario (density 0.333, cost 0.25) illustrates the limits of intervention in well-functioning systems. With no policy, network speed is 20.4 km/h – below the reference due to induced demand. No policy meaningfully improves this: speeds range from 20.1 to 21.8 km/h across all interventions, because the moderate AV adoption in this scenario (25.9%) is already contributing positively to network efficiency, and suppressing it removes those benefits without solving the underlying demand increase.
+
+Vehicle distance traveled reveals a particularly concerning pattern. In the private and mixed race to bottom scenarios, the all-out policy increases VKT from 345–363 thousand vkm to 1,034 and 993 respectively – nearly tripling vehicle distance. This occurs because the no-policy scenarios feature such severe congestion that vehicles cannot physically cover distance (the VKT paradox from Section 3.2). By alleviating congestion through AV suppression, the policies enable the remaining conventional vehicles to travel further and faster, substantially increasing total vehicle kilometers despite reducing the number of vehicles. This means that even the most aggressive intervention, while improving network speeds, produces a significant increase in the externalities associated with vehicle travel.
+
+Speed reductions contribute a measurement artifact to the delay metric that warrants noting. Policies including speed reductions mechanically lower the free-flow speed baseline, which reduces the delay *ratio* even when actual travel times do not improve proportionally. For instance, in the moderate progress scenario, the city-peak policy (3) shows 14.8 km/h average speed versus 18.3 km/h without policy – actual speeds decline, but the delay ratio may appear improved relative to the now-lower free-flow benchmark.
+
+### Summary of policy effectiveness
+Table 3.1 summarizes the direction of policy effects across scenario types for the three most distinctive interventions (city-wide speed reduction only, city-wide daytime tariff only, and the combined all-out policy), compared to no intervention. The pattern reveals that no strategy is dominant: policies that help in congested scenarios with inefficient AVs actively harm scenarios with efficient AVs, and vice versa.
+
+| Metric | Inefficient AV scenarios (density ≥ 1.0) | Efficient AV scenarios (density ≤ 0.5) |
+|--------|------------------------------------------|----------------------------------------|
+| | Speed / Tariff / All-out | Speed / Tariff / All-out |
+| AV share | ≈ / ↓ / ↓↓ | ≈ / ↓ / ↓↓ |
+| Car share | ≈ / ↑ / ↑↑ | ≈ / ↑ / ↑↑ |
+| Bike share | ≈ / ≈ / ↓ | ≈ / ↑ / ↑↑ |
+| Network speed | ≈ / ≈ / ↑ | ≈ / ↓ / ↓↓ |
+| Total VKT | ≈ / ↑ / ↑↑ | ≈ / ↑ / ↑ |
+
+_Table 3.1: Direction of policy effects relative to no intervention, by scenario type. ↑↑/↓↓ = strong increase/decrease, ↑/↓ = moderate, ≈ = minimal change. Speed = city-wide speed reduction only; Tariff = city-wide daytime €5 tariff only; All-out = combined €10 tariff + speed reduction._
+
+Two findings stand out. First, speed reductions alone are ineffective across the board – they show no meaningful impact on any metric in any scenario. Second, the policies that most effectively manage congestion in inefficient-AV scenarios (tariff and all-out) simultaneously increase both car share and total VKT, meaning they trade one problem (AV-induced congestion) for others (increased conventional vehicle travel and associated externalities). In efficient-AV scenarios, these same policies degrade system performance while still increasing car usage, producing uniformly negative outcomes.
+
+## 3.4 Synthesis
+The scenario and policy analyses together yield five principal findings:
+
+First, **AV space efficiency determines the direction of system-level impacts**, not merely their magnitude. A density factor of approximately 0.5 separates two qualitatively different futures: one where AVs can maintain or improve system performance even at high adoption (density ≤ 0.5), and one where increased adoption inevitably degrades the network regardless of cost or comfort characteristics (density ≥ 1.0). This threshold behavior means that outcomes are not continuously distributed across the parameter space but cluster into distinct regimes.
+
+Second, **AVs compete asymmetrically with existing modes**: cyclists and transit users switch to AVs at lower cost thresholds and faster rates than car users. This creates a transitional range of AV cost levels where AVs add vehicles to the network without displacing many, because the riders they attract previously did not contribute to road traffic. The asymmetry is structural, arising from the comfort and productivity advantages AVs offer relative to cycling and transit versus the smaller differential with car travel.
+
+Third, **efficient AV scenarios generate substantially more vehicle kilometers traveled** – up to double the reference in the most favorable cases – creating a fundamental tension between mobility improvement and the externalities of vehicle travel. The source of efficiency gains (occupancy versus technical optimization) determines whether this translates to higher or lower per-capita impacts.
+
+Fourth, **VKT responds paradoxically to system performance**: the most congested scenarios produce the lowest VKT because gridlocked vehicles cannot cover distance, while well-performing scenarios enable high VKT. This means VKT cannot be straightforwardly interpreted as a proxy for environmental impact without accounting for the underlying traffic conditions.
+
+Fifth, **traditional static policy interventions show limited and often counterproductive effectiveness** across the scenario space. No tested policy improves all metrics in all scenarios. Policies effective at managing congestion from inefficient AVs actively degrade performance in efficient-AV scenarios, while simultaneously increasing car usage and total vehicle distance. Speed reductions alone prove ineffective on every metric. Localized and peak-only restrictions are too limited in scope to affect system-level dynamics. This scenario-dependence suggests that static, mode-specific interventions may be fundamentally insufficient for managing a transition characterized by high uncertainty about future AV operating characteristics.
 # 6. Discussion
 ## 6.1 The density imperative: implications for AV deployment
 The primacy of space efficiency over cost or comfort in determining system outcomes fundamentally challenges conventional assumptions about AV development priorities. While previous research has emphasized safety, liability, and user acceptance as primary concerns (Fagnant & Kockelman, 2015), our results suggest that space efficiency may be equally critical for urban environments. The emergence of a sharp threshold around density factor 0.5—below which high adoption maintains system performance, above which it triggers degradation—has profound implications for both technology development and urban planning.
